@@ -266,33 +266,89 @@
                             <th>Category Name</th>
                             <th>Status</th>
                             <th>Action</th>
+                            <th>Edit Name</th>
                           </tr>
                         </thead>
                         <tbody>
-                            <% categories.forEach((category, index) => { %>
-                              <tr>
-                                <td><%= index + 1 %></td>
-                                <td><%= category.categoryName %></td>
-                                <td>
-                                  <span class="badge <%= category.listed ? 'badge-success' : 'badge-danger' %>">
-                                    <%= category.listed ? 'Listed' : 'Unlisted' %>
-                                  </span>
-                                </td>
-                                <td>
-                                  <button class="btn <%= category.listed ? 'btn-warning' : 'btn-success' %> toggle-status" data-id="<%= category._id %>">
-                                    <%= category.listed ? 'Unlist' : 'List' %>
-                                  </button>
-                                </td>
-                              </tr>
-                            <% }); %>
-                          </tbody>
-                      </table>
+                          <% categories.forEach((category, index) => { %>
+                            <tr>
+                              <td><%= index + 1 %></td>
+                              <td class="category-name"><%= category.categoryName %></td>
+                              <td>
+                                <span class="badge <%= category.listed ? 'badge-success' : 'badge-danger' %>">
+                                  <%= category.listed ? 'Listed' : 'Unlisted' %>
+                                </span>
+                              </td>
+                              <td>
+                                <button class="btn <%= category.listed ? 'btn-warning' : 'btn-success' %> toggle-status" data-id="<%= category._id %>">
+                                  <%= category.listed ? 'Unlist' : 'List' %>
+                                </button>
+                              </td>
+                              <td>
+                                <button class="btn btn-primary edit-name" data-id="<%= category._id %>">Edit</button>
+                              </td>
+                            </tr>
+                          <% }); %>
+                        </tbody>
+                        </table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <script>
+           
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit-name').forEach(button => {
+      button.addEventListener('click', event => {
+        const button = event.currentTarget;
+        const row = button.closest('tr');
+        const categoryId = button.dataset.id;
+        const categoryNameCell = row.querySelector('.category-name');
+        const currentName = categoryNameCell.textContent;
+
+        // Create an input field with the current category name
+        categoryNameCell.innerHTML = `<input type="text" value="${currentName}" class="form-control edit-input">`;
+
+        const inputField = categoryNameCell.querySelector('.edit-input');
+
+        inputField.focus();
+
+        // Handle the input blur event to save changes
+        inputField.addEventListener('blur', async () => {
+          const newName = inputField.value;
+
+          if (newName !== currentName) {
+            try {
+              const response = await fetch(`/admin/category/${categoryId}/edit`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ categoryName: newName })
+              });
+
+              if (response.ok) {
+                categoryNameCell.textContent = newName;
+              } else {
+                categoryNameCell.textContent = currentName;
+                alert('Failed to update category name');
+              }
+            } catch (error) {
+              categoryNameCell.textContent = currentName;
+              alert('Error occurred while updating category name');
+            }
+          } else {
+            categoryNameCell.textContent = currentName;
+          }
+        });
+      });
+    });
+  });
+</script>
+
+          </script>
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>

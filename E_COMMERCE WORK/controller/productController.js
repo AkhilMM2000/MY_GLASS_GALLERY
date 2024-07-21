@@ -12,6 +12,7 @@ const load_product=async(req,res)=>{
     }
    
  }
+
  const add_product = async (req, res) => {
      try {
        const files = req.files;

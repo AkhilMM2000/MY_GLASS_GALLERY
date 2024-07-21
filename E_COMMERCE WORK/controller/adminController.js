@@ -63,9 +63,10 @@ res
 const addcategory = async (req, res) => {
     try {
         const { categoryName, categoryStatus } = req.body;
-        console.log(categoryStatus);
+      
         let status;
-        if (categoryStatus === "Listed") {
+     
+        if (categoryStatus ==="Listed") {
             status = true;
         } else {
             status = false;
@@ -90,7 +91,7 @@ const load_category=async(req,res)=>{
 
         const categories = await category.find();
         res.render('admin/category', { categories });
-console.log(categories);
+// console.log(categories);
     } catch (error) {
         console.log(error);
     }
