@@ -257,41 +257,42 @@
               <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Manage Categories</h4>
+                    <h4 class="card-title">Manage Brands</h4>
+                    <div class="add-brand-div">
+                        <a href="/admin/brand/add" class="add-brand-link">Add New Brand</a>
+                      </div>
                     <div class="table-responsive">
                       <table class="table table-hover">
                         <thead>
                           <tr>
                             <th>#</th>
-                            <th>Category Name</th>
+                            <th>Brand Name</th>
                             <th>Status</th>
                             <th>Action</th>
                             <th>Edit Name</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <% categories.forEach((category, index) => { %>
+                          <% brands.forEach((brand, index) => { %>
                             <tr>
                               <td><%= index + 1 %></td>
-                              <td class="category-name"><%= category.categoryName %></td>
+                              <td class="category-name"><%= brand.brandName %></td>
                               <td>
-                                <span class="badge <%= category.listed ? 'badge-success' : 'badge-danger' %>">
-                                  <%= category.listed ? 'Listed' : 'Unlisted' %>
+                                <span class="badge <%= brand.listed ? 'badge-success' : 'badge-danger' %>">
+                                  <%= brand.listed ? 'Listed' : 'Unlisted' %>
                                 </span>
                               </td>
                               <td>
-                                <% if(!category.listed) { %>
-                                  <a href="#" class="btn btn-danger btn-sm" onclick="confirmList('<%= category._id %>')" Blocked>Unlist</a>
+                                <% if(!brand.listed) { %>
+                                  <a href="#" class="btn btn-danger btn-sm" onclick="confirmList('<%= brand._id %>')" Blocked>Unlist</a>
                               <% } else { %>
-                                  <a href="#" class="btn btn-success btn-sm" onclick="confirmUnlist('<%= category._id %>')">List</a>
+                                  <a href="#" class="btn btn-success btn-sm" onclick="confirmUnlist('<%= brand._id %>')">List</a>
                               <% } %>
                                 
                               </td>
-
-                              <td>
+                               <td>
                               
-                      
-   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" onclick="changeName('<%= category._id %>')"  data-target="#myModal">Edit</button>
+         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" onclick="changeName('<%= brand._id %>')"  data-target="#myModal">Edit</button>
                                
                               </td>
                             </tr>
@@ -315,12 +316,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
+        <h4 class="modal-title">EDIT BRAND</h4>
       </div>
     
       <div class="mb-3">
-        <label for="categoryName" class="form-label">Change Category Name</label>
-        <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+        <label for="categoryName" class="form-label">Change Brand Name</label>
+        <input type="text" class="form-control" id="brandName1" name="brandName" required>
       </div>
       <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
       
@@ -333,18 +334,21 @@
   </div>
 </div>
 <script>
-let categoryid;
+
+let brandid;
 function changeName(id){
-  categoryid=id;
+  brandid=id;
 }
+
+
 
 document.getElementById('saveChangesBtn').addEventListener('click', function() {
   // Get the value of the input field
-  const categoryName = document.getElementById('categoryName').value;
+  const brandName = document.getElementById('brandName1').value;
 
   // Perform any actions you need with the category name
   // For example, sending it to the server
-  fetch(`/admin/category/editname?id=${categoryid}&catname=${categoryName}`, {
+  fetch(`/admin/brand/editname?id=${brandid}&brandname=${brandName}`, {
     method: 'GET'
 
   })
@@ -395,13 +399,15 @@ document.getElementById('saveChangesBtn').addEventListener('click', function() {
 });
 
 
-</script>
 
-          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-          <script>
-            ////this is for list the category-----------------------------------------------------------------------
-  function confirmList(categoryid) {
+
+
+
+
+
+
+    function confirmList(brandid) {
       Swal.fire({
         title: 'Are you sure?',
         text: 'This action cannot be undone.',
@@ -412,7 +418,7 @@ document.getElementById('saveChangesBtn').addEventListener('click', function() {
         reverseButtons: true
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch(`/admin/category/list?id=${categoryid}`, {
+          fetch(`/admin/brand/list?id=${brandid}`, {
             method: 'GET'
           })
             .then(response => response.json())
@@ -443,59 +449,58 @@ document.getElementById('saveChangesBtn').addEventListener('click', function() {
         }
       });
     }
-////this is for unlist the category------------------------------------------------------------------------
-function confirmUnlist(categoryId) {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'This action cannot be undone.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, unlist the category',
-    cancelButtonText: 'Cancel',
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed) {
-      fetch(`/admin/category/Unlist?id=${categoryId}`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message === 'category Ulisted successfully') {
-            Swal.fire(
-              'Unlisted!',
-              'Category unlisted successfully.',
-              'success'
-            ).then(() => {
-              window.location.reload();
+    function confirmUnlist(brandid) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Unlist the category',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/admin/brand/Unlist?id=${brandid}`, {
+            method: 'GET'
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.message === 'category Unlisted successfully') {
+                Swal.fire(
+                  'UnlISTED',
+                  'category listed succesfully.',
+                  'success'
+                ).then(() => {
+                  window.location.reload();
+                });
+              } else {
+                Swal.fire(
+                  'Error!',
+                  'There was a problem Unlist the category.',
+                  'error'
+                );
+              }
+            })
+            .catch(error => {
+              Swal.fire(
+                'Error!',
+                'There was a problem list the category',
+                'error'
+              );
             });
-          } else {
-            Swal.fire(
-              'Error!',
-              'There was a problem unlisting the category.',
-              'error'
-            );
-          }
-        })
-        .catch(error => {
-          Swal.fire(
-            'Error!',
-            'There was a problem unlisting the category.',
-            'error'
-          );
-        });
+        }
+      });
     }
-  });
-}
-// name change of the category----------------------------------------
-
-
 </script>
 
-        
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-       
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
 <%- include('../partials/footer') %>

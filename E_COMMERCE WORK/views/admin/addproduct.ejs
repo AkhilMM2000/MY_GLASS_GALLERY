@@ -259,43 +259,76 @@
                 <div class="card-body">
                   <h4 class="card-title">Upload Product</h4>
                   <form action="addproduct" method="post" enctype="multipart/form-data" id="productForm">
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label for="productName">Product Name</label>
                       <input type="text" class="form-control" id="productName" name="productName" placeholder="Enter product name" required>
-                    </div>
-                    <!-- <div class="form-group">
-                      <label for="brandName">Brand Name</label>
-                      <input type="text" class="form-control" id="brandName" name="brandName" placeholder="Enter brand name" required>
                     </div> -->
-                    <div class="form-group">
-                      <label for="brand">Brand</label>
-                      <select class="form-control" id="brand" name="brand" required>
-                        <option value="" disabled selected>Select brand</option>
-                        <option value="lenskart">Lenskart</option>
-                        <option value="rayban">Rayban</option>
-                      </select>
+                
+             
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <div class="col-md-8">
+                            <label for="productName">Product Name</label>
+                            <input type="text" class="form-control" id="productName" placeholder="Enter product name" name=" productName">
+                          </div>
+                          <div class="col-md-4">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" placeholder="Quantity" min="0">
+                          </div>
+                        </div>
+                        
+                        <div class="form-group">
+                          <label for="brand">Brand</label>
+                          <select class="form-control" id="brand" name="branded">
+                            <option value="" disabled selected>Select brand</option>
+                            <% brandata.forEach(brand => { %>
+                              <option value="<%= brand._id %>"><%= brand.brandName %></option>
+                          <% }); %>
+                            <!-- Add brand options here -->
+                          </select>
+                        </div>
+                        
+                        <div class="form-group">
+                          <label for="description">Description</label>
+                          <textarea class="form-control" id="description" rows="4" name="description" placeholder="Enter product description"></textarea>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="price">Price</label>
+                          <input type="number" class="form-control" id="price" name="price" placeholder="Enter price">
+                        </div>
+                        
+                        <div class="form-group">
+                          <label for="discountPrice">Discount Price</label>
+                          <input type="number" class="form-control" id="discountPrice" name=" discountPrice" placeholder="Enter discount price" >
+                        </div>
+                        
+                        <div class="form-group">
+                          <label for="gender">Gender</label>
+                          <select class="form-control" id="gender" name="gender">
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="men">Men</option>
+                            <option value="women">Women</option>
+                            <option value="kids">Kids</option>
+                          </select>
+                        </div>
+                        
+                        <div class="form-group">
+                          <label for="category">Category</label>
+                          <select class="form-control" id="category" name="category">
+                            <option value="" disabled selected>Select category</option>
+                            <% categorydata.forEach(category => { %>
+                              <option value="<%= category._id %>"><%= category.categoryName %></option>
+                          <% }); %>
+                        
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                    <div class="form-group">
-                      <label for="description">Description</label>
-                      <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
-                    </div>
-                    <div class="form-group">
-                      <label for="category">Gender</label>
-                      <select class="form-control" id="category" name="category" required>
-                        <option value="" disabled selected>Select category</option>
-                        <option value="men">Men</option>
-                        <option value="women">Women</option>
-                        <option value="kids">Kids</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="subcategory">category</label>
-                      <select class="form-control" id="subcategory" name="subcategory" required>
-                        <option value="" disabled selected>Select subcategory</option>
-                        <option value="sunglasses">Sunglasses</option>
-                        <option value="eyeglasses">Eyeglasses</option>
-                      </select>
-                    </div>
+                    <!-- image below upload -->
                     <div class="form-group">
                       <label>Product Images</label>
                       <div class="row">
@@ -308,6 +341,7 @@
                               </div>
                             </label>
                             <input type="file" class="image-upload-input" id="image1" name="productimage" required>
+                            <img id="preview1" src="#" alt="Preview" style="display: none; max-width: 100%;">
                           </div>
                         </div>
                         <div class="col-md-4">
@@ -319,6 +353,7 @@
                               </div>
                             </label>
                             <input type="file" class="image-upload-input" id="image2" name="productimage" required>
+                            <img id="preview2" src="#" alt="Preview" style="display: none; max-width: 100%;">
                           </div>
                         </div>
                         <div class="col-md-4">
@@ -330,6 +365,7 @@
                               </div>
                             </label>
                             <input type="file" class="image-upload-input" id="image3" name="productimage" required>
+                            <img id="preview3" src="#" alt="Preview" style="display: none; max-width: 100%;">
                           </div>
                         </div>
                       </div>
@@ -341,5 +377,181 @@
             </div>
           </div>
         </div>
-       
+         <!-- Add a modal for the cropper -->
+      <div class="modal fade" id="cropperModal" tabindex="-1" role="dialog" aria-labelledby="cropperModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div>
+                <img id="cropperImage" src="" alt="Image to crop" style="max-width: 100%;">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="cropButton">Crop</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+
+//give sweetalert while uploading >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+document.getElementById('productForm').addEventListener('submit', async function(event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  const form = event.target;
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch('/admin/addproduct', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Show a success message using SweetAlert and reload the page on confirmation
+      Swal.fire({
+        title: 'Success!',
+        text: data.message,
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Reload the page
+          window.location.reload();
+        }
+      });
+    } else {
+      // Show an error message using SweetAlert
+      Swal.fire({
+        title: 'Error!',
+        text: data.message,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  } catch (error) {
+    // Show an error message using SweetAlert
+    Swal.fire({
+      title: 'Error!',
+      text: `An error occurred: ${error.message}`,
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
+});
+
+/////////////////////////////////////////////////////////////////////////////End here
+
+
+
+
+
+ document.addEventListener('DOMContentLoaded', function() {
+  let cropper;
+  let currentImageInput;
+
+  function handleImageUpload(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    const placeholder = input.previousElementSibling.querySelector('.image-placeholder');
+
+    function showCropper(file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        currentImageInput = input;
+        const cropperImage = document.getElementById('cropperImage');
+        cropperImage.src = event.target.result;
+        $('#cropperModal').modal('show');
+        
+        if (cropper) {
+          cropper.destroy();
+        }
+        
+        cropper = new Cropper(cropperImage, {
+          aspectRatio: 1,
+          viewMode: 1,
+        });
+      }
+      reader.readAsDataURL(file);
+    }
+
+    input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        showCropper(file);
+      }
+    });
+
+    // Add click event to the preview image to allow changing the image
+    preview.addEventListener('click', function() {
+      input.click();
+    });
+  }
+
+  document.getElementById('cropButton').addEventListener('click', function() {
+    const croppedCanvas = cropper.getCroppedCanvas({
+      width: 700,
+      height: 700
+    });
+
+    croppedCanvas.toBlob(function(blob) {
+      const preview = document.getElementById(currentImageInput.id.replace('image', 'preview'));
+      const fileInput = currentImageInput;
+
+      const newFile = new File([blob], 'croppedImage.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(newFile);
+      fileInput.files = dataTransfer.files;
+
+      const url = URL.createObjectURL(blob);
+      preview.src = url;
+      preview.style.display = 'block';
+      fileInput.previousElementSibling.querySelector('.image-placeholder').style.display = 'none';
+
+      $('#cropperModal').modal('hide');
+    });
+  });
+
+  handleImageUpload('image1', 'preview1');
+  handleImageUpload('image2', 'preview2');
+  handleImageUpload('image3', 'preview3');
+
+  $('#cropperModal').on('shown.bs.modal', function () {
+    if (cropper) {
+      cropper.resize();
+    }
+  });
+});
+
+  </script>
+
+
+
+
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+     
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+
+    
 <%- include('../partials/footer') %>
+
+

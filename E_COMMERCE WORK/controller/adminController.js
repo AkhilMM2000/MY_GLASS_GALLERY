@@ -3,6 +3,7 @@ const product=require('../model/productModel')
 
 const category = require("../model/category")
 
+
 const admhome=async(req,res)=>{
     try {
           res.render('admin/dashboard')
@@ -98,6 +99,72 @@ const load_category=async(req,res)=>{
       
 }
 
+const category_listed = async (req, res) => {
+    try {
+        const categoryid = req.query.id;
+        const categorydata= await category.findByIdAndUpdate(categoryid, { listed:true});
+       
+        if (categorydata) {
+            res.status(200).json({ message: 'category listed successfully' });
+        } else {
+            res.status(200).json({ message: "Couldn't unblock user" });
+        }
+    } catch (error) {
+        res.send(error);
+    }
+};
+const category_Unlisted = async (req, res) => {
+    try {
+        const categoryid = req.query.id;
+        
+        const categorydata= await category.findByIdAndUpdate(categoryid, { listed:false});
+    
+       
+        if (categorydata) {
+            res.status(200).json({ message: 'category Ulisted successfully' });
+        } else {
+            res.status(200).json({ message: "Couldn't Unlist the category" });
+        }
+    } catch (error) {
+        res.send(error);
+    }
+}
+
+const edit_category=async(req,res)=>{
+    try {
+        const newName = req.query.catname;
+        const categoryid = req.query.id;
+    
+        // // Convert the new name to lowercase for consistent comparison
+        // const newNameLower = newName.toLowerCase();
+    
+        // Check if a category with the same name (case-insensitive) already exists
+        const existingCategory = await category.findOne({
+          categoryName: { $regex: new RegExp('^' + newName + '$', 'i') }
+        });
+    
+        if (existingCategory) {
+          // Handle the case where the category name already exists
+          return res.status(400).json({ message: 'Category name already exists.' });
+        }
+    
+        // Update the category name
+        const categorydata = await category.findByIdAndUpdate(
+          categoryid,
+          { categoryName: newName },
+         
+        );
+    
+        res.json({
+          message: 'Category name successfully updated.',
+        
+        });
+      } catch (error) {
+        console.error('Error updating category:', error);
+        res.status(500).json({ message: 'An error occurred while updating the category.' });
+      }
+}
+
 module.exports={
     admhome,
     userlist,
@@ -105,7 +172,10 @@ module.exports={
     unblockUser,
     load_category,
     get_addcategory,
-    addcategory
+    addcategory,
+    edit_category,
+    category_listed,
+    category_Unlisted
  }
 
 

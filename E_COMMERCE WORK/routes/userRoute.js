@@ -37,5 +37,9 @@ user_route.get('/auth/google/callback',passport.authenticate('google', { failure
 
 user_route.get('/auth/google',passport.authenticate('google', { scope: ['profile', 'email'] }));
 
+///...................>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+user_route.get('/product',userController.load_product)
+
+
 module.exports=user_route
 

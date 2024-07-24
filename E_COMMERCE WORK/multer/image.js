@@ -7,9 +7,9 @@ const storage = multer.diskStorage({
       cb(null,"public/productimage" ); // Ensure 'productimages' folder exists
     },
     filename: (req, file, cb) => {
-      console.log(file);
+      // console.log(file);
         const filename = Date.now() + path.extname(file.originalname);
-        console.log(filename);
+        // console.log(filename);
       cb(null, filename);
     }
   });

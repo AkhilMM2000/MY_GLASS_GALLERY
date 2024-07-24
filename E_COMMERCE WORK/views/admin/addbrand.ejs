@@ -251,251 +251,33 @@
             <a href="https://www.bootstrapdash.com/product/purple-bootstrap-4-admin-template/" target="_blank" class="btn btn-lg btn-block purchase-button">Upgrade To Pro</a>
           </div>
         </nav>
-        <!-- NAV END............................................................................... ----->
+        <!-- NAV END............................................................................... -->
         <div class="content-wrapper">
             <div class="row">
               <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Manage Categories</h4>
-                    <div class="table-responsive">
-                      <table class="table table-hover">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Category Name</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                            <th>Edit Name</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <% categories.forEach((category, index) => { %>
-                            <tr>
-                              <td><%= index + 1 %></td>
-                              <td class="category-name"><%= category.categoryName %></td>
-                              <td>
-                                <span class="badge <%= category.listed ? 'badge-success' : 'badge-danger' %>">
-                                  <%= category.listed ? 'Listed' : 'Unlisted' %>
-                                </span>
-                              </td>
-                              <td>
-                                <% if(!category.listed) { %>
-                                  <a href="#" class="btn btn-danger btn-sm" onclick="confirmList('<%= category._id %>')" Blocked>Unlist</a>
-                              <% } else { %>
-                                  <a href="#" class="btn btn-success btn-sm" onclick="confirmUnlist('<%= category._id %>')">List</a>
-                              <% } %>
-                                
-                              </td>
-
-                              <td>
-                              
-                      
-   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" onclick="changeName('<%= category._id %>')"  data-target="#myModal">Edit</button>
-                               
-                              </td>
-                            </tr>
-                          <% }); %>
-                        </tbody>
-                        </table>
-                                                                
-                    </div>
+                    <h4 class="card-title">Add Brand</h4>
+                    <!-- Form to add new category -->
+                    <form action="addbrand" method="post" id="categoryForm">
+                      <div class="form-group">
+                        <label for="categoryName">Brand Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="brandName" placeholder="Enter category name" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="categoryStatus">Status</label>
+                        <select class="form-control" id="categoryStatus" name="brandStatus" required>
+                          <option value="Listed">Listed</option>
+                          <option value="Unlisted">Unlisted</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add Brand</button>
+                    </form>
+                    
                   </div>
                 </div>
               </div>
             </div>
           </div>
-<!-- div for modal------------------------------------------------------------------------------------------------------------------------------------------------>
-
-
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
-      </div>
-    
-      <div class="mb-3">
-        <label for="categoryName" class="form-label">Change Category Name</label>
-        <input type="text" class="form-control" id="categoryName" name="categoryName" required>
-      </div>
-      <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
-      
-      
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-<script>
-let categoryid;
-function changeName(id){
-  categoryid=id;
-}
-
-document.getElementById('saveChangesBtn').addEventListener('click', function() {
-  // Get the value of the input field
-  const categoryName = document.getElementById('categoryName').value;
-
-  // Perform any actions you need with the category name
-  // For example, sending it to the server
-  fetch(`/admin/category/editname?id=${categoryid}&catname=${categoryName}`, {
-    method: 'GET'
-
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.message.includes('success')) {
-      // Show a success message using SweetAlert and reload the page on confirmation
-      Swal.fire({
-        title: 'Success!',
-        text: data.message,
-        icon: 'success',
-        confirmButtonText: 'OK'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Reload the page
-          window.location.reload();
-        }
-      });
-    } else {
-      // Show an error message using SweetAlert and reload the page on confirmation
-      Swal.fire({
-        title: 'Error!',
-        text: data.message,
-        icon: 'error',
-        confirmButtonText: 'OK'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Reload the page
-          window.location.reload();
-        }
-      });
-    }
-  })
-  .catch(error => {
-    // Show an error message using SweetAlert and reload the page on confirmation
-    Swal.fire({
-      title: 'Error!',
-      text: `An error occurred: ${error.message}`,
-      icon: 'error',
-      confirmButtonText: 'OK'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Reload the page
-        window.location.reload();
-      }
-    });
-  });
-});
-
-
-</script>
-
-          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-          <script>
-            ////this is for list the category-----------------------------------------------------------------------
-  function confirmList(categoryid) {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, list the category',
-        cancelButtonText: 'Cancel',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          fetch(`/admin/category/list?id=${categoryid}`, {
-            method: 'GET'
-          })
-            .then(response => response.json())
-            .then(data => {
-              if (data.message === 'category listed successfully') {
-                Swal.fire(
-                  'LISTED',
-                  'category listed succesfully.',
-                  'success'
-                ).then(() => {
-                  window.location.reload();
-                });
-              } else {
-                Swal.fire(
-                  'Error!',
-                  'There was a problem list the category.',
-                  'error'
-                );
-              }
-            })
-            .catch(error => {
-              Swal.fire(
-                'Error!',
-                'There was a problem list the category',
-                'error'
-              );
-            });
-        }
-      });
-    }
-////this is for unlist the category------------------------------------------------------------------------
-function confirmUnlist(categoryId) {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'This action cannot be undone.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, unlist the category',
-    cancelButtonText: 'Cancel',
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed) {
-      fetch(`/admin/category/Unlist?id=${categoryId}`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message === 'category Ulisted successfully') {
-            Swal.fire(
-              'Unlisted!',
-              'Category unlisted successfully.',
-              'success'
-            ).then(() => {
-              window.location.reload();
-            });
-          } else {
-            Swal.fire(
-              'Error!',
-              'There was a problem unlisting the category.',
-              'error'
-            );
-          }
-        })
-        .catch(error => {
-          Swal.fire(
-            'Error!',
-            'There was a problem unlisting the category.',
-            'error'
-          );
-        });
-    }
-  });
-}
-// name change of the category----------------------------------------
-
-
-</script>
-
-        
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
        
 <%- include('../partials/footer') %>

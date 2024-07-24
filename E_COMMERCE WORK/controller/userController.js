@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const bcrypt=require("bcrypt");
+const product=require('../model/productModel')
 // const session = require("express-session");
 
 // Function to render the registration page
@@ -268,7 +269,21 @@ const googleSuccess = async (req, res, next) => {
     }
 };
 
- 
+ ///product load for user
+ const load_product=async(req,res)=>{
+      try {
+    const product_data=await product.find() 
+    res.render("users/products",{product:product_data})
+   
+
+
+
+      } catch (error) {
+        console.log(error);
+      }
+   
+
+}
 
 module.exports={
         loginhome,
@@ -280,7 +295,8 @@ module.exports={
         verify_otp,
         verify_user,
         resendOTP,
-        googleSuccess
+        googleSuccess,
+        load_product
 
       }
 
