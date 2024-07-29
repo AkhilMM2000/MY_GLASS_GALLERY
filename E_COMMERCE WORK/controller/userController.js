@@ -92,13 +92,13 @@ async function sendOTPViaEmail(email, otp) {
           is_admin: 0
         }
         
-        const userData=req.session.user
-    //     const user=new User(userData)
-    //        await user.save()
-    //  console.log(userData)
+        // const userData=req.session.user
+        // const user=new User(userData)
+        //    await user.save()
+
   
     await sendOTPViaEmail(req.body.userEmail,otp)
-         res.redirect("/home")
+         res.redirect("/otp")
    
     } catch (error) {
         
@@ -137,7 +137,7 @@ const verify_otp=async(req,res)=>{
           user.isOTPVerified= true;
           await user.save();
           req.session.userData = null;
-          res.render('users/home');
+          res.redirect('/sign');
                   } else {
                       res.render('users/otp');
                   }
@@ -166,8 +166,10 @@ console.log(userData);
 
 const loginhome=async(req,res)=>{
     try {
-       
-    res.render('users/home')
+    
+     const userdata=await User.findById(req.session.userid)
+     console.log(userdata);
+    res.render('users/home',{userdata})
     
     } catch (error) {
         console.log(error.message)
@@ -176,7 +178,7 @@ const loginhome=async(req,res)=>{
 
     const loadsign=async(req,res)=>{
       try {
-         
+      
       res.render('users/sign')
       
       } catch (error) {
@@ -194,8 +196,10 @@ const verify_user=async(req,res)=>{
         const passwordMatch = await bcrypt.compare(password,userData.password);
         if(passwordMatch){
             if(userData.is_blocked === 0){
-                req.session.user_id = userData._id;
-                res.redirect('/home');
+                
+                req.session.userid=userData._id
+             
+                res.redirect('/home')
             }else{
                 res.render('users/sign',{message : "User blocked"});
             }
@@ -272,17 +276,26 @@ const googleSuccess = async (req, res, next) => {
  ///product load for user
  const load_product=async(req,res)=>{
       try {
-    const product_data=await product.find() 
-    res.render("users/products",{product:product_data})
-   
-
-
-
+    
+    const product_data=await product.find({ listed: true }) 
+    res.render("users/products",{products:product_data})
+  
       } catch (error) {
         console.log(error);
       }
    
 
+}
+
+const product_detail=async(req,res)=>{
+  try {
+    const product_id= await req.params.id
+    const product_data=await product.findById(product_id)
+ console.log(product_data);
+    res.render("users/productdetail",{pro:product_data})
+  } catch (error) {
+    console.log(error);
+}
 }
 
 module.exports={
@@ -296,8 +309,9 @@ module.exports={
         verify_user,
         resendOTP,
         googleSuccess,
-        load_product
+        load_product,
+        product_detail
 
-      }
+       }
 
     

@@ -10,7 +10,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-7 col-md-9">
-                        <div id="colorlib-logo"><a href="index.html">Footwear</a></div>
+                        <div id="colorlib-logo"><a href="index.html">EYEGAZE</a></div>
                     </div>
                     <div class="col-sm-5 col-md-3">
                     <form action="#" class="search-wrap">
@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-sm-12 text-left menu-1">
                         <ul>
-                            <li class="active"><a href="index.html">Home</a></li>
+                            <li class="active"><a href="/">Home</a></li>
                             <li class="has-dropdown">
                                 <a href="men.html">Men</a>
                                 <ul class="dropdown">
@@ -72,7 +72,7 @@
     <aside id="colorlib-hero">
         <div class="flexslider">
             <ul class="slides">
-               <li style="background-image: url(images/img_bg_1.jpg);">
+                <li style="background-image: url(images/bg_1_new.webp);">
                    <div class="overlay"></div>
                    <div class="container-fluid">
                        <div class="row">
@@ -90,7 +90,7 @@
                        </div>
                    </div>
                </li>
-               <li style="background-image: url(images/img_bg_2.jpg);">
+               <li style="background-image: url(images/my_bg.jpg);">
                    <div class="overlay"></div>
                    <div class="container-fluid">
                        <div class="row">
@@ -169,22 +169,29 @@
                 </div>
             </div>
             <div class="row row-pb-md">
-                <div class="w-100"></div>
+              
                 
                 
                
-              
-                <div class="col-lg-3 mb-4 text-center">
-                    <div class="product-entry border">
-                        <a href="#" class="prod-img">
-                            <img src="productimage/" class="img-fluid" alt="Free html5 bootstrap 4 template">
-                        </a>
-                        <div class="desc">
-                            <h2><a href="#">Women's Boots Shoes Maca</a></h2>
-                            <span class="price">RS139.00</span>
+                <% for (let i = 0; i < products.length; i++) { %>
+                    <div class="col-lg-3 mb-4 text-center product-div" data-product-id="<%= products[i]._id %>" >
+                        <div class="product-entry border">
+                            <a href="#" class="prod-img">
+                                <img src="productimage/<%= products[i].productimages[0] %>" class="img-fluid" alt="<%= products[i].productName %>">
+                            </a>
+                            <div class="desc">
+                                <h2><a href="#"><%= products[i].productName %></a></h2>
+                                <span class="price">RS<%= products[i].price %></span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <% if ((i + 1) % 4 === 0 && i !== products.length - 1) { %>
+                        <div class="w-100"></div>
+                    <% } %>
+                <% } %>
+                <!-- //// -->
+                  
+               
             </div>
             <div class="row">
                 <div class="col-md-12 text-center">
@@ -301,30 +308,59 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 <div class="gototop js-top">
     <a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
 </div>
-<!-- 	
-<!-- jQuery -->
-<script src="js/jquery.min.js"></script>
+<!-- load product details---------------------------------------------------------- -->
+
+
+<script>
+
+// Ensure the DOM is fully loaded before attaching the event listener
+document.addEventListener('DOMContentLoaded', (event) => {
+    const productDivs = document.querySelectorAll('.product-div');
+
+    productDivs.forEach(div => {
+        div.addEventListener('click', () => {
+            const productId = div.getAttribute('data-product-id');
+            window.location.href = `/productdetail/${productId}`;
+        });
+    });
+});
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/jquery.min.js"></script>
 <!-- popper -->
-<script src="js/popper.min.js"></script>
+<script src="/js/popper.min.js"></script>
 <!-- bootstrap 4.1 -->
-<script src="js/bootstrap.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
 <!-- jQuery easing -->
-<script src="js/jquery.easing.1.3.js"></script>
+<script src="/js/jquery.easing.1.3.js"></script>
 <!-- Waypoints -->
-<script src="js/jquery.waypoints.min.js"></script>
+<script src="/js/jquery.waypoints.min.js"></script>
 <!-- Flexslider -->
-<script src="js/jquery.flexslider-min.js"></script>
+<script src="/js/jquery.flexslider-min.js"></script>
 <!-- Owl carousel -->
-<script src="js/owl.carousel.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
 <!-- Magnific Popup -->
-<script src="js/jquery.magnific-popup.min.js"></script>
-<script src="js/magnific-popup-options.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
 <!-- Date Picker -->
-<script src="js/bootstrap-datepicker.js"></script>
+<script src="/js/bootstrap-datepicker.js"></script>
 <!-- Stellar Parallax -->
-<script src="js/jquery.stellar.min.js"></script>
+<script src="/js/jquery.stellar.min.js"></script>
 <!-- Main -->
-<script src="js/main.js"></script> -->
+<script src="/js/main.js"></script> 
 
 
 

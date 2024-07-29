@@ -15147,9 +15147,9 @@ pre {
 .form-control {
   border: 1px solid #e6ecf5;
   font-family: "pt-sans-regular", sans-serif;
-  font-size: 0.75rem;
+  /* font-size: 0.75rem; */
   padding: 0.56rem 0.75rem;
-  line-height: 14px; }
+  line-height: 5px; }
   .form-control.form-control-lg, .input-group-lg > .form-control,
   .input-group-lg > .input-group-btn > .form-control.btn {
     padding: 0.94rem 0.75rem; }

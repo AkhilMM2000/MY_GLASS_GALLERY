@@ -39,7 +39,7 @@ user_route.get('/auth/google',passport.authenticate('google', { scope: ['profile
 
 ///...................>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
 user_route.get('/product',userController.load_product)
-
+user_route.get('/productdetail/:id',userController.product_detail)
 
 module.exports=user_route
 
