@@ -1,38 +1,38 @@
-const User=require("../model/userModel")
+const User = require("../model/userModel")
 const nodemailer = require('nodemailer');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const bcrypt=require("bcrypt");
-const product=require('../model/productModel')
-// const session = require("express-session");
+const bcrypt = require("bcrypt");
+const product = require('../model/productModel')
+const Cart = require('../model/cartModel')
 
 // Function to render the registration page
 const get_register = async (req, res) => {
-    try {
-      res.render('users/register');
-    } catch (error) {
-      console.log(error);
-      res.status(500).send('An error occurred while rendering the registration page.');
-    }
-  };
-  
-  // Function to hash a password securely
-  const securePassword = async (password) => {
-    try {
-      const saltRounds = 10;
-      const passwordHash = await bcrypt.hash(password, saltRounds);
-      return passwordHash;
-    } catch (error) {
-      console.log(error.message);
-      throw new Error('An error occurred while hashing the password.');
-    }
-  };
-  // Set up the transporter using Gmail service and environment variables for authentication
+  try {
+    res.render('users/register');
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('An error occurred while rendering the registration page.');
+  }
+};
+
+// Function to hash a password securely
+const securePassword = async (password) => {
+  try {
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+    return passwordHash;
+  } catch (error) {
+    console.log(error.message);
+    throw new Error('An error occurred while hashing the password.');
+  }
+};
+// Set up the transporter using Gmail service and environment variables for authentication
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-      user: process.env.USER,
-      pass: process.env.PASS
+    user: process.env.USER,
+    pass: process.env.PASS
   }
 });
 
@@ -45,273 +45,345 @@ function generateOTP() {
 // Function to send the OTP via email
 async function sendOTPViaEmail(email, otp) {
   const mailOptions = {
-      from: process.env.USER, // The email address you're sending from
-      to: email,
-      subject: 'Your OTP for registration',
-      text: `Your OTP: ${otp}`
+    from: process.env.USER, // The email address you're sending from
+    to: email,
+    subject: 'Your OTP for registration',
+    text: `Your OTP: ${otp}`
   };
 
   return new Promise((resolve, reject) => {
-      transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-              console.error('Error occurred while sending email:', error);
-              reject(error);
-          } else {
-              console.log('Email sent:', info.response);
-              resolve('OTP sent successfully.');
-          }
-      });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error occurred while sending email:', error);
+        reject(error);
+      } else {
+        console.log('Email sent:', info.response);
+        resolve('OTP sent successfully.');
+      }
+    });
   });
-} 
-
-
-  const register_user=async(req,res)=>{
-    try {
-      const existingUser = await User.findOne({ userName: req.body.userName });
-     
-      if (existingUser) {
-          return res.render('users/register', { message: "Username already taken" });
-      }
-      const existingEmail = await User.findOne({ userEmail: req.body.userEmail });
-      if (existingEmail) {
-          return res.render('users/register', { message: "Email already in use" });
-      }
-
-      
-        const { userName, userEmail, mobileNo, password} = req.body;
-        const spassword = await securePassword(password);
-
-        const otp= generateOTP()
-        req.session.otp=otp 
-        console.log(req.session.otp);
-        req.session.user = {
-          userName,
-          userEmail,
-           mobileNo,
-          password: spassword,
-          is_admin: 0
-        }
-        
-        // const userData=req.session.user
-        // const user=new User(userData)
-        //    await user.save()
-
-  
-    await sendOTPViaEmail(req.body.userEmail,otp)
-         res.redirect("/otp")
-   
-    } catch (error) {
-        
-        console.log(error.message);
-    }
-    
-  }
-
-const get_otp=async(req,res)=>{
-    try {
-      
-         if(!req.session.user){
-          res.redirect("/register")
-        
-         }
-         res.render("users/otp")
-           } catch (error) {
-        console.log(error.message);
-    }
 }
 
-const verify_otp=async(req,res)=>{
-       try {
-        const otp1 = req.body.otp1;
-        const otp2 = req.body.otp2;
-        const otp3 = req.body.otp3;
-        const otp4= req.body.otp4;
-        const otp=otp1+otp2+otp3+otp4
-    
-       const sessionOTP = req.session.otp;
-      
-        if (sessionOTP === otp) {
-          req.session.otp = null;
-          const userData = req.session.user;
-          const user = new User(userData);
-          user.isOTPVerified= true;
-          await user.save();
-          req.session.userData = null;
-          res.redirect('/sign');
-                  } else {
-                      res.render('users/otp');
-                  }
-                    } catch (error) {
-                  console.log(error);
+
+const register_user = async (req, res) => {
+  try {
+    const existingUser = await User.findOne({ userName: req.body.userName });
+
+    if (existingUser) {
+      return res.render('users/register', { message: "Username already taken" });
+    }
+    const existingEmail = await User.findOne({ userEmail: req.body.userEmail });
+    if (existingEmail) {
+      return res.render('users/register', { message: "Email already in use" });
+    }
+
+
+    const { userName, userEmail, mobileNo, password } = req.body;
+    const spassword = await securePassword(password);
+
+    const otp = generateOTP()
+    req.session.otp = otp
+    console.log(req.session.otp);
+    req.session.user = {
+      userName,
+      userEmail,
+      mobileNo,
+      password: spassword,
+      is_admin: 0
+    }
+
+    // const userData=req.session.user
+    // const user=new User(userData)
+    //    await user.save()
+
+
+    await sendOTPViaEmail(req.body.userEmail, otp)
+    res.redirect("/otp")
+
+  } catch (error) {
+
+    console.log(error.message);
+  }
+
+}
+
+const get_otp = async (req, res) => {
+  try {
+
+    if (!req.session.user) {
+      res.redirect("/register")
+
+    }
+    res.render("users/otp")
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const verify_otp = async (req, res) => {
+  try {
+    const otp1 = req.body.otp1;
+    const otp2 = req.body.otp2;
+    const otp3 = req.body.otp3;
+    const otp4 = req.body.otp4;
+    const otp = otp1 + otp2 + otp3 + otp4
+
+    const sessionOTP = req.session.otp;
+
+    if (sessionOTP === otp) {
+      req.session.otp = null;
+      const userData = req.session.user;
+      const user = new User(userData);
+      user.isOTPVerified = true;
+      await user.save();
+      req.session.userData = null;
+      res.redirect('/sign');
+    } else {
+      res.render('users/otp');
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
 const resendOTP = async (req, res) => {
   try {
-      const userData = req.session.user;
-      if (!userData) {
-          return res.render('users/register', { message: "Session expired, please register again" });
-      }
-console.log(userData);
-      const newOTP = generateOTP();
-      req.session.otp = newOTP;
-      await sendOTPViaEmail(userData.userEmail, newOTP);
+    const userData = req.session.user;
+    if (!userData) {
+      return res.render('users/register', { message: "Session expired, please register again" });
+    }
 
-      res.redirect(`/otp`);
+    const newOTP = generateOTP();
+    req.session.otp = newOTP;
+    await sendOTPViaEmail(userData.userEmail, newOTP);
+
+    res.redirect(`/otp`);
   } catch (error) {
-      res.status(500).send(error.message);
+    res.status(500).send(error.message);
   }
 };
 
 
-const loginhome=async(req,res)=>{
-    try {
-    
-     const userdata=await User.findById(req.session.userid)
-     console.log(userdata);
-    res.render('users/home',{userdata})
-    
-    } catch (error) {
-        console.log(error.message)
-    }
-  }  
+const loginhome = async (req, res) => {
+  try {
 
-    const loadsign=async(req,res)=>{
-      try {
-      
-      res.render('users/sign')
-      
-      } catch (error) {
-          console.log(error.message)
-      }
+    const userdata = await User.findById(req.session.userid)
 
-    }
-    
-const verify_user=async(req,res)=>{
-  try{
-    const userEmail= req.body.userEmail;
+    res.render('users/home', { userdata })
+
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const loadsign = async (req, res) => {
+  try {
+
+    res.render('users/sign')
+
+  } catch (error) {
+    console.log(error.message)
+  }
+
+}
+
+const verify_user = async (req, res) => {
+  try {
+    const userEmail = req.body.userEmail;
     const password = req.body.password;
-    const userData = await User.findOne({userEmail});
-    if(userData){
-        const passwordMatch = await bcrypt.compare(password,userData.password);
-        if(passwordMatch){
-            if(userData.is_blocked === 0){
-                
-                req.session.userid=userData._id
-             
-                res.redirect('/home')
-            }else{
-                res.render('users/sign',{message : "User blocked"});
-            }
-        }else{
-            res.render('users/sign',{message : "Incorrect Password"});
+    const userData = await User.findOne({ userEmail });
+    if (userData) {
+      const passwordMatch = await bcrypt.compare(password, userData.password);
+      if (passwordMatch) {
+        if (userData.is_blocked === 0) {
+
+          req.session.userid = userData._id
+
+          res.redirect('/home')
+        } else {
+          res.render('users/sign', { message: "User blocked" });
         }
-    }else{
-        res.render('users/sign',{message : "User not found"});
-    }
-}catch(error){
-    res.send(error);
-}           
-    }
-
-    //middleware function for google authentication
-    passport.use(new GoogleStrategy({
-      clientID: process.env.clientID,
-      clientSecret: process.env.clientSecret,
-      callbackURL: process.env.callbackURL,
-      passReqToCallback: true
-  }, async (req, accessToken, refreshToken, profile, done) => {
-      try {
-          let user = await User.findOne({ userEmail: profile.emails[0].value });
-  
-          if (!user) {
-              user = new User({
-                  googleId: profile.id,
-                  userName: profile.displayName,
-                  userEmail: profile.emails[0].value,
-                  password:null,
-                  is_admin: 0
-               
-              });
-              await user.save();
-          }
-
-  
-
-          done(null, user);
-      } catch (err) {
-          console.error('Error in Google OAuth:', err);
-          done(err);
+      } else {
+        res.render('users/sign', { message: "Incorrect Password" });
       }
-  }));
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
+    } else {
+      res.render('users/sign', { message: "User not found" });
+    }
+  } catch (error) {
+    res.send(error);
+  }
+}
+
+//middleware function for google authentication
+passport.use(new GoogleStrategy({
+  clientID: process.env.clientID,
+  clientSecret: process.env.clientSecret,
+  callbackURL: process.env.callbackURL,
+  passReqToCallback: true
+}, async (req, accessToken, refreshToken, profile, done) => {
+  try {
+    let user = await User.findOne({ userEmail: profile.emails[0].value });
+
+    if (!user) {
+      user = new User({
+        googleId: profile.id,
+        userName: profile.displayName,
+        userEmail: profile.emails[0].value,
+        password: null,
+        is_admin: 0
+
+      });
+      await user.save();
+    }
+
+
+
+    done(null, user);
+  } catch (err) {
+    console.error('Error in Google OAuth:', err);
+    done(err);
+  }
+}));
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
-    try {
-        const user = await User.findById(id);
-        done(null, user);
-    } catch (err) {
-        done(err);
-    }
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
 
 
 const googleSuccess = async (req, res, next) => {
-    try {
-        if (!req.user) {
-            return res.redirect('/sign');
-        }
-        if (req.user.is_blocked) {
-            return res.render('sign',{ message : 'User blocked'});
-        }
-        req.session.user_id = req.user._id;
-        res.redirect('/home');
-    } catch (error) {
-        res.send(error);
+  try {
+    if (!req.user) {
+      return res.redirect('/sign');
     }
+    if (req.user.is_blocked) {
+      return res.render('sign', { message: 'User blocked' });
+    }
+    req.session.user_id = req.user._id;
+    res.redirect('/home');
+  } catch (error) {
+    res.send(error);
+  }
 };
 
- ///product load for user
- const load_product=async(req,res)=>{
-      try {
-    
-    const product_data=await product.find({ listed: true }) 
-    res.render("users/products",{products:product_data})
-  
-      } catch (error) {
-        console.log(error);
-      }
-   
-
-}
-
-const product_detail=async(req,res)=>{
+///product load for user
+const load_product = async (req, res) => {
   try {
-    const product_id= await req.params.id
-    const product_data=await product.findById(product_id)
- console.log(product_data);
-    res.render("users/productdetail",{pro:product_data})
+
+    const product_data = await product.find({ listed: true })
+    res.render("users/products", { products: product_data })
+
   } catch (error) {
     console.log(error);
+  }
+
+
 }
+
+const product_detail = async (req, res) => {
+  try {
+    const product_id = await req.params.id
+    const product_data = await product.findById(product_id)
+
+    res.render("users/productdetail", { pro: product_data })
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-module.exports={
-        loginhome,
-        get_register,
-        register_user,
-        get_otp,
-        loadsign,
-        verify_otp,
-        verify_otp,
-        verify_user,
-        resendOTP,
-        googleSuccess,
-        load_product,
-        product_detail
 
-       }
+// cart controller....................................................................................................
 
-    
+const load_cart = async (req, res) => {
+  const userId = req.session.userid;
+
+  try {
+    const cart = await Cart.findOne({ user: userId }).populate({
+    path: 'products.product'
+   
+  });
+
+  cart.products.forEach(item => {  
+    console.log(item);
+    console.log('Product Images:', item.product.productimages);
+    console.log(item.quantity);
+  });
+
+    res.render('users/cart', { cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
+
+}
+
+const add_cart = async (req, res) => {
+
+  try {
+    const userId = req.session.userid // Get the user ID from the session
+    const productId = req.params.productid
+const count=parseInt(req.params.count)
+
+    if (!userId) {
+      return res.redirect('/sign');
+    }
+
+    const productdata = await product.findById(productId);
+    if (!productdata) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    let cart = await Cart.findOne({ user: userId });
+
+
+    if (!cart) {
+      cart = new Cart({ user: userId, products: [] });
+    }
+
+    // Find the product in the cart
+    const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+
+    if (productIndex > -1) {
+
+      cart.products[productIndex].quantity += count;
+    } else {
+
+      cart.products.push({ product: productId, quantity: 1 });
+    }
+
+        await cart.save();
+
+    // Respond with success
+    res.status(200).json({ message: 'Product added to cart' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+
+}
+
+
+module.exports = {
+  loginhome,
+  get_register,
+  register_user,
+  get_otp,
+  loadsign,
+  verify_otp,
+  verify_otp,
+  verify_user,
+  resendOTP,
+  googleSuccess,
+  load_product,
+  product_detail,
+  load_cart,
+  add_cart
+}
+

@@ -3,6 +3,7 @@ const user_route=express();
 const session=require('express-session')
 const config = require('../config/config');
 const passport = require('passport');
+const islogin=require('../middleWares/islogin')
 user_route.use(session({
     secret: config.sessionSecret,
     resave: false,
@@ -37,9 +38,15 @@ user_route.get('/auth/google/callback',passport.authenticate('google', { failure
 
 user_route.get('/auth/google',passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-///...................>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+//route for products......................................................................................................................>
+
 user_route.get('/product',userController.load_product)
 user_route.get('/productdetail/:id',userController.product_detail)
+
+//route for cart......................................................................................................................>
+user_route.get('/cart',islogin,userController.load_cart)
+user_route.post('/cart/:productid/:count',islogin,userController.add_cart)
+
 
 module.exports=user_route
 

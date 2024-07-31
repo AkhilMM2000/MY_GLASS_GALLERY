@@ -1,0 +1,480 @@
+<%- include('../partials/header') %>
+	
+<div class="colorlib-loader"></div>
+
+<div id="page">
+    <nav class="colorlib-nav" role="navigation">
+        <div class="top-menu">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-md-9">
+                        <div id="colorlib-logo"><a href="index.html">Eyegaze</a></div>
+                    </div>
+                    <div class="col-sm-5 col-md-3">
+                    <form action="#" class="search-wrap">
+                       <div class="form-group">
+                          <input type="search" class="form-control search" placeholder="Search">
+                          <button class="btn btn-primary submit-search text-center" type="submit"><i class="icon-search"></i></button>
+                       </div>
+                    </form>
+                 </div>
+             </div>
+                <div class="row">
+                    <div class="col-sm-12 text-left menu-1">
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li class="has-dropdown active">
+                                <a href="men.html">Men</a>
+                                <ul class="dropdown">
+                                    <li><a href="product-detail.html">Product Detail</a></li>
+                                    <li><a href="cart.html">Shopping Cart</a></li>
+                                    <li><a href="checkout.html">Checkout</a></li>
+                                    <li><a href="order-complete.html">Order Complete</a></li>
+                                    <li><a href="add-to-wishlist.html">Wishlist</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="women.html">Women</a></li>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                            <li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sale">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 offset-sm-2 text-center">
+                        <div class="row">
+                            <div class="owl-carousel2">
+                                <div class="item">
+                                    <div class="col">
+                                        <h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="col">
+                                        <h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <p class="bread"><span><a href="index.html">Home</a></span> / <span>Shopping Cart</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="colorlib-product">
+        <div class="container">
+            <div class="row row-pb-lg">
+                <div class="col-md-10 offset-md-1">
+                    <!-- <div class="process-wrap">
+                        <div class="process text-center active">
+                            <p><span>01</span></p>
+                            <h3>Shopping Cart</h3>
+                        </div>
+                        <div class="process text-center">
+                            <p><span>02</span></p>
+                            <h3>Checkout</h3>
+                        </div>
+                        <div class="process text-center">
+                            <p><span>03</span></p>
+                            <h3>Order Complete</h3>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <!-- here -->
+            <div class="row row-pb-lg">
+                <div class="col-md-12">
+                    <div class="product-name d-flex">
+                      <div class="one-forth text-left px-4">
+                        <span>Product Details</span>
+                      </div>
+                      <div class="one-eight text-center price-container">
+                        <span>Price</span>
+                      </div>
+                      
+                      <div class="one-eight text-center">
+                        <span>Quantity</span>
+                      </div>
+                      <div class="one-eight text-center">
+                        <span>Total</span>
+                      </div>
+                      <div class="one-eight text-center px-4">
+                        <span>Remove</span>
+                      </div>
+                    </div>
+                               <!-- start here-->
+                           
+                                <% cart.products.forEach((item, index) => { %> 
+                    <div class="product-cart d-flex">
+                      <div class="one-forth">
+                        <div class="product-img">
+                            <img src="/productimage/<%=item.product.productimages[0]  %>" alt="Product Image">
+                        </div>
+                        <div class="display-tc">
+                          <h3><%=item.product.productName%></h3>
+                        </div>
+                      </div>
+                      <div class="one-eight text-center">
+                        <div class="display-tc">
+                          <span class="price">&#8377;<%=item.product.price%></span>
+                        </div>
+                      </div>
+                      <div class="one-eight text-center">
+                        <div class="display-tc d-flex align-items-center justify-content-center">
+                          <button class="btn btn-outline-secondary decrementBtn" type="button">-</button>
+                        
+
+                  <input type="text" class="form-control input-number text-center mx-2 quantity" value="<%= item.quantity %>" data-product-id="<%= item.product._id %>" data-index="<%= index %>" min="1" max="5" style="width: 60px;">
+                          <button class="btn btn-outline-secondary incrementBtn" type="button">+</button>
+                        </div>
+                      </div>
+                      <div class="one-eight text-center">
+                        
+                        <div class="display-tc">
+                            <span class="total-price" id="total-price-<%= index %>">&#8377;<%= item.product.price * item.quantity %></span>
+                        </div>
+                      </div>
+                      
+                      <div class="one-eight text-center">
+                        <div class="display-tc">
+                          <a href="#" class="closed"></a>
+                        </div>
+                      </div>
+                    </div>
+               <% })%>
+
+                    <!-- end here -->
+                     
+                  </div>
+                  
+            </div>
+            <div class="row row-pb-lg">
+                <div class="col-md-12">
+                    <div class="total-wrap">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <form action="#">
+                                    <div class="row form-group">
+                                        <div class="col-sm-9">
+                                            <input type="text" name="quantity" class="form-control input-number" placeholder="Your Coupon Number...">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="submit" value="Apply Coupon" class="btn btn-primary">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                    
+                            <div class="col-sm-4 text-center">
+                                <div class="total">
+                                    <div class="subtotal">
+                                        <span>Subtotal: </span>
+                                        <span id="cart-subtotal">₹0.00</span>
+                                    </div>
+                                    <div class="checkout-button">
+                                        <button class="btn btn-primary">Proceed to Checkout</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
+                    <h2>Related Products</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-1.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Women's Boots Shoes Maca</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-2.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Women's Minam Meaghan</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-3.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Men's Taja Commissioner</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-4.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Russ Men's Sneakers</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="colorlib-footer" role="contentinfo">
+        <div class="container">
+            <div class="row row-pb-md">
+                <div class="col footer-col colorlib-widget">
+                    <h4>About Footwear</h4>
+                    <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life</p>
+                    <p>
+                        <ul class="colorlib-social-icons">
+                            <li><a href="#"><i class="icon-twitter"></i></a></li>
+                            <li><a href="#"><i class="icon-facebook"></i></a></li>
+                            <li><a href="#"><i class="icon-linkedin"></i></a></li>
+                            <li><a href="#"><i class="icon-dribbble"></i></a></li>
+                        </ul>
+                    </p>
+                </div>
+                <div class="col footer-col colorlib-widget">
+                    <h4>Customer Care</h4>
+                    <p>
+                        <ul class="colorlib-footer-links">
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Returns/Exchange</a></li>
+                            <li><a href="#">Gift Voucher</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                            <li><a href="#">Special</a></li>
+                            <li><a href="#">Customer Services</a></li>
+                            <li><a href="#">Site maps</a></li>
+                        </ul>
+                    </p>
+                </div>
+                <div class="col footer-col colorlib-widget">
+                    <h4>Information</h4>
+                    <p>
+                        <ul class="colorlib-footer-links">
+                            <li><a href="#">About us</a></li>
+                            <li><a href="#">Delivery Information</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Support</a></li>
+                            <li><a href="#">Order Tracking</a></li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="col footer-col">
+                    <h4>News</h4>
+                    <ul class="colorlib-footer-links">
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Exhibitions</a></li>
+                    </ul>
+                </div>
+
+                <div class="col footer-col">
+                    <h4>Contact Information</h4>
+                    <ul class="colorlib-footer-links">
+                        <li>291 South 21th Street, <br> Suite 721 New York NY 10016</li>
+                        <li><a href="tel://1234567920">+ 1235 2355 98</a></li>
+                        <li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
+                        <li><a href="#">yoursite.com</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="copy">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <p>
+                        <span><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></span> 
+                        <span class="block">Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a> , <a href="http://pexels.com/" target="_blank">Pexels.com</a></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div class="gototop js-top">
+    <a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
+</div>
+<style>
+
+.price-container {
+text-align: center; /* Ensure the text is centered */
+position: relative; /* Enable absolute positioning for children */
+}
+
+.price-container span {
+position: relative; /* Enable relative positioning */
+left: -30px; /* Adjust this value to move the text left */
+}
+/* for img field */
+.product-img {
+            position: relative;
+            width: 100%; /* Adjust as needed */
+            height: 300px; /* Adjust as needed */
+            overflow: hidden;
+        }
+        .product-img img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+        }
+</style>
+ <script>
+//   document.addEventListener('DOMContentLoaded', (event) => {
+//     const incrementBtns = document.querySelectorAll('.incrementBtn');
+//     const decrementBtns = document.querySelectorAll('.decrementBtn');
+//     const quantityInputs = document.querySelectorAll('.quantity');
+
+//     incrementBtns.forEach((btn, index) => {
+//         btn.addEventListener('click', () => {
+//             let currentValue = parseInt(quantityInputs[index].value);
+           
+//             if (currentValue < 5) {
+//                 quantityInputs[index].value = currentValue + 1;
+//                 updateCartQuantity(quantityInputs[index].dataset.productId, quantityInputs[index].value);
+               
+//             }
+//         });
+//     });
+
+//     decrementBtns.forEach((btn, index) => {
+//         btn.addEventListener('click', () => {
+//             let currentValue = parseInt(quantityInputs[index].value);
+//             if (currentValue > 1) {
+//                 quantityInputs[index].value = currentValue - 1;
+             
+//                 updateCartQuantity(quantityInputs[index].dataset.productId, quantityInputs[index].value);
+//             }
+//         });
+//     });
+// });
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const incrementBtns = document.querySelectorAll('.incrementBtn');
+    const decrementBtns = document.querySelectorAll('.decrementBtn');
+    const quantityInputs = document.querySelectorAll('.quantity');
+
+    incrementBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            let currentValue = parseInt(quantityInputs[index].value);
+            if (currentValue < 5) { // Assuming max quantity is 5
+                quantityInputs[index].value = currentValue + 1;
+                const productId = quantityInputs[index].dataset.productId;
+                const newQuantity = quantityInputs[index].value;
+             
+                updateTotalPrice(index, newQuantity);
+                updateSubtotal();
+            }
+        });
+    });
+
+    decrementBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            let currentValue = parseInt(quantityInputs[index].value);
+            if (currentValue > 1) { // Assuming min quantity is 1
+                quantityInputs[index].value = currentValue - 1;
+                const productId = quantityInputs[index].dataset.productId;
+                const newQuantity = quantityInputs[index].value;
+               
+                updateTotalPrice(index, newQuantity);
+                updateSubtotal();
+            }
+        });
+    });
+
+    // Initial subtotal calculation
+    updateSubtotal();
+});
+
+function updateTotalPrice(index, quantity) {
+    const priceElement = document.querySelector(`#total-price-${index}`);
+    const pricePerItem = parseFloat(priceElement.closest('.product-cart').querySelector('.price').textContent.replace('₹', ''));
+    const newTotalPrice = pricePerItem * quantity;
+    priceElement.textContent = `₹${newTotalPrice.toFixed(2)}`;
+}
+
+function updateSubtotal() {
+    const totalPrices = document.querySelectorAll('.total-price');
+    let subtotal = 0;
+
+    totalPrices.forEach(priceElement => {
+        subtotal += parseFloat(priceElement.textContent.replace('₹', ''));
+    });
+
+    document.getElementById('cart-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+}
+///cart update function 
+
+
+
+
+
+  </script>
+
+
+<script src="/js/jquery.min.js"></script>
+   <!-- popper -->
+   <script src="/js/popper.min.js"></script>
+   <!-- bootstrap 4.1 -->
+   <script src="/js/bootstrap.min.js"></script>
+   <!-- jQuery easing -->
+   <script src="/js/jquery.easing.1.3.js"></script>
+	<!-- Waypoints -->
+	<script src="/js/jquery.waypoints.min.js"></script>
+	<!-- Flexslider -->
+	<script src="/js/jquery.flexslider-min.js"></script>
+	<!-- Owl carousel -->
+	<script src="/js/owl.carousel.min.js"></script>
+	<!-- Magnific Popup -->
+	<script src="/js/jquery.magnific-popup.min.js"></script>
+	<script src="/js/magnific-popup-options.js"></script>
+	<!-- Date Picker -->
+	
+	<!-- Main -->
+	<script src="/js/main.js"></script>
+
+<%- include('../partials/footer') %>
+
+
+
