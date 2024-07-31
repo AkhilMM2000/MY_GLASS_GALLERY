@@ -235,8 +235,7 @@ passport.use(new GoogleStrategy({
       });
       await user.save();
     }
-
-
+    req.session.userid=user._id
 
     done(null, user);
   } catch (err) {
@@ -264,9 +263,11 @@ const googleSuccess = async (req, res, next) => {
       return res.redirect('/sign');
     }
     if (req.user.is_blocked) {
-      return res.render('sign', { message: 'User blocked' });
+      return res.render('users/sign', { message: 'User blocked' });
     }
-    req.session.user_id = req.user._id;
+    console.log(req.user);
+    req.session.userid= req.user._id
+    
     res.redirect('/home');
   } catch (error) {
     res.send(error);
@@ -306,15 +307,15 @@ const load_cart = async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ user: userId }).populate({
-    path: 'products.product'
-   
-  });
+      path: 'products.product'
 
-  cart.products.forEach(item => {  
-    console.log(item);
-    console.log('Product Images:', item.product.productimages);
-    console.log(item.quantity);
-  });
+    });
+
+    // cart.products.forEach(item => {  
+    //   console.log(item);
+    //   console.log('Product Images:', item.product.productimages);
+    //   console.log(item.quantity);
+    // });
 
     res.render('users/cart', { cart });
   } catch (error) {
@@ -329,7 +330,7 @@ const add_cart = async (req, res) => {
   try {
     const userId = req.session.userid // Get the user ID from the session
     const productId = req.params.productid
-const count=parseInt(req.params.count)
+    const count = parseInt(req.params.count)
 
     if (!userId) {
       return res.redirect('/sign');
@@ -358,7 +359,7 @@ const count=parseInt(req.params.count)
       cart.products.push({ product: productId, quantity: 1 });
     }
 
-        await cart.save();
+    await cart.save();
 
     // Respond with success
     res.status(200).json({ message: 'Product added to cart' });
@@ -367,6 +368,71 @@ const count=parseInt(req.params.count)
     res.status(500).json({ message: 'Server Error' });
   }
 
+}
+
+//update cart when i increase the quantity userside
+const update_cart = async (req, res) => {
+
+  try {
+    const count = req.params.count;
+    const productId = req.params.productid;
+    const userId = req.session.userid;
+
+
+    const newQuantity = Math.min(Math.max(parseInt(count), 1), 5);
+
+
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (cart) {
+      const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+
+
+      if (productIndex > -1) {
+        cart.products[productIndex].quantity = newQuantity;
+      } else {
+
+        return res.status(404).json({ success: false, message: 'Product not found in cart' });
+      }
+
+      await cart.save();
+      res.json({ success: true, message: 'Cart updated successfully' });
+    } else {
+      res.status(404).json({ success: false, message: 'Cart not found' });
+    }
+  } catch (error) {
+    console.error('Error updating cart:', error);
+    res.status(500).json({ success: false, message: 'Failed to update cart', error: error.message });
+  }
+}
+//remove product from cart
+
+const cart_remove = async (req, res) => {
+  try {
+    const product = req.params.productid
+    const userId = req.session.userid;
+    const cart = await Cart.findOne({ user: userId });
+    
+    if (cart) {
+    
+      const productIndex = cart.products.findIndex(item => item.product.toString() === product);
+
+      if (productIndex > -1) {
+       
+        cart.products.splice(productIndex, 1);
+        await cart.save();
+        res.json({ success: true, message: 'Product removed from cart' });
+      } else {
+        res.status(404).json({ success: false, message: 'Product not found in cart' });
+      }
+    } else {
+      res.status(404).json({ success: false, message: 'Cart not found' });
+    }
+  } catch (error) {
+    console.error('Error removing product from cart:', error);
+    res.status(500).json({ success: false, message: 'Failed to remove product from cart', error: error.message });
+  }
 }
 
 
@@ -384,6 +450,8 @@ module.exports = {
   load_product,
   product_detail,
   load_cart,
-  add_cart
+  add_cart,
+  update_cart,
+  cart_remove
 }
 

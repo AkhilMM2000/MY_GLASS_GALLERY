@@ -6,6 +6,18 @@ function verifyLogin(req, res, next) {
       res.redirect('/sign');
     }
   }
+  function verifyLogout(req, res, next) {
+    if (req.session.userid) {
+      res.redirect('/home'); // Redirect to the home page or dashboard
+    } else {
+      next();
+    }
+  }
   
-  module.exports = verifyLogin;
+  module.exports ={
+    verifyLogin,
+    verifyLogout
+  }
+  
+
   

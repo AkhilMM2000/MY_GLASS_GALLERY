@@ -18,6 +18,7 @@ user_route.use(express.urlencoded({ extended: true }));
 
 
 const userController=require('../controller/userController')
+const orderController=require('../controller/orderController')
 user_route.get('/',userController.loginhome)
 user_route.get('/register',userController.get_register)
 user_route.post('/register',userController.register_user)
@@ -44,9 +45,14 @@ user_route.get('/product',userController.load_product)
 user_route.get('/productdetail/:id',userController.product_detail)
 
 //route for cart......................................................................................................................>
-user_route.get('/cart',islogin,userController.load_cart)
-user_route.post('/cart/:productid/:count',islogin,userController.add_cart)
+user_route.get('/cart',islogin.verifyLogin,userController.load_cart)
+user_route.post('/cart/:productid/:count',islogin.verifyLogin,userController.add_cart)
+user_route.post('/cart/update/:count/:productid',islogin.verifyLogin,userController.update_cart)
+user_route.delete('/cart/delete/:productid',islogin.verifyLogin,userController.cart_remove)
 
+
+//route for order
+user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)
 
 module.exports=user_route
 
