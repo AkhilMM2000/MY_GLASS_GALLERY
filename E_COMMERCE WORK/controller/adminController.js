@@ -1,36 +1,61 @@
-const User=require("../model/userModel")
-const product=require('../model/productModel')
-
+const User = require("../model/userModel")
+const product = require('../model/productModel')
+const bcrypt = require('bcrypt')
 const category = require("../model/category")
 
 
 
-const sign=async(req,res)=>{
-
-try {
-    
-res.render('admin/login')
-} catch (error) {
-    console.log(error);
-
-}
-}
-
-const admhome=async(req,res)=>{
+const sign = async (req, res) => {
+let data=''
     try {
-          res.render('admin/dashboard')
-res
+
+        res.render('admin/login',{data})
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+const verify_admin = async (req, res) => {
+    try {
+        const adminEmail = req.body.email;
+        const password = req.body.password;
+        const admin = await User.findOne({ userEmail: adminEmail });
+
+        if (admin) {
+            if (admin.is_admin === 1) {
+                const isMatch = await bcrypt.compare(password, admin.password);
+                if (isMatch) {
+                    res.render('admin/dashboard');
+                } else {
+                    res.render('admin/login', { data:"Incorrect password" });
+                }
+            } else {
+                res.render('admin/login', { data:"You are not the admin" });
+            }
+        } else {
+            res.render('admin/login', { data: "Admin not found" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.render('admin/login', { data: "An error occurred. Please try again." });
+    }
+
+}
+const admhome = async (req, res) => {
+    try {
+        res.render('admin/dashboard')
+        res
     } catch (error) {
         console.log(error);
     }
-      
+
 }
 
-const userlist=async(req,res)=>{
+const userlist = async (req, res) => {
     try {
-      
-        const users=await User.find()
-        res.render('admin/userlist',{users})
+
+        const users = await User.find()
+        res.render('admin/userlist', { users })
     } catch (error) {
         console.log(error);
     }
@@ -64,29 +89,29 @@ const unblockUser = async (req, res) => {
     }
 };
 
-const get_addcategory=async(req,res)=>{
+const get_addcategory = async (req, res) => {
     try {
-          res.render('admin/addcategory')
-res
+        res.render('admin/addcategory')
+        res
     } catch (error) {
         console.log(error);
     }
-      
+
 }
 const addcategory = async (req, res) => {
     try {
         const { categoryName, categoryStatus } = req.body;
-      
+
         let status;
-     
-        if (categoryStatus ==="Listed") {
+
+        if (categoryStatus === "Listed") {
             status = true;
         } else {
             status = false;
         }
 
         const data = new category({
-             categoryName, // assuming your schema has 'name' field for category name
+            categoryName, // assuming your schema has 'name' field for category name
             listed: status // assuming your schema has 'listed' field for status
         });
 
@@ -99,23 +124,23 @@ const addcategory = async (req, res) => {
 };
 
 
-const load_category=async(req,res)=>{
+const load_category = async (req, res) => {
     try {
 
         const categories = await category.find();
         res.render('admin/category', { categories });
-// console.log(categories);
+        // console.log(categories);
     } catch (error) {
         console.log(error);
     }
-      
+
 }
 
 const category_listed = async (req, res) => {
     try {
         const categoryid = req.query.id;
-        const categorydata= await category.findByIdAndUpdate(categoryid, { listed:true});
-       
+        const categorydata = await category.findByIdAndUpdate(categoryid, { listed: true });
+
         if (categorydata) {
             res.status(200).json({ message: 'category listed successfully' });
         } else {
@@ -128,10 +153,10 @@ const category_listed = async (req, res) => {
 const category_Unlisted = async (req, res) => {
     try {
         const categoryid = req.query.id;
-        
-        const categorydata= await category.findByIdAndUpdate(categoryid, { listed:false});
-    
-       
+
+        const categorydata = await category.findByIdAndUpdate(categoryid, { listed: false });
+
+
         if (categorydata) {
             res.status(200).json({ message: 'category Ulisted successfully' });
         } else {
@@ -142,43 +167,43 @@ const category_Unlisted = async (req, res) => {
     }
 }
 
-const edit_category=async(req,res)=>{
+const edit_category = async (req, res) => {
     try {
         const newName = req.query.catname;
         const categoryid = req.query.id;
+
     
-        // // Convert the new name to lowercase for consistent comparison
-        // const newNameLower = newName.toLowerCase();
-    
-        // Check if a category with the same name (case-insensitive) already exists
+
+       
         const existingCategory = await category.findOne({
-          categoryName: { $regex: new RegExp('^' + newName + '$', 'i') }
+            categoryName: { $regex: new RegExp('^' + newName + '$', 'i') }
         });
-    
+
         if (existingCategory) {
-          // Handle the case where the category name already exists
-          return res.status(400).json({ message: 'Category name already exists.' });
+            // Handle the case where the category name already exists
+            return res.status(400).json({ message: 'Category name already exists.' });
         }
-    
+
         // Update the category name
         const categorydata = await category.findByIdAndUpdate(
-          categoryid,
-          { categoryName: newName },
-         
+            categoryid,
+            { categoryName: newName },
+
         );
-    
+
         res.json({
-          message: 'Category name successfully updated.',
-        
+            message: 'Category name successfully updated.',
+
         });
-      } catch (error) {
+    } catch (error) {
         console.error('Error updating category:', error);
         res.status(500).json({ message: 'An error occurred while updating the category.' });
-      }
+    }
 }
 
-module.exports={
+module.exports = {
     sign,
+    verify_admin,
     admhome,
     userlist,
     blockUser,
@@ -189,6 +214,6 @@ module.exports={
     edit_category,
     category_listed,
     category_Unlisted
- }
+}
 
 

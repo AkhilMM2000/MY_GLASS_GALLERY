@@ -1,0 +1,195 @@
+<%- include('../partials/header') %>
+
+
+<div class="colorlib-loader"></div>
+
+    <div id="page">
+        <nav class="colorlib-nav" role="navigation">
+            <div class="top-menu">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-7 col-md-9">
+                            <div id="colorlib-logo"><a href="index.html">EYEGAZE</a></div>
+                        </div>
+                
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-left menu-1">
+                            <ul>
+                                <li><a href="index.html">Home</a></li>
+                                <li class="has-dropdown active">
+                                    <a href="men.html">Men</a>
+                                    <ul class="dropdown">
+                                        <li><a href="product-detail.html">Product Detail</a></li>
+                                        <li><a href="cart.html">Shopping Cart</a></li>
+                                        <li><a href="checkout.html">Checkout</a></li>
+                                        <li><a href="order-complete.html">Order Complete</a></li>
+                                        <li><a href="add-to-wishlist.html">Wishlist</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="women.html">Women</a></li>
+                                <li><a href="about.html">About</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                                <li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sale">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 offset-sm-2 text-center">
+                            <div class="row">
+                                <div class="owl-carousel2">
+                                    <div class="item">
+                                        <div class="col">
+                                            <h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="col">
+                                            <h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+<!-- nav end here -->
+<div class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p class="bread"><span><a href="'/home">Home</a></span> / <span>Purchase Complete</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="colorlib-product">
+    <div class="container">
+       
+        <div class="row">
+          
+    <!------------------------------------------------------------------------------ ejs content start form here------------------------------------------------------------------------------------------------------------------          -->
+                <!-- Order Details Section -->
+                <div class="order-details mt-5">
+                    <h2 class="text-center mb-5">Order Details</h2>
+                    <div class="row">
+                        <!-- Address Section -->
+                        <div class="col-md-6 mb-4">
+                            <div class="address-details p-4 border rounded shadow-sm bg-light">
+                                <h4 class="mb-3 text-primary"><i class="fas fa-shipping-fast mr-2"></i>Shipping Address</h4>
+                                <address>
+                                    <strong class="d-block mb-2"><%=addressdata.addressName%></strong>
+                                    <%=addressdata.addressHouse%> <%=addressdata.addressStreet%>, <%=addressdata.addressPost%><br>
+                                    <%=addressdata.addressCity%><br>
+                                    <%=addressdata.addressDistrict%>, <%=addressdata.addressState%> - <%=addressdata.addressPin%><br>
+                                    <i class="fas fa-phone-alt text-secondary mr-2"></i> <%=addressdata.addressMobile%><br>
+                                    <i class="fas fa-envelope text-secondary mr-2"></i> <%=addressdata.addressEmail%>
+                                </address>
+                            </div>
+                        </div>
+                
+                        <!-- Order Summary -->
+                        <div class="col-md-6 mb-4">
+                            <div class="order-summary p-4 border rounded shadow-sm bg-light">
+                                <h4 class="mb-3 text-primary"><i class="fas fa-file-invoice mr-2"></i>Order Summary</h4>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><span class="text-muted">Order ID:</span> <strong>#<%=order.orderId%></strong></li>
+                                    <li class="mb-2"><span class="text-muted">Order Date:</span> <strong><%=order.orderDate.toISOString().split('T')[0]%></strong></li>
+                                    <li class="mb-2"><span class="text-muted">Payment Method:</span> <strong><%=order.paymentMethod%></strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- Product Table -->
+                    <div class="product-details mt-5">
+                        <h4 class="mb-4 text-primary"><i class="fas fa-box-open mr-2"></i>Ordered Products</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  <%order.products.forEach(an =>{%>
+                                    <tr>
+                                        <td><img src="/productimage/<%=an.productId.productimages[0]%>" alt="Product Image" class="img-thumbnail" style="width: 60px; height: 60px;"></td>
+                                        <td><%=an.productId.productName%></td>
+                                        <td><%=an.quantity%></td>
+                                        <td>&#8377;<%=an.price%></td>
+                                        <td>&#8377;<%= an.quantity * an.price %></td>
+                                    </tr>
+                                <%})%>
+                                </tbody>
+                                <tfoot class="bg-light">
+                                    <tr>
+                                        <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+                                        <td><strong>&#8377;<%=order.totalAmount%></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-right"><strong>Shipping:</strong></td>
+                                        <td><strong>&#8377;0</strong></td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td colspan="4" class="text-right"><strong>Total Amount:</strong></td>
+                                        <td><strong>&#8377;<%=order.totalAmount%></strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+<!--------------- ejs content end here -----------------------------------------------------content end here------------------------------------------------------------------------------------------------>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .order-details {
+        max-width: 1000px;
+        margin: auto;
+    }
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    .text-primary {
+        color: #007bff !important;
+    }
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+</style>
+  <script src="/js/jquery.min.js"></script>
+<!-- popper -->
+<script src="/js/popper.min.js"></script>
+<!-- bootstrap 4.1 -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- jQuery easing -->
+<script src="/js/jquery.easing.1.3.js"></script>
+<!-- Waypoints -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- Flexslider -->
+<script src="/js/jquery.flexslider-min.js"></script>
+<!-- Owl carousel -->
+<script src="/js/owl.carousel.min.js"></script>
+<!-- Magnific Popup -->
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/magnific-popup-options.js"></script>
+<!-- Date Picker -->
+
+<!-- Main -->
+<script src="/js/main.js"></script>
+<%- include('../partials/footer') %>

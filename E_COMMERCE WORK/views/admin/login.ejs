@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spectacles Shop Login</title>
+    <title>EYEGAZE </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,14 +57,18 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>EYEGAZE Shop Login</h2>
-        <form>
-            <input type="email" placeholder="Email" required name="email">
-            <input type="password" placeholder="Password" required name="password">
-            <button type="submit" class="sign-in" >Sign In</button>
+        <h2>EYEGAZE</h2>
+        <% if(data) {%>
+            <p style="color: red;"><%=data%></p>
+        <% } %>
+       
+    
+        <form action="login" method="post">
+            <input type="email" placeholder="Email" name="email" required>
+            <input type="password" placeholder="Password" name="password" required>
+            <button type="submit" class="sign-in">Sign In</button>
         </form>
-        <button class="google-login">Login with Google</button>
-        
     </div>
+    
 </body>
 </html>

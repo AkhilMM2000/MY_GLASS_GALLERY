@@ -19,6 +19,7 @@ user_route.use(express.urlencoded({ extended: true }));
 
 const userController=require('../controller/userController')
 const orderController=require('../controller/orderController')
+const accountController=require('../controller/accountController')
 user_route.get('/',userController.loginhome)
 user_route.get('/register',userController.get_register)
 user_route.post('/register',userController.register_user)
@@ -53,6 +54,21 @@ user_route.delete('/cart/delete/:productid',islogin.verifyLogin,userController.c
 
 //route for order
 user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)
+user_route.post('/place-order',islogin.verifyLogin,orderController.place_order)
+user_route.get('/placeorder',islogin.verifyLogin,orderController.order_success)
+
+// account controller below routes------------------------------------------------------------------------------------------------------->
+
+//route for account adress
+user_route.get('/address',islogin.verifyLogin,accountController.load_address)
+user_route.post('/address',islogin.verifyLogin,accountController.add_address)
+user_route.delete('/address/delete/:addressId',islogin.verifyLogin,accountController.delete_address)
+user_route.patch('/address/edit/:id',islogin.verifyLogin,accountController.edit_address)
+
+// route for  orders
+user_route.get("/orders",islogin.verifyLogin,accountController.load_orders)
+user_route.get('/detailorder',islogin.verifyLogin,accountController.order_details)
 
 module.exports=user_route
 
+ 

@@ -6,12 +6,11 @@ const config = require('../config/config');
 const multer=require('../multer/image')
 const adminController=require('../controller/adminController')
 const productController=require('../controller/productController')
+const orderController=require('../controller/orderController')
 admin_route.use(session({
     secret: config.sessionSecretos,
     resave: false,
     saveUninitialized: false,
-   
-  
 }));
 
 
@@ -22,6 +21,8 @@ admin_route.use(express.static(path.join(__dirname,'../public/admin')))
 
 //admin login
 admin_route.get('/login',adminController.sign)
+admin_route.post('/login',adminController.verify_admin)
+
 
 //-----------------------------------------------------------------------------------------------------------------====>
 admin_route.get('/dashboard',adminController.admhome)
@@ -53,11 +54,13 @@ admin_route.get('/products/Unlist',productController.Unlist_item)
 admin_route.get('/editproduct',productController.load_editproduct)
 admin_route.patch('/editproduct',multer.array("productimage",3),productController.update_product)
 
+//order routes for admin
+admin_route.get("/orders",orderController.admin_orders)
+admin_route.get("/detailorder",orderController.view_order)
+
+
 admin_route.get('*',function(req,res){
     res.redirect('/admin')
   })
 
-  
-  
-  
   module.exports=admin_route

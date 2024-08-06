@@ -1,0 +1,845 @@
+<%- include('../partials/header') %>
+    <!-- css style -->
+    <style>
+        .address-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .address-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .address-box p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .address-actions a {
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+        }
+
+        .address-actions a:hover {
+            opacity: 0.7;
+        }
+
+        .address-actions .text-primary {
+            color: #007bff;
+        }
+
+        .address-actions .text-danger {
+            color: #dc3545;
+        }
+
+        .breadcrumbs {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            /* Padding for the breadcrumbs */
+            position: relative;
+        }
+
+        .breadcrumbs .bread {
+            text-align: left;
+            /* Left-align the breadcrumb navigation */
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        .breadcrumbs h1 {
+            font-size: 48px;
+            /* Size for the heading */
+            font-weight: bold;
+            margin: 20px 0;
+            /* Margin above and below the heading */
+            text-align: center;
+            /* Center the heading */
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+            /* Adds space between each list item */
+        }
+
+        .sidebar ul li a {
+            display: block;
+            /* Ensures that padding is applied correctly */
+            padding: 10px 0;
+            /* Adds padding above and below each link */
+        }
+
+        .account-section {
+            margin-top: 20px;
+        }
+
+        .sidebar {
+            border-right: 1px solid #ddd;
+            padding-right: 15px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .sidebar ul {
+            font-size: 18px;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+            /* Adds space between each list item */
+        }
+
+        .sidebar a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            color: #007bff;
+        }
+
+        .address-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .address-actions a {
+            margin-right: 10px;
+        }
+
+        .address-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            margin-top: 10px;
+        }
+    </style>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <div class="colorlib-loader"></div>
+    <div id="page">
+        <nav class="colorlib-nav" role="navigation">
+            <div class="top-menu">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-7 col-md-9">
+                            <div id="colorlib-logo"><a href="index.html">Footwear</a></div>
+                        </div>
+                        <div class="col-sm-5 col-md-3">
+                            <form action="#" class="search-wrap">
+                                <div class="form-group">
+                                    <input type="search" class="form-control search" placeholder="Search">
+                                    <button class="btn btn-primary submit-search text-center" type="submit"><i
+                                            class="icon-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-left menu-1">
+                            <ul>
+                                <li><a href="index.html">Home</a></li>
+                                <li class="has-dropdown">
+                                    <a href="men.html">Men</a>
+                                    <ul class="dropdown">
+                                        <li><a href="product-detail.html">Product Detail</a></li>
+                                        <li><a href="cart.html">Shopping Cart</a></li>
+                                        <li><a href="checkout.html">Checkout</a></li>
+                                        <li><a href="order-complete.html">Order Complete</a></li>
+                                        <li><a href="add-to-wishlist.html">Wishlist</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="women.html">Women</a></li>
+                                <li><a href="about.html">About</a></li>
+                                <li class="active"><a href="contact.html">Contact</a></li>
+                                <li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sale">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 offset-sm-2 text-center">
+                            <div class="row">
+                                <div class="owl-carousel2">
+                                    <div class="item">
+                                        <div class="col">
+                                            <h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="col">
+                                            <h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- START FROM HERE ------------------------------------------------------------------------------------------------>
+
+        <div class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <p class="bread"><span><a href="index.html">Home</a></span> / <span>Contact</span></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h1>MY ACCOUNT</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container account-section">
+            <div class="row">
+                <div class="col-md-3 sidebar">
+                    <ul class="list-unstyled">
+                        <li><a href="#">Account Details</a></li>
+                        <li><a href="#">Orders</a></li>
+                        <li><a href="#">Downloads</a></li>
+                        <li><a href="#">Addresses</a></li>
+                        <li><a href="#">Sign Out</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-9">
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
+                            data-target="#addressModal">
+                            Add New Address
+                        </button>
+                    </div>
+                    <p>The following addresses will be used on the checkout page by default:</p>
+<!-- address start here --------------------------------------------------------------------------------------------------------start----------------------->
+                    <% data.forEach(function(address) { %>
+                        <div class="address-box">
+                            <div class="address-header">
+                                <%= address.addressName %>
+                            </div>
+                            <p>
+                                <%= address.addressHouse %>
+                                    <%= address.addressStreet %><br>
+                                        <%= address.addressPost %>, <%= address.addressCity %><br>
+                                                <%= address.addressDistrict %>, <%= address.addressState %><br>
+                                                       <span>pin:</span> <%= address.addressPin %><br>
+                                                            <%= address.addressEmail %>,
+                                                            mobile:<%=address.addressMobile%>
+                            </p>
+                            <div class="address-actions">
+                                <a href="#" class="text-primary" data-toggle="modal" onclick="editAddress('<%= JSON.stringify(address) %>'); editdata('<%= address._id %>');" data-target="#myModal">EDIT</a>
+
+
+                               
+
+                               <a href="#" class="text-danger" onclick="remove('<%=address._id%>')">Delete</a>
+                            </div>
+                        </div>
+                        <% }); %>
+
+<!-- address end here ------------------------------------------------------------------------------------------------------------------end--------------------------------->
+
+
+                </div>
+            </div>
+        </div>
+
+        <footer id="colorlib-footer" role="contentinfo">
+            <div class="container">
+                <div class="row row-pb-md">
+                    <div class="col footer-col colorlib-widget">
+                        <h4>About Footwear</h4>
+                        <p>Even the all-powerful Pointing has no control about the blind texts it is an almost
+                            unorthographic life</p>
+                        <p>
+                        <ul class="colorlib-social-icons">
+                            <li><a href="#"><i class="icon-twitter"></i></a></li>
+                            <li><a href="#"><i class="icon-facebook"></i></a></li>
+                            <li><a href="#"><i class="icon-linkedin"></i></a></li>
+                            <li><a href="#"><i class="icon-dribbble"></i></a></li>
+                        </ul>
+                        </p>
+                    </div>
+                    <div class="col footer-col colorlib-widget">
+                        <h4>Customer Care</h4>
+                        <p>
+                        <ul class="colorlib-footer-links">
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Returns/Exchange</a></li>
+                            <li><a href="#">Gift Voucher</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                            <li><a href="#">Special</a></li>
+                            <li><a href="#">Customer Services</a></li>
+                            <li><a href="#">Site maps</a></li>
+                        </ul>
+                        </p>
+                    </div>
+                    <div class="col footer-col colorlib-widget">
+                        <h4>Information</h4>
+                        <p>
+                        <ul class="colorlib-footer-links">
+                            <li><a href="#">About us</a></li>
+                            <li><a href="#">Delivery Information</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Support</a></li>
+                            <li><a href="#">Order Tracking</a></li>
+                        </ul>
+                        </p>
+                    </div>
+
+                    <div class="col footer-col">
+                        <h4>News</h4>
+                        <ul class="colorlib-footer-links">
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Exhibitions</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col footer-col">
+                        <h4>Contact Information</h4>
+                        <ul class="colorlib-footer-links">
+                            <li>291 South 21th Street, <br> Suite 721 New York NY 10016</li>
+                            <li><a href="tel://1234567920">+ 1235 2355 98</a></li>
+                            <li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
+                            <li><a href="#">yoursite.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copy">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <p>
+                            <span><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This
+                                template is made with <i class="icon-heart" aria-hidden="true"></i> by <a
+                                    href="https://colorlib.com" target="_blank">Colorlib</a>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            </span>
+                            <span class="block">Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a>
+                                , <a href="http://pexels.com/" target="_blank">Pexels.com</a></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div class="gototop js-top">
+        <a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
+    </div>
+    <!-- add adress modal---------------------------------------------------------------------------------------------------- -->
+
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressModalLabel">Add New Address</h5>
+                    <button id="clickbtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- form start from here ------------------------------------------------------------------------------------------- -->
+                    <form id="addressForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addressName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="addressName" name="addressName"
+                                    onkeyup="validateName()" required>
+                                <div id="name-error"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addressEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="addressEmail" name="addressEmail"
+                                    onkeyup=" validateEmail()" required>
+                                <div id="email-error"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addressMobile" class="form-label">Mobile</label>
+                                <input type="text" class="form-control" id="addressMobile" name="addressMobile"
+                                    onkeyup=" validateMobile()" required>
+                                <div id="mobile-error"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addressHouse" class="form-label">House/Apartment No.</label>
+                                <input type="text" class="form-control" id="addressHouse" name="addressHouse" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addressStreet" class="form-label">Street</label>
+                                <input type="text" class="form-control" id="addressStreet" name="addressStreet"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addressPost" class="form-label">Post</label>
+                                <input type="text" class="form-control" id="addressPost" name="addressPost" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addressCity" class="form-label">City</label>
+                                <input type="text" class="form-control" id="addressCity" name="addressCity" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addressDistrict" class="form-label">District</label>
+                                <input type="text" class="form-control" id="addressDistrict" name="addressDistrict"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addressState" class="form-label">State</label>
+                                <input type="text" class="form-control" id="addressState" name="addressState" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addressPin" class="form-label">Pin Code </label>
+                                <input type="number" class="form-control" id="addressPin" name="addressPin"  required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Address</button>
+                    </form>
+                    <!---------------------------- form end here --------------------------------------------------------------------------------------------------->
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- edit modal-------------------------------------------------------------------------------------------------------------------------------start here edit -->
+
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Address</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <form id="editAddressForm">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="addressName">Name</label>
+                <input type="text" class="form-control" id="editName" value="" name="addressName" required>
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="addressEmail">Email</label>
+                <input type="email" class="form-control" id="editEmail" name="addressEmail" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="addressMobile">Mobile</label>
+                <input type="tel" class="form-control" id="editMobile" name="addressMobile" required>
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="addressHouse">House</label>
+                <input type="text" class="form-control" id="editHouse" name="addressHouse" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="addressStreet">Street</label>
+                <input type="text" class="form-control" id="editStreet" name="addressStreet" required>
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="addressPost">Post</label>
+                <input type="text" class="form-control" id="editPost" name="addressPost" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="addressCity">City</label>
+                <input type="text" class="form-control" id="editCity" name="addressCity" required>
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="addressDistrict">District</label>
+                <input type="text" class="form-control" id="editDistrict" name="addressDistrict" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="addressState">State</label>
+                <input type="text" class="form-control" id="editState" name="addressState" required>
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="addressPin">PIN</label>
+                <input type="text" class="form-control" id="editPin" name="addressPin" required>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+<!-- edit modal-----------------------------------------------------------------------------------------------------------------------------end here edit -->
+    <script>
+        document.getElementById('addressForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            if (!validateName() || !validateMobile() || !validateEmail()) {
+                return; // Stop the function execution if validation fails
+            }
+
+            var formData = new FormData(this);
+            const addressModal = new bootstrap.Modal(document.getElementById('addressModal'));
+
+            // Convert FormData to a plain object
+            var formObject = {};
+            formData.forEach(function (value, key) {
+                formObject[key] = value;
+            });
+
+            console.log('Sending data:', formObject);
+            console.log("hai");
+            // Send the data using Fetch API
+            fetch('/address', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formObject) // Convert the plain object to JSON
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("successfully added");
+                        // Close the modal
+                        $('#addressModal').modal('hide');
+
+                        // Show success message and reload the page on confirmation
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Address saved successfully!',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload(); // Reload the page
+                            }
+                        });
+                    } else {
+                        // Optionally, handle the error case, like showing an error message
+                        alert('Error saving address. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An error occurred while saving the address. Please try again.',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload(); // Reload the page
+                        }
+                    });
+                    $('#addressModal').modal('hide');
+                });
+
+        });
+
+
+        //form validation below for name
+        function validateName() {
+            var name = document.getElementById('addressName').value;
+            var nameError = document.getElementById('name-error');
+
+            if (name.trim().length === 0) {
+                nameError.innerHTML = 'Name is required';
+                nameError.style.color = 'red';
+                return false;
+            }
+
+
+            if (!name.match(/^[A-Za-z\s]+$/)) {
+                nameError.innerHTML = 'Name must contain only letters and spaces';
+                nameError.style.color = 'red';
+                return false;
+            }
+
+            nameError.innerHTML = 'Valid';
+            nameError.style.color = 'green';
+            return true;
+        }
+        //form validation below for EMAIL
+
+        function validateEmail() {
+            var email = document.getElementById('addressEmail').value;
+            var emailError = document.getElementById('email-error');
+
+            if (email.trim().length === 0) {
+                emailError.innerHTML = 'Email is required';
+                emailError.style.color = 'red';
+                return false;
+            }
+
+            // Email validation using a simple regex
+            if (!email.match(/^\S+@\S+\.com$/)) {
+                emailError.innerHTML = 'Invalid email format';
+                emailError.style.color = 'red';
+                return false;
+            }
+
+            emailError.innerHTML = 'Valid';
+            emailError.style.color = 'green';
+            return true;
+        }
+
+        // ------------------------------------------------------------------form validation for mobileno------------------------------------------------------------------------------------------->
+
+        function validateMobile() {
+
+            let mobile = document.getElementById('addressMobile').value;
+            let mobileError = document.getElementById('mobile-error');
+
+            if (mobile.trim().length === 0) {
+                mobileError.innerHTML = 'mobile number is required';
+                mobileError.style.color = 'red';
+                return false;
+            }
+
+
+            if (mobile.length < 10) {
+                mobileError.innerHTML = 'its not valid'
+                mobileError.style.color = 'red';
+                return false;
+            }
+
+            if (!mobile.match(/^[1-9]\d{9}$/)) {
+                mobileError.innerHTML = 'its not valid'
+                mobileError.style.color = 'red';
+
+                return false;
+            }
+
+
+            mobileError.innerHTML = 'Valid';
+            mobileError.style.color = 'green';
+            return true;
+
+        }
+
+    </script>
+
+
+<!-- -----------------------------------------------------------------------------------delete address from db -->
+<script>
+function remove(addressId) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`/address/delete/${addressId}`, {
+          method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire(
+              'Deleted!',
+              'Your address has been deleted.',
+              'success'
+            ).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire(
+              'Error!',
+              'There was an issue deleting your address.',
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          Swal.fire(
+            'Error!',
+            'An unexpected error occurred.',
+            'error'
+          );
+          console.error("Error:", error);
+        });
+      }
+    });
+  }
+</script>
+<!-- edit ----------------------------------------------------------------------------edit address------------------>
+
+
+<script>
+      
+function editAddress(addressData){
+
+    const address = JSON.parse(addressData);
+     
+    
+      document.getElementById('editName').value = address.addressName;
+      document.getElementById('editEmail').value = address.addressEmail;
+      document.getElementById('editMobile').value = address.addressMobile;
+      document.getElementById('editHouse').value = address.addressHouse;
+      document.getElementById('editStreet').value = address.addressStreet;
+      document.getElementById('editPost').value = address.addressPost;
+      document.getElementById('editCity').value = address.addressCity;
+      document.getElementById('editDistrict').value = address.addressDistrict;
+      document.getElementById('editState').value = address.addressState;
+      document.getElementById('editPin').value = address.addressPin
+}
+
+
+
+let data;
+
+function editdata(id) {
+    data = id; 
+   
+}
+
+document.getElementById('editAddressForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+  console.log(data);
+    var formData = new FormData(this);
+
+    // Convert FormData to a plain object
+    var formObject = {};
+    formData.forEach(function (value, key) {
+        formObject[key] = value;
+    });
+
+    // Send the data using Fetch API
+    fetch(`/address/edit/${data}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formObject) // Convert the plain object to JSON
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close the modal
+            $('#editAddressModal').modal('hide');
+
+            // Show success message and reload the page on confirmation
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Address updated successfully!',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload(); // Reload the page
+                }
+            });
+        } else {
+            // Optionally, handle the error case, like showing an error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Error updating address. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while updating the address. Please try again.',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload(); // Reload the page
+            }
+        });
+        $('#editAddressModal').modal('hide');
+    });
+});
+
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha384-H+K7U5CnXl1h5ywQMEtlb6g+0KNTU0ef5e8if2YrC6FUl5T5GvpyI1ORN53o+Q9p"
+        crossorigin="anonymous"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <!-- popper -->
+    <script src="/js/popper.min.js"></script>
+    <!-- bootstrap 4.1 -->
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- jQuery easing -->
+    <script src="/js/jquery.easing.1.3.js"></script>
+    <!-- Waypoints -->
+    <script src="/js/jquery.waypoints.min.js"></script>
+    <!-- Flexslider -->
+    <script src="/js/jquery.flexslider-min.js"></script>
+    <!-- Owl carousel -->
+    <script src="/js/owl.carousel.min.js"></script>
+    <!-- Magnific Popup -->
+    <script src="/js/jquery.magnific-popup.min.js"></script>
+    <script src="/js/magnific-popup-options.js"></script>
+    <!-- Date Picker -->
+    <script src="/js/bootstrap-datepicker.js"></script>
+    <!-- Stellar Parallax -->
+    <script src="/js/jquery.stellar.min.js"></script>
+    <!-- Google Map -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>
+    <script src="/js/google_map.js"></script>
+    <!-- Main -->
+    <script src="/js/main.js"></script>
+
+    <%- include('../partials/footer') %>

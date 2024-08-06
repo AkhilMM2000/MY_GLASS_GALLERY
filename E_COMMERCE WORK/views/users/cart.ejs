@@ -36,7 +36,7 @@
                             <li><a href="women.html">Women</a></li>
                             <li><a href="about.html">About</a></li>
                             <li><a href="contact.html">Contact</a></li>
-                            <li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+                            <li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart </a></li>
                         </ul>
                     </div>
                 </div>
@@ -127,7 +127,7 @@
                             <img src="/productimage/<%=item.product.productimages[0]  %>" alt="Product Image">
                         </div>
                         <div class="display-tc">
-                          <h3><%=item.product.productName%></h3>
+                          <h3><%=item.product.productName%> </h3>
                         </div>
                       </div>
                       <div class="one-eight text-center">
@@ -168,7 +168,7 @@
                     <div class="total-wrap">
                         <div class="row">
                             <div class="col-sm-8">
-                                <form action="#">
+                                <!-- <form action="#">
                                     <div class="row form-group">
                                         <div class="col-sm-9">
                                             <input type="text" name="quantity" class="form-control input-number" placeholder="Your Coupon Number...">
@@ -177,7 +177,7 @@
                                             <input type="submit" value="Apply Coupon" class="btn btn-primary">
                                         </div>
                                     </div>
-                                </form>
+                                </form> -->
                             </div>
                     
                             <div class="col-sm-4 text-center">
@@ -187,7 +187,8 @@
                                         <span id="cart-subtotal">₹0.00</span>
                                     </div>
                                     <div class="checkout-button">
-                                        <button class="btn btn-primary">Proceed to Checkout</button>
+                                        <a href="/checkout"  class="btn btn-primary">Proceed to Checkout</a>
+                                      
                                     </div>
                                 </div>
                             </div>
@@ -550,14 +551,8 @@ Swal.fire({
   });
 }
 
-
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-
-
-
 
 <script src="/js/jquery.min.js"></script>
    <!-- popper -->

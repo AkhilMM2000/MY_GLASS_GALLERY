@@ -121,8 +121,8 @@
 							</p>
 
 							<!-- Brand, Category, and Gender -->
-							<p><strong>Brand:</strong> []</p>
-							<p><strong>Category:</strong> []</p>
+							<p><strong>Brand:</strong> [<%=pro.productBrand.brandName%>]</p>
+							<p><strong>Category:</strong> [<%=pro.category.categoryName%>]</p>
 							<p ><strong>Gender:</strong> [<%=pro.gender%>]</p>
 							
 							<!-- Add to Cart and Add to Wishlist Buttons -->
@@ -750,4 +750,6 @@ function changeImage(src) {
 
 	<!-- Main -->
 	<script src="/js/main.js"></script>
+
+	
 	<%- include('../partials/footer') %>

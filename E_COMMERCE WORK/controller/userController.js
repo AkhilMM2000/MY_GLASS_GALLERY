@@ -5,6 +5,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const bcrypt = require("bcrypt");
 const product = require('../model/productModel')
 const Cart = require('../model/cartModel')
+const category=require('../model/category')
+const brand=require('../model/brandModel')
 
 // Function to render the registration page
 const get_register = async (req, res) => {
@@ -274,31 +276,116 @@ const googleSuccess = async (req, res, next) => {
   }
 };
 
-///product load for user
+///product load for user   ------- -------------------------------------.//sort start here bewlo-----------------------------------------------
+// const load_product = async (req, res) => {
+//   try {
+//     let sortOption = {};
+//     let selectedSort = req.query.sort || ''; 
+//    if (selectedSort === 'low-high') {
+//       sortOption = { price: 1 };
+//     } else if (selectedSort === 'high-low') {
+//       sortOption = { price: -1 };
+//     } else if (selectedSort === 'name_asc') {
+//       sortOption = { productName: 1 };
+//     } else if (selectedSort === 'name_desc') {
+//       sortOption = { productName: -1 };
+//     }
+
+//   const categories=await category.find()
+//   const brands=await brand.find()
+//     const product_data = await product.find({ listed: true })
+//     .populate('category')
+//     .populate('productBrand')
+//     .sort(sortOption);
+
+//      res.render("users/products", { products: product_data, selectedSort ,categories,brands});
+
+//   } catch (error) {
+//     console.log(error);
+//   }
+
+// }
+//--------------------------------------------------------------------------------------------------------------END HERE---------------------------------------
 const load_product = async (req, res) => {
   try {
 
-    const product_data = await product.find({ listed: true })
-    res.render("users/products", { products: product_data })
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6; // Number of products per page
+    const skip = (page - 1) * limit;
+
+    let sortOption = {};
+    let selectedSort = req.query.sort || '';
+    if (selectedSort === 'low-high') {
+      sortOption = { price: 1 };
+    } else if (selectedSort === 'high-low') {
+      sortOption = { price: -1 };
+    } else if (selectedSort === 'name_asc') {
+      sortOption = { productName: 1 };
+    } else if (selectedSort === 'name_desc') {
+      sortOption = { productName: -1 };
+    }
+
+    // Get filter parameters
+    const categoryIds = req.query.categories ? (Array.isArray(req.query.categories) ? req.query.categories : [req.query.categories]) : [];
+    const brandIds = req.query.brands ? (Array.isArray(req.query.brands) ? req.query.brands : [req.query.brands]) : [];
+
+    // Prepare filter object
+    let filterObject = { listed: true };
+    if (categoryIds.length > 0) {
+      filterObject.category = { $in: categoryIds };
+    }
+    if (brandIds.length > 0) {
+      filterObject.productBrand = { $in: brandIds };
+    }
+
+    const categories = await category.find();
+    const brands = await brand.find();
+
+    const totalProducts = await product.countDocuments(filterObject);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const product_data = await product.find(filterObject)
+      .populate('category')
+      .populate('productBrand')
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);;
+
+      const queryString = Object.entries(req.query)
+      .filter(([key]) => key !== 'page')
+      .map(([key, value]) => `&${key}=${value}`)
+      .join('');
+
+    res.render("users/products", { 
+      products: product_data, 
+      selectedSort,
+      categories,
+      brands,
+      currentPage: page,
+      totalPages,
+      queryString,
+      selectedCategories: categoryIds,
+      selectedBrands: brandIds
+    });
 
   } catch (error) {
     console.log(error);
+    res.status(500).send("An error occurred while loading products");
   }
-
-
 }
+
 
 const product_detail = async (req, res) => {
   try {
     const product_id = await req.params.id
-    const product_data = await product.findById(product_id)
+    const product_data = await product.findById(product_id) .populate('category')
+    .populate('productBrand');
 
     res.render("users/productdetail", { pro: product_data })
   } catch (error) {
     console.log(error);
   }
 }
-
 
 // cart controller....................................................................................................
 
@@ -316,7 +403,6 @@ const load_cart = async (req, res) => {
     //   console.log('Product Images:', item.product.productimages);
     //   console.log(item.quantity);
     // });
-
     res.render('users/cart', { cart });
   } catch (error) {
     console.error(error);
@@ -350,7 +436,7 @@ const add_cart = async (req, res) => {
 
     // Find the product in the cart
     const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
-
+// console.log(productIndex);
     if (productIndex > -1) {
 
       cart.products[productIndex].quantity += count;
@@ -381,13 +467,10 @@ const update_cart = async (req, res) => {
 
     const newQuantity = Math.min(Math.max(parseInt(count), 1), 5);
 
-
-
     const cart = await Cart.findOne({ user: userId });
 
     if (cart) {
       const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
-
 
       if (productIndex > -1) {
         cart.products[productIndex].quantity = newQuantity;
@@ -407,6 +490,7 @@ const update_cart = async (req, res) => {
   }
 }
 //remove product from cart
+
 
 const cart_remove = async (req, res) => {
   try {
@@ -454,4 +538,14 @@ module.exports = {
   update_cart,
   cart_remove
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 
