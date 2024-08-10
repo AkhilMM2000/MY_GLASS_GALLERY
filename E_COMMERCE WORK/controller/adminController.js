@@ -91,6 +91,7 @@ const unblockUser = async (req, res) => {
 
 const get_addcategory = async (req, res) => {
     try {
+       
         res.render('admin/addcategory')
         res
     } catch (error) {
@@ -100,8 +101,8 @@ const get_addcategory = async (req, res) => {
 }
 const addcategory = async (req, res) => {
     try {
-        const { categoryName, categoryStatus } = req.body;
-
+        const {  categoryStatus } = req.body;
+        
         let status;
 
         if (categoryStatus === "Listed") {
@@ -109,9 +110,20 @@ const addcategory = async (req, res) => {
         } else {
             status = false;
         }
+        const newName = req.body.categoryName.trim();
+
+        // Check if the category already exists (case-insensitive)
+        const existingCategory = await category.findOne({
+            categoryName: { $regex: new RegExp('^' + newName + '$', 'i') }
+        });
+        console.log(existingCategory);
+        if (existingCategory) {
+            // If the category exists, redirect with an error message
+            return res.status(201).redirect('/admin/addcategory?id=already_exist');
+        }
 
         const data = new category({
-            categoryName, // assuming your schema has 'name' field for category name
+            categoryName:newName, // assuming your schema has 'name' field for category name
             listed: status // assuming your schema has 'listed' field for status
         });
 

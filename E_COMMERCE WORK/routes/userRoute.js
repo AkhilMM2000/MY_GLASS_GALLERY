@@ -31,8 +31,9 @@ user_route.get('/otp',userController.get_otp)
 user_route.post('/otp',userController.verify_otp)
 user_route.post('/sign',userController.verify_user)
 user_route.post('/otp_resend',userController.resendOTP)
-
-
+user_route.get('/forgetpassword',userController.forget_password)
+user_route.patch('/forgetpassword',userController.new_password)
+user_route.patch('/savenewpassword',userController.save_password)
 //route for google authentication
 
 // //google auth
@@ -68,6 +69,12 @@ user_route.patch('/address/edit/:id',islogin.verifyLogin,accountController.edit_
 // route for  orders
 user_route.get("/orders",islogin.verifyLogin,accountController.load_orders)
 user_route.get('/detailorder',islogin.verifyLogin,accountController.order_details)
+user_route.patch('/cancelorder',islogin.verifyLogin,accountController.cancel_order)
+
+// routes for myaccount
+user_route.get('/myaccount',islogin.verifyLogin,userController.my_account)
+user_route.patch('/password/change',islogin.verifyLogin,userController.change_password)
+user_route.patch('/user/edit-profile',islogin.verifyLogin,userController.change_profile)
 
 module.exports=user_route
 

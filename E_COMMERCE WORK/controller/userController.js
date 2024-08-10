@@ -5,8 +5,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const bcrypt = require("bcrypt");
 const product = require('../model/productModel')
 const Cart = require('../model/cartModel')
-const category=require('../model/category')
-const brand=require('../model/brandModel')
+const category = require('../model/category')
+const brand = require('../model/brandModel')
 
 // Function to render the registration page
 const get_register = async (req, res) => {
@@ -164,8 +164,89 @@ const resendOTP = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+///currently work------------------------------------------------------------------------------------------------------------
+async function passwordmail(email, link) {
+  const mailOptions = {
+    from: process.env.USER, // The email address you're sending from
+    to: email,
+    subject: 'Your link for reset password',
+    text: `click this link reset your password: ${link}`
+  };
+
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error occurred while sending email:', error);
+        reject(error);
+      } else {
+        console.log('Email sent:', info.response);
+        resolve('link sent successfully.');
+      }
+    });
+  });
+}
 
 
+const forget_password = async (req, res) => {
+  try {
+    res.render('users/forgott')
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const new_password = async (req, res) => {
+  try {
+    const get_email = req.body.email;
+    const link = `http://localhost:5000/forgetpassword`;
+    const check_mail = await User.findOne({ userEmail: get_email });
+
+    if (!check_mail) {
+      return res.status(404).json({ success: false, message: "You are not registered" });
+    }
+     req.session.link=get_email
+    await passwordmail(get_email, link);
+    res.status(200).json({ success: true, message: "A link has been sent to your email. Please check it." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "An error occurred" });
+  }
+};
+const save_password = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const userdata = await User.findOne({ userEmail: req.session.link });
+
+    if (!userdata) {
+      return res.status(404).json({ success: false, message: "You are not registered" });
+    }
+
+    const isMatch = await bcrypt.compare(password, userdata.password);
+    if (isMatch) {
+      return res.status(400).json({ success: false, message: 'It is your old password' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Update the user's password
+    userdata.password = hashedPassword;
+    await userdata.save();
+
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: "Failed to destroy session" });
+      }
+  })
+
+    res.status(200).json({ success: true, message: "Successfully reset your password", redirect: `/sign` });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+}
+
+///--------------------------------------------------------------------------------currently work------------------------------------------
 const loginhome = async (req, res) => {
   try {
 
@@ -237,7 +318,7 @@ passport.use(new GoogleStrategy({
       });
       await user.save();
     }
-    req.session.userid=user._id
+    req.session.userid = user._id
 
     done(null, user);
   } catch (err) {
@@ -268,8 +349,8 @@ const googleSuccess = async (req, res, next) => {
       return res.render('users/sign', { message: 'User blocked' });
     }
     console.log(req.user);
-    req.session.userid= req.user._id
-    
+    req.session.userid = req.user._id
+
     res.redirect('/home');
   } catch (error) {
     res.send(error);
@@ -308,7 +389,7 @@ const googleSuccess = async (req, res, next) => {
 //--------------------------------------------------------------------------------------------------------------END HERE---------------------------------------
 const load_product = async (req, res) => {
   try {
-
+    ////backend stop here
     const page = parseInt(req.query.page) || 1;
     const limit = 6; // Number of products per page
     const skip = (page - 1) * limit;
@@ -328,7 +409,7 @@ const load_product = async (req, res) => {
     // Get filter parameters
     const categoryIds = req.query.categories ? (Array.isArray(req.query.categories) ? req.query.categories : [req.query.categories]) : [];
     const brandIds = req.query.brands ? (Array.isArray(req.query.brands) ? req.query.brands : [req.query.brands]) : [];
-
+    const searchQuery = req.query.search || '';
     // Prepare filter object
     let filterObject = { listed: true };
     if (categoryIds.length > 0) {
@@ -336,6 +417,9 @@ const load_product = async (req, res) => {
     }
     if (brandIds.length > 0) {
       filterObject.productBrand = { $in: brandIds };
+    }
+    if (searchQuery) {
+      filterObject.productName = { $regex: searchQuery, $options: 'i' };
     }
 
     const categories = await category.find();
@@ -351,13 +435,13 @@ const load_product = async (req, res) => {
       .skip(skip)
       .limit(limit);;
 
-      const queryString = Object.entries(req.query)
+    const queryString = Object.entries(req.query)
       .filter(([key]) => key !== 'page')
       .map(([key, value]) => `&${key}=${value}`)
       .join('');
 
-    res.render("users/products", { 
-      products: product_data, 
+    res.render("users/products", {
+      products: product_data,
       selectedSort,
       categories,
       brands,
@@ -365,7 +449,8 @@ const load_product = async (req, res) => {
       totalPages,
       queryString,
       selectedCategories: categoryIds,
-      selectedBrands: brandIds
+      selectedBrands: brandIds,
+      searchQuery
     });
 
   } catch (error) {
@@ -378,8 +463,8 @@ const load_product = async (req, res) => {
 const product_detail = async (req, res) => {
   try {
     const product_id = await req.params.id
-    const product_data = await product.findById(product_id) .populate('category')
-    .populate('productBrand');
+    const product_data = await product.findById(product_id).populate('category')
+      .populate('productBrand');
 
     res.render("users/productdetail", { pro: product_data })
   } catch (error) {
@@ -423,9 +508,15 @@ const add_cart = async (req, res) => {
     }
 
     const productdata = await product.findById(productId);
+    const existing_stock = productdata.stock
     if (!productdata) {
       return res.status(404).json({ message: 'Product not found' });
     }
+    if (existing_stock < 1) {
+      return res.status(404).json({ message: 'no stock left the product' });
+    }
+
+
 
     let cart = await Cart.findOne({ user: userId });
 
@@ -434,19 +525,19 @@ const add_cart = async (req, res) => {
       cart = new Cart({ user: userId, products: [] });
     }
 
+
     // Find the product in the cart
     const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
-// console.log(productIndex);
+
     if (productIndex > -1) {
-
-      cart.products[productIndex].quantity += count;
+      let count_add = count + cart.products[productIndex].quantity <= productdata.stock ? count : productdata.stock - cart.products[productIndex].quantity;
+      cart.products[productIndex].quantity += count_add
     } else {
-
-      cart.products.push({ product: productId, quantity: 1 });
+      let first_count = productdata.stock < count ? productdata.stock : count
+      cart.products.push({ product: productId, quantity: first_count });
     }
 
     await cart.save();
-
     // Respond with success
     res.status(200).json({ message: 'Product added to cart' });
   } catch (error) {
@@ -489,21 +580,20 @@ const update_cart = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to update cart', error: error.message });
   }
 }
+
 //remove product from cart
-
-
 const cart_remove = async (req, res) => {
   try {
     const product = req.params.productid
     const userId = req.session.userid;
     const cart = await Cart.findOne({ user: userId });
-    
+
     if (cart) {
-    
+
       const productIndex = cart.products.findIndex(item => item.product.toString() === product);
 
       if (productIndex > -1) {
-       
+
         cart.products.splice(productIndex, 1);
         await cart.save();
         res.json({ success: true, message: 'Product removed from cart' });
@@ -519,6 +609,68 @@ const cart_remove = async (req, res) => {
   }
 }
 
+
+const my_account = async (req, res) => {
+  try {
+    const userdata = await User.findOne({ _id: req.session.userid })
+    console.log(userdata);
+    res.render('users/myAccount', { user: userdata })
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+
+//function for change password in the userprofile............................
+
+const change_password = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.session.userid;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, message: 'Old password is incorrect' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error in changePassword:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+
+}
+const change_profile = async (req, res) => {
+  try {
+    const { username, mobile } = req.body;
+    const userId = req.session.userid; // Assuming you have user info in the request after authentication
+
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    // Update user fields
+    user.userName = username;
+    user.mobileNo = mobile;
+    // Save the updated user
+    await user.save();
+    res.json({ success: true, message: 'Profile updated successfully' });
+  } catch (error) {
+    console.error('Error in editProfile:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+
+}
 
 module.exports = {
   loginhome,
@@ -536,16 +688,13 @@ module.exports = {
   load_cart,
   add_cart,
   update_cart,
-  cart_remove
+  cart_remove,
+  my_account,
+  change_password,
+  change_profile,
+  forget_password,
+  new_password,
+  save_password
 }
-
-///////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
 
 

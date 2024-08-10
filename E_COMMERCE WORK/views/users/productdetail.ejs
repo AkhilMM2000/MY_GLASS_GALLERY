@@ -124,7 +124,13 @@
 							<p><strong>Brand:</strong> [<%=pro.productBrand.brandName%>]</p>
 							<p><strong>Category:</strong> [<%=pro.category.categoryName%>]</p>
 							<p ><strong>Gender:</strong> [<%=pro.gender%>]</p>
+
+							<% if (pro.stock<= 5) { %>
+								<span class="stock-left text-danger ml-2">Only <%= pro.stock %> in stock</span>
+							  <% } else { %>
 							
+							  <% } %>
+
 							<!-- Add to Cart and Add to Wishlist Buttons -->
 							<div class="row">
 								<div class="col-sm-12 text-center">
@@ -132,7 +138,7 @@
 										<!-- Quantity Input Field -->
 										<div class="quantity-container me-3">
 											<button type="button" class="btn btn-secondary btn-decrement">-</button>
-											<input type="number" id="quantity" name="quantity" value="1" min="1" />
+											<input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= pro.stock< 5 ?pro.stock:5 %>"/>
 											<button type="button" class="btn btn-secondary btn-increment">+</button>
 										</div>
 										
@@ -701,20 +707,22 @@ function addcart(productId,count) {
 
 	</style>
 <script>
-	//increment the value when button click
-
-	document.querySelector('.btn-increment').addEventListener('click', function() {
+	// Increment the value when button is clicked
+document.querySelector('.btn-increment').addEventListener('click', function() {
     const quantityInput = document.getElementById('quantity');
-    quantityInput.value = parseInt(quantityInput.value) + 1;
+    const max = parseInt(quantityInput.getAttribute('max'));
+    if (parseInt(quantityInput.value) < max) {
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+    }
 });
-
-//decrement the value when button click
+// Decrement the value when button is clicked
 document.querySelector('.btn-decrement').addEventListener('click', function() {
     const quantityInput = document.getElementById('quantity');
     if (parseInt(quantityInput.value) > 1) {
         quantityInput.value = parseInt(quantityInput.value) - 1;
     }
 });
+
 ///change image function
             
 function changeImage(src) {

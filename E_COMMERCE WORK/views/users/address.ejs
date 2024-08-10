@@ -142,41 +142,24 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-7 col-md-9">
-                            <div id="colorlib-logo"><a href="index.html">Footwear</a></div>
+                            <div id="colorlib-logo"><a href="index.html">EYEGAZE</a></div>
                         </div>
-                        <div class="col-sm-5 col-md-3">
-                            <form action="#" class="search-wrap">
-                                <div class="form-group">
-                                    <input type="search" class="form-control search" placeholder="Search">
-                                    <button class="btn btn-primary submit-search text-center" type="submit"><i
-                                            class="icon-search"></i></button>
-                                </div>
-                            </form>
-                        </div>
+                       
                     </div>
                     <div class="row">
                         <div class="col-sm-12 text-left menu-1">
                             <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li class="has-dropdown">
-                                    <a href="men.html">Men</a>
-                                    <ul class="dropdown">
-                                        <li><a href="product-detail.html">Product Detail</a></li>
-                                        <li><a href="cart.html">Shopping Cart</a></li>
-                                        <li><a href="checkout.html">Checkout</a></li>
-                                        <li><a href="order-complete.html">Order Complete</a></li>
-                                        <li><a href="add-to-wishlist.html">Wishlist</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="women.html">Women</a></li>
+                                <li class="active"><a href="index.html">Home</a></li>
+                                <li><a href="/product">Shop</a></li>
                                 <li><a href="about.html">About</a></li>
-                                <li class="active"><a href="contact.html">Contact</a></li>
-                                <li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a>
-                                </li>
+                                <li><a href="contact.html">Contact</a></li>
+                                
+                                <li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
+                
             </div>
             <div class="sale">
                 <div class="container">
@@ -207,7 +190,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <p class="bread"><span><a href="index.html">Home</a></span> / <span>Contact</span></p>
+                        <p class="bread"><span><a href="/home">Home</a></span> / <span>Contact</span></p>
                     </div>
                 </div>
                 <div class="row">
@@ -225,7 +208,7 @@
                         <li><a href="#">Account Details</a></li>
                         <li><a href="#">Orders</a></li>
                         <li><a href="#">Downloads</a></li>
-                        <li><a href="#">Addresses</a></li>
+                        <li><a href="/address">Addresses</a></li>
                         <li><a href="#">Sign Out</a></li>
                     </ul>
                 </div>
@@ -257,8 +240,7 @@
                                 <a href="#" class="text-primary" data-toggle="modal" onclick="editAddress('<%= JSON.stringify(address) %>'); editdata('<%= address._id %>');" data-target="#myModal">EDIT</a>
 
 
-                               
-
+                            
                                <a href="#" class="text-danger" onclick="remove('<%=address._id%>')">Delete</a>
                             </div>
                         </div>
@@ -400,29 +382,33 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="addressStreet" class="form-label">Street</label>
-                                <input type="text" class="form-control" id="addressStreet" name="addressStreet"
+                                <input type="text" class="form-control" id="Street-address" name="addressStreet" onkeyup="validatestreet()"
                                     required>
+                                    <div id="street-error"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="addressPost" class="form-label">Post</label>
-                                <input type="text" class="form-control" id="addressPost" name="addressPost" required>
+                                <input type="text" class="form-control" id="Post-address" name="addressPost" onkeyup="validatePost()" required>
+                                <div id="post-error"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="addressCity" class="form-label">City</label>
-                                <input type="text" class="form-control" id="addressCity" name="addressCity" required>
+                                <input type="text" class="form-control" id="CityAddress" name="addressCity" onkeyup="validatecity()" required>
+                                <div id="city-error"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="addressDistrict" class="form-label">District</label>
-                                <input type="text" class="form-control" id="addressDistrict" name="addressDistrict"
-                                    required>
+                                <input type="text" class="form-control" id="Districtaddress" name="addressDistrict" onkeyup="validatedistrict()" required>
+                                <div id="district-error"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="addressState" class="form-label">State</label>
-                                <input type="text" class="form-control" id="addressState" name="addressState" required>
+                                <input type="text" class="form-control" id="State-address" name="addressState" onkeyup="validatestate()" required>
+                                <div id="state-error"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="addressPin" class="form-label">Pin Code </label>
@@ -456,17 +442,20 @@
             <div class="row">
               <div class="col-md-6 form-group">
                 <label for="addressName">Name</label>
-                <input type="text" class="form-control" id="editName" value="" name="addressName" required>
+                <input type="text" class="form-control" id="editName" value="" name="addressName" onkeyup="editnamevalidate()" required>
+                <div id="edit-errorname"></div>
               </div>
               <div class="col-md-6 form-group">
                 <label for="addressEmail">Email</label>
-                <input type="email" class="form-control" id="editEmail" name="addressEmail" required>
+                <input type="email" class="form-control" id="editEmail" name="addressEmail" onkeyup="editemailValidate()" required>
+                <div id="edit-erroremail"></div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 form-group">
                 <label for="addressMobile">Mobile</label>
-                <input type="tel" class="form-control" id="editMobile" name="addressMobile" required>
+                <input type="tel" class="form-control" id="editMobile" name="addressMobile" onkeyup="editmobileValidate()" required>
+                <div id="edit-errormobile"></div>
               </div>
               <div class="col-md-6 form-group">
                 <label for="addressHouse">House</label>
@@ -476,7 +465,8 @@
             <div class="row">
               <div class="col-md-6 form-group">
                 <label for="addressStreet">Street</label>
-                <input type="text" class="form-control" id="editStreet" name="addressStreet" required>
+                <input type="text" class="form-control" id="editStreet" name="addressStreet" onkeyup="editvalidatestreet()" required>
+                <div id="edit-errorstreet"></div>
               </div>
               <div class="col-md-6 form-group">
                 <label for="addressPost">Post</label>
@@ -486,21 +476,25 @@
             <div class="row">
               <div class="col-md-6 form-group">
                 <label for="addressCity">City</label>
-                <input type="text" class="form-control" id="editCity" name="addressCity" required>
+                <input type="text" class="form-control" id="editCity" name="addressCity" onkeyup="editvalidatecity()" required>
+                <div id="edit-errorcity"></div>
               </div>
               <div class="col-md-6 form-group">
                 <label for="addressDistrict">District</label>
-                <input type="text" class="form-control" id="editDistrict" name="addressDistrict" required>
+                <input type="text" class="form-control" id="editDistrict" name="addressDistrict" onkeyup="editdistrictValidate()" required>
+                <div id="edit-errordistrict"></div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 form-group">
                 <label for="addressState">State</label>
-                <input type="text" class="form-control" id="editState" name="addressState" required>
+                <input type="text" class="form-control" id="editState" name="addressState" onkeyup="editvalidatestate()" required>
+                <div id="edit-errorstate"></div>
               </div>
               <div class="col-md-6 form-group">
                 <label for="addressPin">PIN</label>
-                <input type="text" class="form-control" id="editPin" name="addressPin" required>
+                <input type="text" class="form-control" id="editPin" name="addressPin" onkeyup="editpinValidate()" required>
+                <div id="edit-errorpin"></div>
               </div>
             </div>
           </div>
@@ -515,10 +509,10 @@
         document.getElementById('addressForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent default form submission
 
-            if (!validateName() || !validateMobile() || !validateEmail()) {
+            if (!validateName() || !validateMobile() || !validateEmail()|| !validatePost()||!validatecity()||!validatedistrict()|!validatestate()||!validatestreet()) {
                 return; // Stop the function execution if validation fails
             }
-
+            
             var formData = new FormData(this);
             const addressModal = new bootstrap.Modal(document.getElementById('addressModal'));
 
@@ -581,8 +575,8 @@
 
         //form validation below for name
         function validateName() {
-            var name = document.getElementById('addressName').value;
-            var nameError = document.getElementById('name-error');
+            let name = document.getElementById('addressName').value;
+            let nameError = document.getElementById('name-error');
 
             if (name.trim().length === 0) {
                 nameError.innerHTML = 'Name is required';
@@ -604,8 +598,8 @@
         //form validation below for EMAIL
 
         function validateEmail() {
-            var email = document.getElementById('addressEmail').value;
-            var emailError = document.getElementById('email-error');
+            let email = document.getElementById('addressEmail').value;
+            let emailError = document.getElementById('email-error');
 
             if (email.trim().length === 0) {
                 emailError.innerHTML = 'Email is required';
@@ -658,6 +652,104 @@
             return true;
 
         }
+////-----------------------------------------------------------------------------------------------validate city
+function validatecity(){
+let city=document.getElementById('CityAddress').value
+let message=document.getElementById('city-error')
+
+if (city.trim().length === 0) {
+                message.innerHTML = 'Name is required';
+                message.style.color = 'red';
+                return false;
+            }
+            if (!city.match(/^[A-Za-z\s]+$/)) {
+                message.innerHTML = 'city must contain only letters and spaces';
+                message.style.color = 'red';
+                return false;
+            }
+            message.innerHTML = 'Valid';
+            message.style.color = 'green';
+            return true;
+
+
+}
+////---------------------------------------------------------------------------------------------------------------------------validate street
+function validatestreet() {
+    let street = document.getElementById('Street-address').value;
+    let message = document.getElementById('street-error');
+
+    if (street.trim().length === 0) {
+        message.innerHTML = 'Street address is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!street.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'Street address must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+}
+
+////---------------------------------------------------------------------------------------------------------------------------validate district
+function validatedistrict() {
+    let district = document.getElementById('Districtaddress').value;
+    let message = document.getElementById('district-error');
+
+    if (district.trim().length === 0) {
+        message.innerHTML = 'District is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!district.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'District must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+}
+/////-----------------------------------------------------------------------------------------------------------------------------validate state
+function validatestate() {
+    let state = document.getElementById('State-address').value;
+    let message = document.getElementById('state-error');
+
+    if (state.trim().length === 0) {
+        message.innerHTML = 'State is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!state.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'State must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+}
+//////--------------------------------------------------------------------------------------------------------------------validate post
+function validatePost() {
+    let post = document.getElementById('Post-address').value;
+    let message = document.getElementById('post-error');
+
+    if (post.trim().length === 0) {
+        message.innerHTML = 'Post is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!post.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'Post must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+}
 
     </script>
 
@@ -712,12 +804,205 @@ function remove(addressId) {
 
 
 <script>
+
+// -----------------------------------------------------------------------------------------------------------------------------------------edit name validate
+function editnamevalidate(){
+    let name = document.getElementById('editName').value;
+            let nameError = document.getElementById('edit-errorname');
+
+            if (name.trim().length === 0) {
+                nameError.innerHTML = 'Name is required';
+                nameError.style.color = 'red';
+                return false;
+            }
+
+
+            if (!name.match(/^[A-Za-z\s]+$/)) {
+                nameError.innerHTML = 'Name must contain only letters and spaces';
+                nameError.style.color = 'red';
+                return false;
+            }
+
+            nameError.innerHTML = 'Valid';
+            nameError.style.color = 'green';
+            return true;
+
+
+
+    
+}
+//----------------------------------------------------------------------------------------------------------------------------------------edit email validate
+
+function editemailValidate(){
+
+    let email = document.getElementById('editEmail').value;
+            let emailError = document.getElementById('edit-erroremail');
+
+            if (email.trim().length === 0) {
+                emailError.innerHTML = 'Email is required';
+                emailError.style.color = 'red';
+                return false;
+            }
+
+            // Email validation using a simple regex
+            if (!email.match(/^\S+@\S+\.com$/)) {
+                emailError.innerHTML = 'Invalid email format';
+                emailError.style.color = 'red';
+                return false;
+            }
+
+            emailError.innerHTML = 'Valid';
+            emailError.style.color = 'green';
+            return true;
+
+
+
+
+}
+//------------------------------------------------------------------------------------------------------------------edit mobileno validate
+function editmobileValidate(){
+
+    let mobile = document.getElementById('editMobile').value;
+            let mobileError = document.getElementById('edit-errormobile');
+
+            if (mobile.trim().length === 0) {
+                mobileError.innerHTML = 'mobile number is required';
+                mobileError.style.color = 'red';
+                return false;
+            }
+
+
+            if (mobile.length < 10) {
+                mobileError.innerHTML = 'its not valid'
+                mobileError.style.color = 'red';
+                return false;
+            }
+
+            if (!mobile.match(/^[1-9]\d{9}$/)) {
+                mobileError.innerHTML = 'its not valid'
+                mobileError.style.color = 'red';
+
+                return false;
+            }
+
+
+            mobileError.innerHTML = 'Valid';
+            mobileError.style.color = 'green';
+            return true;
+
+
+
+
+}
+function  editpinValidate(){
+    let mobile = document.getElementById('editPin').value;
+            let mobileError = document.getElementById('edit-errorpin');
+
+            if (mobile.trim().length === 0) {
+                mobileError.innerHTML = 'mobile number is required';
+                mobileError.style.color = 'red';
+                return false;
+            }
+
+
+            else if (!mobile.match(/^[1-9][0-9]{5}$/)) {
+                mobileError.innerHTML = 'its not valid'
+                mobileError.style.color = 'red';
+
+                return false;
+            }
+
+
+            mobileError.innerHTML = 'Valid';
+            mobileError.style.color = 'green';
+            return true;
+}
+// -----------------------------------------------------------------------------------------------------------------------------------edit district
+
+
+function editdistrictValidate(){
+    let district = document.getElementById('editDistrict').value;
+    let message = document.getElementById('edit-errordistrict');
+
+    if (district.trim().length === 0) {
+        message.innerHTML = 'District is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!district.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'District must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+
+}
+///edit state validation--------------------------------------------------------------------------------------------------------------#
+function editvalidatestate() {
+    let state = document.getElementById('editState').value;
+    let message = document.getElementById('edit-errorstate');
+
+    if (state.trim().length === 0) {
+        message.innerHTML = 'State is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!state.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'State must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+}
+
+///edit street validation--------------------------------------------------------------------------------------------------------------#
+function editvalidatecity() {
+    let state = document.getElementById('editCity').value;
+    let message = document.getElementById('edit-errorcity');
+
+    if (state.trim().length === 0) {
+        message.innerHTML = 'State is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!state.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'State must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+}
+
+function editvalidatestreet() {
+    let state = document.getElementById('editStreet').value;
+    let message = document.getElementById('edit-errorstreet');
+
+    if (state.trim().length === 0) {
+        message.innerHTML = 'State is required';
+        message.style.color = 'red';
+        return false;
+    }
+    if (!state.match(/^[A-Za-z\s]+$/)) {
+        message.innerHTML = 'State must contain only letters and spaces';
+        message.style.color = 'red';
+        return false;
+    }
+    message.innerHTML = 'Valid';
+    message.style.color = 'green';
+    return true;
+}
+
+
       
 function editAddress(addressData){
 
     const address = JSON.parse(addressData);
-     
-    
       document.getElementById('editName').value = address.addressName;
       document.getElementById('editEmail').value = address.addressEmail;
       document.getElementById('editMobile').value = address.addressMobile;
@@ -731,9 +1016,7 @@ function editAddress(addressData){
 }
 
 
-
 let data;
-
 function editdata(id) {
     data = id; 
    
@@ -741,6 +1024,11 @@ function editdata(id) {
 
 document.getElementById('editAddressForm').addEventListener('submit', function (event) {
     event.preventDefault(); // Prevent default form submission
+
+if(!editdistrictValidate()||!editemailValidate()||!editmobileValidate()||!editnamevalidate()||!editpinValidate()||!editvalidatestate()||!editvalidatecity() ||!editvalidatestreet()){
+
+    return
+}
 
   console.log(data);
     var formData = new FormData(this);
@@ -843,3 +1131,8 @@ document.getElementById('editAddressForm').addEventListener('submit', function (
     <script src="/js/main.js"></script>
 
     <%- include('../partials/footer') %>
+
+
+
+
+

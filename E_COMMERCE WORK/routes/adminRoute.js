@@ -57,7 +57,7 @@ admin_route.patch('/editproduct',multer.array("productimage",3),productControlle
 //order routes for admin
 admin_route.get("/orders",orderController.admin_orders)
 admin_route.get("/detailorder",orderController.view_order)
-
+admin_route.patch('/detailorder',orderController.update_order)
 
 admin_route.get('*',function(req,res){
     res.redirect('/admin')

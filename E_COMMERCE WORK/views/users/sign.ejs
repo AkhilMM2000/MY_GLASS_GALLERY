@@ -1,5 +1,83 @@
 <%- include('../partials/header') %>
+<style>
+  /* Styling for the modal content */
+.modal-content {
+  border-radius: 10px;
+  background-color: #f8f9fa; /* Light gray background */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Soft shadow */
+  padding: 20px; /* Padding for better spacing */
+}
 
+/* Styling for the modal header */
+.modal-header {
+  border-bottom: none; /* Remove border line */
+  padding-bottom: 0; /* Adjust spacing */
+  position: relative;
+}
+
+/* Custom close button */
+.modal-header .close {
+  position: absolute;
+  right: -15px;
+  top: -15px;
+  background: #ff6b6b;
+  border-radius: 50%;
+  padding: 5px 10px;
+  color: white;
+}
+
+/* Custom title style */
+.modal-title {
+  font-family: 'Arial', sans-serif; /* Use a clean, modern font */
+  font-weight: 700;
+  color: #343a40; /* Dark gray text */
+}
+
+/* Styling for the form group */
+.form-group label {
+  font-weight: bold;
+  color: #495057; /* Slightly darker label color */
+}
+
+/* Styling for the input */
+.form-control {
+  border-radius: 5px;
+  border: 1px solid #ced4da; /* Light border */
+  padding: 10px;
+}
+
+/* Styling for the modal footer */
+.modal-footer {
+  border-top: none; /* Remove border line */
+  justify-content: space-between; /* Space between buttons */
+}
+
+/* Primary button customization */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Secondary button customization */
+.btn-secondary {
+  border-radius: 5px;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+</style>
 <section class="vh-100" style="background-color: #9A616D;">
     <div class="container py-5 h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
@@ -23,12 +101,12 @@
                     <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
   
                     <div data-mdb-input-init class="form-outline mb-4">
-                      <input type="email" id="form2Example17" class="form-control form-control-lg" name="userEmail" />
-                      <label class="form-label" for="form2Example17">Email address</label>
+                      <input type="-password" id="form2Example17" class="form-control form-control-lg" value="manojakhil36@gmail.com" name="userEmail" />
+                      <label class="form-label" for="form2Example17">email address</label>
                     </div>
   
                     <div data-mdb-input-init class="form-outline mb-4">
-                      <input type="password" id="form2Example27" class="form-control form-control-lg" name="password"/>
+                      <input type="password" id="form2Example27" class="form-control form-control-lg" value="Amm@1234" name="password"/>
                       <label class="form-label" for="form2Example27">Password</label>
                     </div>
   
@@ -39,13 +117,14 @@
                       <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo" class="google-logo">
                       Sign in with Google
                   </a>
-                    <a class="small text-muted" href="#!">Forgot password?</a>
+                   
+                    <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button> -->
                     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="/register"
                         style="color: #393f81;">Register here</a></p>
                     <a href="#!" class="small text-muted">Terms of use.</a>
                     <a href="#!" class="small text-muted">Privacy policy</a>
                   </form>
-  
+                  <a class="small text-muted" href="#!" data-toggle="modal"  data-target="#myModal">Forgot password?</a>
                 </div>
               </div>
             </div>
@@ -54,8 +133,114 @@
       </div>
     </div>
   </section>
-  <script src="https://ajax.googleapis.com/ajax/libs/cesiumjs/1.78/Build/Cesium/Cesium.js"></script>
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Forgot Password</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- ///  form start here ------------------------------------------>
+        <form id="forgotPasswordForm">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="-password">Email address</label>
+              <input type="email" class="form-control" id="email-password" name="password-change" onkeyup="validatemail()" required>
+              <div id="email-error"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+        <!-- form end here ----------------------------------------------------->
+      </div>
+    </div>
+  </div>
 
+  <script>
+document.getElementById('forgotPasswordForm').addEventListener('submit', async function (event) {
+  event.preventDefault();
+
+if(!validatemail()){
+  return
+}
+
+  const email=document.getElementById('email-password').value
+console.log(email);
+  try {
+    const response = await fetch('/forgetpassword', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    Swal.fire({
+      title: 'Success!',
+      text: data.message,
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.reload();
+      }
+    });
+  } catch (error) {
+    Swal.fire({
+      title: 'Error!',
+      text: `you are not a user please register`,
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
+});
+
+
+
+
+function validatemail() {
+  var email = document.getElementById('email-password').value;
+  var emailError = document.getElementById('email-error');
+
+  if (email.trim().length === 0) {
+    emailError.innerHTML = 'Email is required';
+    emailError.style.color = 'red';
+    return false;
+  }
+
+  // Email validation using a simple regex
+  if (!email.match(/^\S+@\S+\.com$/)) {
+    emailError.innerHTML = 'Invalid email format';
+    emailError.style.color = 'red';
+    return false;
+  }
+
+  emailError.innerHTML = 'Valid';
+  emailError.style.color = 'green';
+  return true;
+}
+
+
+</script>
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/cesiumjs/1.78/Build/Cesium/Cesium.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 

@@ -90,7 +90,7 @@ const edit_address = async (req, res) => {
 
 const load_orders = async (req, res) => {
     try {
-        const user= req.session.userid
+        const user = req.session.userid
         const page = parseInt(req.query.page) || 1; // Get the page from query params, default to 1
         const limit = 5; // Number of orders per page
         const skip = (page - 1) * limit;
@@ -98,7 +98,7 @@ const load_orders = async (req, res) => {
         const totalOrders = await Orders.countDocuments();
         const totalPages = Math.ceil(totalOrders / limit);
 
-        const order = await Orders.find({userId:user}).populate('products.productId').skip(skip)
+        const order = await Orders.find({ userId: user }).populate('products.productId').skip(skip)
             .limit(limit)
             .sort({ orderDate: -1 });
 
@@ -119,21 +119,47 @@ const load_orders = async (req, res) => {
 const order_details = async (req, res) => {
     try {
         const orderid = req.query.orderId;
-        const order_data = await  Orders.find({ orderId: orderid }).populate("products.productId")
+        const order_data = await Orders.find({ orderId: orderid }).populate("products.productId")
         const addressdata = order_data[0].address;
-   res.render('users/orderdetails',{order: order_data[0],addressdata})
+        res.render('users/orderdetails', { order: order_data[0], addressdata })
 
     } catch (error) {
-console.log(error);
+        console.log(error);
     }
-   }
- 
+}
+
+const cancel_order = async (req, res) => {
+    try {
+
+        const { orderid, productid } = req.body;
+        const products = await product.findById(productid);
+
+        const order = await Orders.findOne({ orderId: orderid });
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+        const productIndex = order.products.findIndex(p => p.productId.toString() === productid);
+        if (productIndex === -1) {
+            return res.status(404).json({ success: false, message: 'Product not found in this order' });
+        }
+        order.products[productIndex].status = 'Cancelled';
+        await order.save();
+        await product.findByIdAndUpdate(productid, { $inc: { stock: order.products[productIndex].quantity } });
+        return res.json({ success: true, message: 'Order cancelled successfully' });
+    } catch (error) {
+        console.error('Error cancelling order:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+
+}
+
 module.exports = {
     load_address,
     add_address,
     delete_address,
     edit_address,
     load_orders,
-    order_details
+    order_details,
+    cancel_order
 }
 

@@ -19,18 +19,28 @@ const get_addbrand = async (req, res) => {
 
 const add_brand = async (req, res) => {
   try {
-    const { brandName, brandStatus } = req.body;
+    const { brandStatus } = req.body;
 
     let status;
-
     if (brandStatus === "Listed") {
       status = true;
     } else {
       status = false;
     }
+    const newName = req.body.brandName.trim();
+
+    // Check if the category already exists (case-insensitive)
+    const existingBrand = await brand.findOne({
+      brandName: { $regex: new RegExp('^' + newName + '$', 'i') }
+    });
+    console.log(existingBrand);
+    if (existingBrand) {
+      // If the category exists, redirect with an error message
+      return res.status(201).redirect('/admin/addbrand?id=already_exist');
+    }
 
     const data = new brand({
-      brandName,
+      brandName: newName,
       listed: status
     });
 
@@ -190,20 +200,31 @@ const add_product = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+
 //  listproduct in the admin on table wise
 
 const listproduct = async (req, res) => {
   try {
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5; // 5 products per page
+    const skip = (page - 1) * limit;
+
+    const totalProducts = await product.countDocuments();
+    const totalPages = Math.ceil(totalProducts / limit);
     const products = await product.find()
       .populate('productBrand', 'brandName')
-      .populate('category', 'categoryName');
+      .populate('category', 'categoryName')
+       .skip(skip)
+       .limit(limit)
 
-
-    res.render('admin/productlist', { products })
+    res.render('admin/productlist', { products, currentPage: page,
+      totalPages: totalPages })
 
   } catch (error) {
     console.log(error);
-
 
   }
 
@@ -268,12 +289,14 @@ const load_editproduct = async (req, res) => {
 const update_product = async (req, res) => {
   try {
     const files = req.files;
-
-    if (!files || files.length === 0) {
-      return res.status(400).json({ message: 'No files were uploaded.' });
-    }
-
+    // if (!files || files.length === 0) {
+    //   return res.status(400).json({ message: 'No files were uploaded.' });
+    // }
     const product_id = req.query.id
+    const product_current=await product.findById(product_id)
+ const current_imagearray=product_current.productimages
+
+    console.log(current_imagearray);
     const { listStatus, quantity, productName, branded, description, price, gender, category } = req.body;
 
     let total = parseInt(quantity);
@@ -284,15 +307,18 @@ const update_product = async (req, res) => {
     } else {
       status = false;
     }
-
     // Map file paths
-    const imagePaths = files.map(file => file.filename);
-
+    files.forEach(file => {
+      current_imagearray.push(file.filename); // Add the new filename to the array
+      if (current_imagearray.length > 3) {
+         current_imagearray.shift(); // Remove the first element if the array length exceeds 3
+      }
+    });
+  
     // Create updated product document
     const updatedProduct = {
-      listed: status, stock: quantity, productName, branded, description, price, gender, category, productimages: imagePaths
+      listed: status, stock: quantity, productName, branded, description, price, gender, category, productimages: current_imagearray
     };
-
     const result = await product.findByIdAndUpdate(product_id, updatedProduct, { new: true });
 
     if (!result) {
@@ -305,10 +331,9 @@ const update_product = async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message:"validation failed" });
   }
 }
-
 
 module.exports = {
   load_product,
@@ -324,4 +349,5 @@ module.exports = {
   Unlist_item,
   load_editproduct,
   update_product
+
 }

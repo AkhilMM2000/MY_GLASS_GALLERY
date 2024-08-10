@@ -50,13 +50,12 @@ const place_order = async (req, res) => {
         if (!address) {
             return res.json({ success: false, message: 'Invalid address selected' });
         }
-
         // Calculate total amount
         const totalAmount = cart.products.reduce((total, item) => {
             return total + (item.product.price * item.quantity);
         }, 0);
         // Create a new order
-        const newOrder = new Order({
+        const newOrder = new Orders({
             userId: user,
             orderId: generateOrderId(),
             paymentMethod: paymentMethod,
@@ -74,6 +73,15 @@ const place_order = async (req, res) => {
             orderDate: new Date()
         });
 
+
+        for (const item of cart.products) {
+            const product_array = await product.findById(item.product._id);
+            if (product_array) {
+                product_array.stock -= item.quantity;
+                await product_array.save();
+            }
+        }
+
         await newOrder.save();
         await Cart.findOneAndUpdate({ user: user }, { $set: { products: [] } });
         //   console.log(newOrder.orderId);
@@ -89,7 +97,7 @@ const place_order = async (req, res) => {
 const order_success = async (req, res) => {
     try {
         const orderid = req.query.id
-        const order_data = await Order.find({ orderId: orderid }).populate("products.productId")
+        const order_data = await Orders.find({ orderId: orderid }).populate("products.productId")
 
         let b = order_data[0]
         // order_data.forEach(item => {
@@ -145,11 +153,37 @@ const view_order = async (req, res) => {
     try {
         const order = req.query.orderID
         const orderdata = await Orders.find({ orderId: order }).populate('products.productId')
-let b=orderdata[0]
-        res.render('admin/userdetailorder', {orderdata})
+        let b = orderdata[0]
+        res.render('admin/userdetailorder', { orderdata })
 
     } catch (error) {
         console.log(error);
+    }
+
+}
+const update_order = async (req, res) => {
+    try {
+        const { status, productid, orderID } = req.body
+        const order = await Orders.findOne({ orderId: orderID });
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        const productIndex = order.products.findIndex(p => p._id.toString() === productid);
+        console.log(productIndex, productid);
+        if (productIndex === -1) {
+            return res.status(404).json({ success: false, message: 'Product not found in this order' });
+        }
+
+        order.products[productIndex].status = status;
+
+        await order.save();
+
+        res.json({ success: true, message: 'Order status updated successfully' });
+    } catch (error) {
+        console.error('Error updating product status:', error);
+        res.status(500).json({ success: false, message: 'An error occurred while updating the status' });
     }
 
 }
@@ -159,5 +193,6 @@ module.exports = {
     place_order,
     order_success,
     admin_orders,
-    view_order
+    view_order,
+    update_order
 }

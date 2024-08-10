@@ -127,7 +127,7 @@
                             <img src="/productimage/<%=item.product.productimages[0]  %>" alt="Product Image">
                         </div>
                         <div class="display-tc">
-                          <h3><%=item.product.productName%> </h3>
+                          <h3><%=item.product.productName%></h3>
                         </div>
                       </div>
                       <div class="one-eight text-center">
@@ -139,8 +139,16 @@
                         <div class="display-tc d-flex align-items-center justify-content-center">
                           <button class="btn btn-outline-secondary decrementBtn" type="button">-</button>
                         
-                  <input type="text" class="form-control input-number text-center mx-2 quantity" value="<%= item.quantity %>" data-product-id="<%= item.product._id %>" data-index="<%= index %>" min="1" max="5" style="width: 60px;">
+                  <!-- <input type="text" class="form-control input-number text-center mx-2 quantity" value="<%= item.quantity %>" data-product-id="<%= item.product._id %>" data-index="<%=index %>" min="1" max="10" style="width: 60px;"> -->
+                  <input type="text" class="form-control input-number text-center mx-2 quantity" data-product-qty="<%= item.product.stock %>" value="<%= item.quantity %>" data-product-id="<%= item.product._id %>" data-index="<%= index %>" min="1" max="" style="width: 60px;">
                           <button class="btn btn-outline-secondary incrementBtn" type="button">+</button>
+                <!-- /// stock left-->
+                <% if (item.product.stock<= 5) { %>
+                    <span class="stock-left text-danger ml-2">Only <%= item.product.stock %> in stock</span>
+                  <% } else { %>
+                    <!-- <span class="stock-left text-success ml-2">stock<%= item.product.stock %> left</span> -->
+                  <% } %>
+
                         </div>
                       </div>
                       <div class="one-eight text-center">
@@ -450,9 +458,11 @@ function updateSubtotal() {
 
     function handleQuantityChange(index, change) {
         let currentValue = parseInt(quantityInputs[index].value);
+        let stocksLeft = quantityInputs[index].getAttribute('data-product-qty');
         let newValue = currentValue + change;
+        let max = stocksLeft < 5 ? stocksLeft : 5;
         
-        if (newValue >= 1 && newValue <= 5) {
+        if (newValue >= 1 && newValue <= max) {
             quantityInputs[index].value = newValue;
             const productId = quantityInputs[index].dataset.productId;
             
@@ -574,6 +584,7 @@ Swal.fire({
 	
 	<!-- Main -->
 	<script src="/js/main.js"></script>
+   
 
 <%- include('../partials/footer') %>
 
