@@ -54,8 +54,17 @@ const admhome = async (req, res) => {
 const userlist = async (req, res) => {
     try {
 
+        
+        const perPage = 5;
+        const page = parseInt(req.query.page) || 1;
+
         const users = await User.find()
-        res.render('admin/userlist', { users })
+                                .skip((perPage * page) - perPage)
+                                .limit(perPage);
+
+        const count = await User.countDocuments();
+        res.render('admin/userlist', { users,   currentPage: page,
+            totalPages: Math.ceil(count / perPage) })
     } catch (error) {
         console.log(error);
     }

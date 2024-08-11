@@ -212,6 +212,7 @@ const new_password = async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred" });
   }
 };
+
 const save_password = async (req, res) => {
   try {
     const { password } = req.body;
@@ -238,7 +239,7 @@ const save_password = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to destroy session" });
       }
   })
-
+  
     res.status(200).json({ success: true, message: "Successfully reset your password", redirect: `/sign` });
   } catch (error) {
     console.log(error);

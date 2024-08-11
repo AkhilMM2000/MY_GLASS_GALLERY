@@ -159,7 +159,8 @@
     
       <div class="mb-3">
         <label for="categoryName" class="form-label">Change Brand Name</label>
-        <input type="text" class="form-control" id="brandName1" name="brandName" required>
+        <input type="text" class="form-control" id="brandName1" name="brandName" onkeyup="validateName()" required>
+        <div id="brand-error"></div>
       </div>
       <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
       
@@ -172,6 +173,34 @@
   </div>
 </div>
 <script>
+
+// validate brand-----------------------------------------------
+function validateName() {
+    const brandNameInput = document.getElementById('brandName1');
+    const brandError = document.getElementById('brand-error');
+    const saveChangesBtn = document.getElementById('saveChangesBtn');
+
+    const nameValue = brandNameInput.value.trim();
+
+    if (!nameValue || nameValue.length === 0) {
+        brandError.textContent = "Brand name cannot be empty.";
+        brandError.style.color = "red";
+        saveChangesBtn.disabled = true;
+    } else if (!/^[a-zA-Z\s]{3,}$/.test(nameValue)) {
+        brandError.textContent = "Brand name must be at least 3 characters long and contain only letters.";
+        brandError.style.color = "red";
+        saveChangesBtn.disabled = true;
+    } else if (nameValue.replace(/\s/g, '').length < 3) {
+        brandError.textContent = "Brand name must contain at least 3 non-space characters.";
+        brandError.style.color = "red";
+        saveChangesBtn.disabled = true;
+    } else {
+        brandError.textContent = "";
+        saveChangesBtn.disabled = false;
+    }
+}
+
+
 
 let brandid;
 function changeName(id){

@@ -317,7 +317,7 @@ const update_product = async (req, res) => {
   
     // Create updated product document
     const updatedProduct = {
-      listed: status, stock: quantity, productName, branded, description, price, gender, category, productimages: current_imagearray
+      listed: status, stock: quantity, productName, productBrand: branded, description, price, gender, category, productimages: current_imagearray
     };
     const result = await product.findByIdAndUpdate(product_id, updatedProduct, { new: true });
 

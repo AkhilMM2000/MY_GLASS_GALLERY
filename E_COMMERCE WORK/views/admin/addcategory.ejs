@@ -103,7 +103,8 @@
                     <form action="addcategory" method="post" id="categoryForm">
                       <div class="form-group">
                         <label for="categoryName">Category Name</label>
-                        <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Enter category name" required>
+                        <input type="text" class="form-control" id="category" name="categoryName" onkeyup="validateName()" placeholder="Enter category name" required>
+                        <div id="category-error"></div>
                       </div>
                       <div class="form-group">
                         <label for="categoryStatus">Status</label>
@@ -120,5 +121,57 @@
               </div>
             </div>
           </div>
+
+<!-- validate category ------------------------------------------------------------------------------------------------------->
+<script>
+function validateName() {
+  let name = document.getElementById('category').value;
+  let nameError = document.getElementById('category-error');
+
+  if (name.trim().length === 0) {
+    nameError.innerHTML = 'category is required';
+    nameError.style.color = 'red';
+    return false;
+  }
+
+
+if (!name.match(/^[A-Za-z\s]+$/)) {
+    nameError.innerHTML = 'Category must contain only letters and spaces';
+    nameError.style.color = 'red';
+    return false;
+  }
+
+ nameError.innerHTML = 'Valid';
+ nameError.style.color = 'green';
+  return true;
+}
+
+document.getElementById('categoryForm').addEventListener('submit', function(event) {
+  if (!validateName()) {
+    event.preventDefault(); // Prevent form submission if validation fails
+  }
+});
+
+
+</script>
+
+<script>
+function checkCategoryExistence() {
+    // Get the current URL
+    const urlParams = new URLSearchParams(window.location.search);
+    // Check if 'id' parameter exists and its value is 'already_exist'
+    if (urlParams.get('id') === 'already_exist') {
+      // Display error message in the error div
+      document.getElementById('category-error').textContent = "Category already exists. Please choose a different name.";
+    }
+  }
+
+  // Call the function when the page loads
+  window.onload = checkCategoryExistence;
+
+
+</script>
+
+
        
 <%- include('../partials/footer') %>

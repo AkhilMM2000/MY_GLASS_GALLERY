@@ -8,37 +8,23 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-sm-7 col-md-9">
-							<div id="colorlib-logo"><a href="index.html">Eyegaze</a></div>
+							<div id="colorlib-logo"><a href="index.html">EYEGAZE</a></div>
 						</div>
-						<div class="col-sm-5 col-md-3">
-							<form action="#" class="search-wrap">
-								<div class="form-group">
-									<input type="search" class="form-control search" placeholder="Search">
-									<button class="btn btn-primary submit-search text-center" type="submit"><i
-											class="icon-search"></i></button>
-								</div>
-							</form>
-						</div>
-					</div>
+						
+				 </div>
 					<div class="row">
 						<div class="col-sm-12 text-left menu-1">
 							<ul>
-								<li><a href="index.html">Home</a></li>
-								<li class="has-dropdown active">
-									<a href="men.html">Men</a>
-									<ul class="dropdown">
-										<li><a href="product-detail.html">Product Detail</a></li>
-										<li><a href="cart.html">Shopping Cart</a></li>
-										<li><a href="checkout.html">Checkout</a></li>
-										<li><a href="order-complete.html">Order Complete</a></li>
-										<li><a href="add-to-wishlist.html">Wishlist</a></li>
-									</ul>
-								</li>
-								<li><a href="women.html">Women</a></li>
+								<li class="active"><a href="index.html">Home</a></li>
+								<li><a href="/product">shop</a></li>
 								<li><a href="about.html">About</a></li>
 								<li><a href="contact.html">Contact</a></li>
-								<li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a>
-								</li>
+							
+									<li class="cart"><a href="/myaccount">my account</a></li>
+							
+									
+							
+								<li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
 							</ul>
 						</div>
 					</div>
@@ -67,12 +53,11 @@
 				</div>
 			</div>
 		</nav>
-
 		<div class="breadcrumbs">
 			<div class="container">
 				<div class="row">
 					<div class="col">
-						<p class="bread"><span><a href="index.html">Home</a></span> / <span>Product Details</span></p>
+						<p class="bread"><span><a href="/product">products</a></span> / <span>Product Details</span></p>
 					</div>
 				</div>
 			</div>
@@ -86,7 +71,9 @@
 							<div class="main-image">
 
 								<img id="main-img" src="/productimage/<%=pro.productimages[0]%>" class="img-fluid"
+								
 									alt="Main Image">
+									
 							</div>
 							<div class="thumbnail-images">
 								<div class="thumb" onclick="changeImage('/productimage/<%=pro.productimages[0]%>')">
@@ -135,13 +122,14 @@
 							<div class="row">
 								<div class="col-sm-12 text-center">
 									<div class="d-flex align-items-center justify-content-center">
+										
 										<!-- Quantity Input Field -->
 										<div class="quantity-container me-3">
 											<button type="button" class="btn btn-secondary btn-decrement">-</button>
 											<input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= pro.stock< 5 ?pro.stock:5 %>"/>
 											<button type="button" class="btn btn-secondary btn-increment">+</button>
 										</div>
-										
+									
 										<!-- Add to Cart Button -->
 										<p class="addtocart mb-0">
 											<a href="javascript:void(0)" class="btn btn-primary btn-addtocart" onclick="addcart('<%= pro._id %>', document.getElementById('quantity').value)">
@@ -724,7 +712,7 @@ document.querySelector('.btn-decrement').addEventListener('click', function() {
 });
 
 ///change image function
-            
+       
 function changeImage(src) {
             document.getElementById('main-img').src = src;
         }
@@ -755,9 +743,9 @@ function changeImage(src) {
 	<script src="/js/jquery.magnific-popup.min.js"></script>
 	<script src="/js/magnific-popup-options.js"></script>
 	<!-- Date Picker -->
-
-	<!-- Main -->
+    <!-- Main -->
 	<script src="/js/main.js"></script>
+	<script src="https://cdn.jsdelivr.net/jquery.elevatezoom/3.0.8/jquery.elevateZoom.min.js"></script>
 
 	
 	<%- include('../partials/footer') %>

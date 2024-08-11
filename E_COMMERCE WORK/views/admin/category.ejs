@@ -164,7 +164,8 @@
     
       <div class="mb-3">
         <label for="categoryName" class="form-label">Change Category Name</label>
-        <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+        <input type="text" class="form-control" id="category" name="category-edit" onkeyup="validateName()" required>
+        <div id="brand-error"></div>
       </div>
       <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
       
@@ -177,14 +178,56 @@
   </div>
 </div>
 <script>
+
+function validateName() {
+    const brandNameInput = document.getElementById('category');
+    const brandError = document.getElementById('brand-error');
+    const saveChangesBtn = document.getElementById('saveChangesBtn');
+
+    const nameValue = brandNameInput.value.trim();
+
+    if (!nameValue || nameValue.length === 0) {
+        brandError.textContent = "Brand name cannot be empty.";
+        brandError.style.color = "red";
+        saveChangesBtn.disabled = true;
+    } else if (!/^[a-zA-Z\s]{3,}$/.test(nameValue)) {
+        brandError.textContent = "Brand name must be at least 3 characters long and contain only letters.";
+        brandError.style.color = "red";
+        saveChangesBtn.disabled = true;
+    } else if (nameValue.replace(/\s/g, '').length < 3) {
+        brandError.textContent = "Brand name must contain at least 3 non-space characters.";
+        brandError.style.color = "red";
+        saveChangesBtn.disabled = true;
+    } else {
+        brandError.textContent = "";
+        saveChangesBtn.disabled = false;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let categoryid;
 function changeName(id){
   categoryid=id;
 }
 
+
 document.getElementById('saveChangesBtn').addEventListener('click', function() {
   // Get the value of the input field
-  const categoryName = document.getElementById('categoryName').value;
+  const categoryName = document.getElementById('category').value;
+console.log(categoryName);
 
   // Perform any actions you need with the category name
   // For example, sending it to the server
