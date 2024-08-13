@@ -45,9 +45,20 @@ const orderSchema = new mongoose.Schema({
            
         },
         status: { type: String },
-        cancelReason: { type: String }
+   
+        return_reason: { 
+            type: String 
+        },
+        return_request:{
+            type:Boolean,
+            default:false,
+            required:true
+        }
     }],
     totalAmount: { type: Number, required: true },
+    razorpay_id:{
+        type:String
+    },
     orderDate: {
         type: Date,
         // default: Date.now,

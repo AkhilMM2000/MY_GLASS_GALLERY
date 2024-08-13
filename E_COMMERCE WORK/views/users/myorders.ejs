@@ -169,16 +169,6 @@
 }
     </style>
 
-
-
-
-    </style>
-
-
-
-
-
-
     <div class="colorlib-loader"></div>
     <div id="page">
         <nav class="colorlib-nav" role="navigation">
@@ -316,8 +306,8 @@
                                                 <% if (array.status==='Cancelled' ) { %>    
                                                     <span class="text-muted">Order Cancelled</span>
                                                     <% }else if (array.status==='Delivered' ) { %>
-                                                    <button class="btn btn-sm btn-success">Return</button>
-
+                                                    <button class="btn btn-sm btn-success" data-target="#myModal" data-toggle="modal" onclick="productReturn('<%=item.orderId%>','<%=array.productId._id%>')">Return</button>
+                                                 
                                                     <% } else { %>
                                                         <button class="btn btn-sm btn-danger"
                                                             onclick="cancelOrder('<%=item.orderId%>','<%=array.productId._id%>')">cancel</button>
@@ -364,40 +354,101 @@
             <!-- Your existing table body code here -->
         </tbody>
 
-        <!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const orderLinks = document.querySelectorAll('.order-link');
-      orderLinks.forEach(link => {
-        link.addEventListener('click', handleOrderClick);
-      });
-    });
+<!-- modal for cancel reason ----------------------------------------------------------------->
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div class="modal-header" style="background-color: #f8f9fa; border-bottom: none; padding: 20px;">
+          <h4 class="modal-title" style="font-weight: 700; color: #333;">Return Product</h4>
+          <!-- <button type="button" class="close" data-dismiss="modal" style="font-size: 28px;">&times;</button> -->
+        </div>
+        <div class="modal-body" style="padding: 20px;">
+          <form id="returnProductForm">
+            <div class="form-group">
+                <label for="reason" style="font-weight: 700; font-size: 18px; color: #333;">Reason for Return:</label>
+                <textarea class="form-control" id="reason" name="reason"  rows="4" 
+                          placeholder="Enter the reason for returning the product" required 
+                          style="border: 2px solid #bbb; border-radius: 8px; padding: 12px; 
+                                 font-size: 16px; color: #333; background-color: #f9f9f9;"></textarea>
+              </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" 
+                    style="background-color: #007bff; border: none; border-radius: 8px; 
+                           font-weight: 600; margin-top: 20px; padding: 12px;">
+              Submit Return Request
+            </button>
+          </form>
+        </div>
+        <div class="modal-footer" style="border-top: none; padding: 0 20px 20px;">
+          <button type="button" class="btn btn-default" data-dismiss="modal" 
+                  style="background-color: #f8f9fa; border: 2px solid #ddd; 
+                         border-radius: 8px; color: #333; font-weight: 600; padding: 10px 20px;">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   
-    function handleOrderClick(event) {
-      event.preventDefault();
-      const orderId = event.target.dataset.orderId;
-      fetchOrderDetails(orderId);
-    }
-  
-    function fetchOrderDetails(orderId) {
-      fetch(`/api/order/${orderId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Order details:', data);
-        // Handle the response data here (e.g., update the UI with order details)
-      })
-      .catch(error => {
-        console.error('Error fetching order details:', error);
-      });
-    }
-  </script> -->
 
 
+       
         <script>
+
+let orderid;
+let productid;
+
+function productReturn(order,product){
+     orderid=order
+    productid=product
+    console.log(orderid,productid);
+    
+}
+document.getElementById('returnProductForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent form from submitting normally
+    
+    const reason = document.getElementById('reason').value;
+   
+   
+    fetch('/return-product', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ reason: reason ,order:orderid,product:productid})
+    })
+    .then(response => response.json())
+    .then(data => {
+          if (data.success) {
+            Swal.fire(
+              'Cancelled',
+              'return requested succesfully successfully.',
+              'success'
+            ).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire(
+              'Error!',
+              'There was a problem request for return order.',
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire(
+            'Error!',
+            `There was a problem for your return`,
+            'error'
+          );
+        });
+    
+    });
+
+//below function for cancell order-------------------------------------------------------------------------------------------------->
+
          function cancelOrder(orderid, productid) {
   Swal.fire({
     title: 'Are you sure?',
@@ -449,7 +500,8 @@
         </script>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="/js/jquery.min.js"></script>
         <!-- popper -->
         <script src="/js/popper.min.js"></script>

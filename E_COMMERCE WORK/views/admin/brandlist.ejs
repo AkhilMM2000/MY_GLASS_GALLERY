@@ -130,7 +130,7 @@
                               </td>
                                <td>
                               
-         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" onclick="changeName('<%= brand._id %>')"  data-target="#myModal">Edit</button>
+         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" onclick="changeName('<%= brand._id %>'),showname('<%=brand.brandName%>')"  data-target="#myModal">Edit</button>
                                
                               </td>
                             </tr>
@@ -199,6 +199,15 @@ function validateName() {
         saveChangesBtn.disabled = false;
     }
 }
+
+// show the name yu want to edit
+function showname(data){
+  
+  document.getElementById('brandName1').value=data
+}
+
+
+
 
 
 

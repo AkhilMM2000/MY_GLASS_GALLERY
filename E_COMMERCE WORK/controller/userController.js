@@ -673,6 +673,20 @@ const change_profile = async (req, res) => {
 
 }
 
+
+const logout=async(req,res)=>{
+  try {
+    
+    delete req.session.userid
+    res.redirect('/')
+  } catch (error) {
+    console.log(error);
+    
+  }
+
+}
+
+
 module.exports = {
   loginhome,
   get_register,
@@ -695,7 +709,8 @@ module.exports = {
   change_profile,
   forget_password,
   new_password,
-  save_password
+  save_password,
+  logout
 }
 
 

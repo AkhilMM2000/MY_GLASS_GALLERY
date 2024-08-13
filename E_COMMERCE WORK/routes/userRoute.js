@@ -3,6 +3,7 @@ const user_route=express();
 const session=require('express-session')
 const config = require('../config/config');
 const passport = require('passport');
+const nocache =require('nocache')
 const islogin=require('../middleWares/islogin')
 user_route.use(session({
     secret: config.sessionSecret,
@@ -11,7 +12,7 @@ user_route.use(session({
   
 }));
 
-
+user_route.use(nocache())
 // Middleware to parse JSON and urlencoded data
 user_route.use(express.json());
 user_route.use(express.urlencoded({ extended: true }));
@@ -20,26 +21,26 @@ user_route.use(express.urlencoded({ extended: true }));
 const userController=require('../controller/userController')
 const orderController=require('../controller/orderController')
 const accountController=require('../controller/accountController')
-user_route.get('/',userController.loginhome)
-user_route.get('/register',userController.get_register)
-user_route.post('/register',userController.register_user)
-user_route.get('/home',userController.loginhome)
-user_route.get('/sign',userController.loadsign)
+user_route.get('/',islogin.verifyLogout,userController.loginhome)
+user_route.get('/register',islogin.verifyLogout,userController.get_register)
+user_route.post('/register',islogin.verifyLogout,userController.register_user)
+user_route.get('/home',islogin.verifyLogin,userController.loginhome)
+user_route.get('/sign',islogin.verifyLogout,userController.loadsign)
 
-user_route.get('/otp',userController.get_otp)
+user_route.get('/otp',islogin.verifyLogout,userController.get_otp)
 
-user_route.post('/otp',userController.verify_otp)
-user_route.post('/sign',userController.verify_user)
-user_route.post('/otp_resend',userController.resendOTP)
-user_route.get('/forgetpassword',userController.forget_password)
-user_route.patch('/forgetpassword',userController.new_password)
-user_route.patch('/savenewpassword',userController.save_password)
+user_route.post('/otp',islogin.verifyLogout,userController.verify_otp)
+user_route.post('/sign',islogin.verifyLogout,userController.verify_user)
+user_route.post('/otp_resend',islogin.verifyLogout,userController.resendOTP)
+user_route.get('/forgetpassword',islogin.verifyLogout,userController.forget_password)
+user_route.patch('/forgetpassword',islogin.verifyLogout,userController.new_password)
+user_route.patch('/savenewpassword',islogin.verifyLogout,userController.save_password)
 //route for google authentication
 
 // //google auth
-user_route.get('/auth/google/callback',passport.authenticate('google', { failureRedirect: '/sign' }),userController.googleSuccess);
+user_route.get('/auth/google/callback',islogin.verifyLogout,passport.authenticate('google', { failureRedirect: '/sign' }),userController.googleSuccess);
 
-user_route.get('/auth/google',passport.authenticate('google', { scope: ['profile', 'email'] }));
+user_route.get('/auth/google',islogin.verifyLogout,passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 //route for products......................................................................................................................>
 
@@ -57,7 +58,7 @@ user_route.delete('/cart/delete/:productid',islogin.verifyLogin,userController.c
 user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)
 user_route.post('/place-order',islogin.verifyLogin,orderController.place_order)
 user_route.get('/placeorder',islogin.verifyLogin,orderController.order_success)
-
+user_route.post('/return-product',islogin.verifyLogin,orderController.return_request)
 // account controller below routes------------------------------------------------------------------------------------------------------->
 
 //route for account adress
@@ -71,10 +72,19 @@ user_route.get("/orders",islogin.verifyLogin,accountController.load_orders)
 user_route.get('/detailorder',islogin.verifyLogin,accountController.order_details)
 user_route.patch('/cancelorder',islogin.verifyLogin,accountController.cancel_order)
 
+
+//route for wallet 
+user_route.get('/wallet',islogin.verifyLogin,orderController.load_wallet)
+
+
+
+
 // routes for myaccount
 user_route.get('/myaccount',islogin.verifyLogin,userController.my_account)
 user_route.patch('/password/change',islogin.verifyLogin,userController.change_password)
 user_route.patch('/user/edit-profile',islogin.verifyLogin,userController.change_profile)
+user_route.get('/logout',userController.logout)
+
 
 module.exports=user_route
 

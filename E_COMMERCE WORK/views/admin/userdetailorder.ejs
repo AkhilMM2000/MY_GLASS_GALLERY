@@ -129,6 +129,28 @@
         .table-sm td {
             padding: 0.5rem;
         }
+        .orange-btn {
+    background-color: #FF8C00; /* Dark Orange */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .orange-btn:hover {
+    background-color: #FFA500; /* Orange */
+  }
+
+  .orange-btn:active {
+    background-color: #FF7F50; /* Coral */
+  }
     </style>
     
   <div class="container-scroller">
@@ -334,12 +356,22 @@
                                             <% if (item.status === 'Cancelled') { %>
                                                 <!-- Show a message or alternative text -->
                                                 <span>Status is Cancelled</span>
-                                            <% } else { %>
+                                            <% } else if(item.status!=='Delivered') { %>
 
                                             <button class="btn btn-sm btn-outline-primary"
                                                 onclick="getProductId('<%=item._id%>'),getStatus(this)" data-toggle="modal"
                                                 data-target="#statusModal">Change Status</button>
-                                                <% } %>
+                                                <% } else if(item.return_request===true) { %>
+                                                  
+                                                    <button class="orange-btn" data-target="#myModal" data-toggle="modal" >Accept</button>
+
+                                                 
+
+
+                                                    <% }else{ %> 
+
+                                                        <span>Status is delivered</span>
+                                                        <%}%>
                                         </td>
                                     </tr>
                                     <%})%>
@@ -403,6 +435,33 @@
             </div>
         </div>
     </div>
+
+<!-- modal for accept the request from user in the return  -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Return Reason</h4>
+        </div>
+        <div class="modal-body">
+          <p id="returnReason">The return reason will be displayed here.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" onclick="acceptReturn()">Accept Return</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  
+
+
+
+
 
     <!-- for change the status--------------------------------------------------------------------------------------- -->
 

@@ -25,6 +25,7 @@ const verify_admin = async (req, res) => {
             if (admin.is_admin === 1) {
                 const isMatch = await bcrypt.compare(password, admin.password);
                 if (isMatch) {
+                    req.session.admin=admin._id
                     res.render('admin/dashboard');
                 } else {
                     res.render('admin/login', { data:"Incorrect password" });

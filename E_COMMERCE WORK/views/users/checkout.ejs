@@ -166,13 +166,13 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                    <!-- <div class="form-group">
+                                    <div class="form-group">
                                     <div class="col-md-12">
                                         <div class="radio">
-                                           <label><input type="radio" name="optradio"> Check Payment</label>
+                                           <label><input type="radio" name="optradio" value="razorpay"> online payment</label>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                                     <div class="form-group">
                                         <div class="col-md-12">
                                             <div class="radio">
@@ -375,42 +375,110 @@
         }
     </style>
 
-    <script>
-        document.getElementById('placeOrderBtn').addEventListener('click', function (event) {
-            event.preventDefault();
+<script>
+    document.getElementById('placeOrderBtn').addEventListener('click', async function (event) {
+event.preventDefault();
 
+const paymentMethod = document.querySelector('input[name="optradio"]:checked').value;
+const addressId = document.querySelector('input[name="address"]:checked').value;
 
-            const paymentMethod = document.querySelector('input[name="optradio"]:checked').value;
-
-            const addressId = document.querySelector('input[name="address"]:checked').value;
-
-            fetch('/place-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    paymentMethod: paymentMethod,
-                    addressId: addressId
-                })
+if (paymentMethod === 'razorpay') {
+    try {
+        // First, create a Razorpay order
+        const razorpayOrderResponse = await fetch('/place-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                paymentMethod: paymentMethod,
+                addressId: addressId
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Redirect to order confirmation page or show success message
-                        window.location.href = data.redirect;
-                    } else {
-                        // Handle error
-                        alert('Error placing order: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
         });
 
-    </script>
+        const razorpayOrderData = await razorpayOrderResponse.json();
+console.log(razorpayOrderData,"hhhhhhhhhhhhhhhhhh");
 
+        if (razorpayOrderData.success) {
+            // Proceed with Razorpay payment
+            var options = {
+                key: razorpayOrderData.key_id,
+                amount: razorpayOrderData.amount,
+                currency: razorpayOrderData.currency,
+                name: "Your Company Name",
+                description: "Test Transaction",
+                order_id: razorpayOrderData.order_id,
+                handler: function (response) {
+                    // On successful payment, send payment details to the backend
+                    fetch('/place-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            paymentMethod: paymentMethod,
+                            addressId: addressId,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = data.redirect;
+                        } else {
+                            alert('Error placing order: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                },
+                prefill: {
+                    name: "Your Name",
+                    email: "your-email@example.com",
+                    contact: "9999999999"
+                },
+                theme: {
+                    color: "#F37254"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        } else {
+            alert('Error creating Razorpay order: ' + razorpayOrderData.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+} else if (paymentMethod === 'cod') {
+    // COD payment, directly place the order
+    fetch('/place-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            paymentMethod: paymentMethod,
+            addressId: addressId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            alert('Error placing order: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+});
+
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script src="/js/jquery.min.js"></script>
     <!-- popper -->
@@ -434,3 +502,8 @@
     <script src="/js/main.js"></script>
 
     <%- include('../partials/footer') %>
+
+
+
+    
+    
