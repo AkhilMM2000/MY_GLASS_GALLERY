@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
-const  Brand= new mongoose.Schema({
-     
-    brandName : {
-        type : String,
-        required : true
+const Brand = new mongoose.Schema({
+
+    brandName: {
+        type: String,
+        required: true
     },
     listed: {
-        type : Boolean,
-        default : false
+        type: Boolean,
+        default: false
     }
 })
 

@@ -129,119 +129,123 @@
         .table-sm td {
             padding: 0.5rem;
         }
+
         .orange-btn {
-    background-color: #FF8C00; /* Dark Orange */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
+            background-color: #FF8C00;
+            /* Dark Orange */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
 
-  .orange-btn:hover {
-    background-color: #FFA500; /* Orange */
-  }
+        .orange-btn:hover {
+            background-color: #FFA500;
+            /* Orange */
+        }
 
-  .orange-btn:active {
-    background-color: #FF7F50; /* Coral */
-  }
+        .orange-btn:active {
+            background-color: #FF7F50;
+            /* Coral */
+        }
     </style>
-    
-  <div class="container-scroller">
-    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: hsl(0, 10%, 92%);">
-      <div class="navbar-brand-wrapper d-flex align-items-center">
-        <a class="navbar-brand brand-logo" href="/admin/dashboard" style="text-decoration: none;">
-          <span style="font-size: 24px; font-weight: bold; color: #333; display: flex; align-items: center;">
-            <i class="mdi mdi-glasses mr-2" style="font-size: 28px;"></i>
-            <span style="margin-left: 5px;">EYEGAZE</span>
-          </span>
-        </a>
-      </div>
-      <div class="navbar-menu-wrapper d-flex align-items-stretch justify-content-end">
-        <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item">
-            <span class="nav-link nav-profile">Akhil</span>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
-      <div class="row row-offcanvas row-offcanvas-right">
-        <!-- partial:../../partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/dashboard">
-                <span class="menu-title">Dashboard</span>
-                <i class="mdi mdi-home menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/products">
-                <span class="menu-title">Products</span>
-                <i class="mdi mdi-package-variant-closed menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/category">
-                <span class="menu-title">Categories</span>
-                <i class="mdi mdi-shape menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/brand">
-                <span class="menu-title">Brands</span>
-                <i class="mdi mdi-tag menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/orders">
-                <span class="menu-title">Orders</span>
-                <i class="mdi mdi-cart menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/offers">
-                <span class="menu-title">Offers</span>
-                <i class="mdi mdi-gift menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/users">
-                <span class="menu-title">Users</span>
-                <i class="mdi mdi-account-multiple menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/coupons">
-                <span class="menu-title">Coupons</span>
-                <i class="mdi mdi-ticket-percent menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/banners">
-                <span class="menu-title">Banners</span>
-                <i class="mdi mdi-image menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/banners">
-                <span class="menu-title">logout</span>
-                <i class="mdi mdi-image menu-icon"></i>
-              </a>
-            </li>
-          </ul>
+
+    <div class="container-scroller">
+        <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: hsl(0, 10%, 92%);">
+            <div class="navbar-brand-wrapper d-flex align-items-center">
+                <a class="navbar-brand brand-logo" href="/admin/dashboard" style="text-decoration: none;">
+                    <span style="font-size: 24px; font-weight: bold; color: #333; display: flex; align-items: center;">
+                        <i class="mdi mdi-glasses mr-2" style="font-size: 28px;"></i>
+                        <span style="margin-left: 5px;">EYEGAZE</span>
+                    </span>
+                </a>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-stretch justify-content-end">
+                <ul class="navbar-nav navbar-nav-right">
+                    <li class="nav-item">
+                        <span class="nav-link nav-profile">Akhil</span>
+                    </li>
+                </ul>
+            </div>
         </nav>
-      </div>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <div class="row row-offcanvas row-offcanvas-right">
+                <!-- partial:../../partials/_sidebar.html -->
+                <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <span class="menu-title">Dashboard</span>
+                                <i class="mdi mdi-home menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <span class="menu-title">Products</span>
+                                <i class="mdi mdi-package-variant-closed menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/category">
+                                <span class="menu-title">Categories</span>
+                                <i class="mdi mdi-shape menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/brand">
+                                <span class="menu-title">Brands</span>
+                                <i class="mdi mdi-tag menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/orders">
+                                <span class="menu-title">Orders</span>
+                                <i class="mdi mdi-cart menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/offers">
+                                <span class="menu-title">Offers</span>
+                                <i class="mdi mdi-gift menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/users">
+                                <span class="menu-title">Users</span>
+                                <i class="mdi mdi-account-multiple menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/coupons">
+                                <span class="menu-title">Coupons</span>
+                                <i class="mdi mdi-ticket-percent menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/banners">
+                                <span class="menu-title">Banners</span>
+                                <i class="mdi mdi-image menu-icon"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/banners">
+                                <span class="menu-title">logout</span>
+                                <i class="mdi mdi-image menu-icon"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
-  </div>
     <!-- NAV END............................................................................... -->
     <div class="content-wrapper py-5">
         <div class="container">
@@ -348,30 +352,34 @@
                                         <td>&#8377;<%=item.price *item.quantity %>
                                         </td>
                                         <td>
-                                            <div class="badge badge-success status-indicator" data-status="<%=item.status%>">
+                                            <div class="badge badge-success status-indicator"
+                                                data-status="<%=item.status%>">
                                                 <%=item.status%>
                                             </div>
                                         </td>
                                         <td>
-                                            <% if (item.status === 'Cancelled') { %>
+                                            <% if (item.status==='Cancelled' ) { %>
                                                 <!-- Show a message or alternative text -->
                                                 <span>Status is Cancelled</span>
-                                            <% } else if(item.status!=='Delivered') { %>
+                                                <% } else if(item.status!=='Delivered' ) { %>
 
-                                            <button class="btn btn-sm btn-outline-primary"
-                                                onclick="getProductId('<%=item._id%>'),getStatus(this)" data-toggle="modal"
-                                                data-target="#statusModal">Change Status</button>
-                                                <% } else if(item.return_request===true) { %>
-                                                  
-                                                    <button class="orange-btn" data-target="#myModal" data-toggle="modal" >Accept</button>
+                                                    <button class="btn btn-sm btn-outline-primary"
+                                                        onclick="getProductId('<%=item._id%>'),getStatus(this)"
+                                                        data-toggle="modal" data-target="#statusModal">Change
+                                                        Status</button>
+                                                    <% } else if(item.return_request===true) { %>
 
-                                                 
+                                                        <button class="orange-btn" data-target="#myModal"
+                                                            data-toggle="modal"
+                                                            onclick="productReturn('<%=orderdata[0].orderId%>','<%=item.productId._id%>','<%=item.return_reason%>')">showrequest</button>
 
 
-                                                    <% }else{ %> 
 
-                                                        <span>Status is delivered</span>
-                                                        <%}%>
+
+                                                        <% }else{ %>
+
+                                                            <span>Status is delivered</span>
+                                                            <%}%>
                                         </td>
                                     </tr>
                                     <%})%>
@@ -436,45 +444,79 @@
         </div>
     </div>
 
-<!-- modal for accept the request from user in the return  -->
-<div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-  
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Return Reason</h4>
+    <!-- modal for accept the request from user in the return  -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Return Reason</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="returnReason"> </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="acceptReturnBtn" >Accept Return</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
         </div>
-        <div class="modal-body">
-          <p id="returnReason">The return reason will be displayed here.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" onclick="acceptReturn()">Accept Return</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-  
     </div>
-  </div>
-  
+    <!-- for accept the return request from user -->
+    <script>
+        let orderid;
+        let product_id;
+        let reason;
+        function productReturn(a, b,c) {
+            orderid = a
+            product_id = b
+          reason=c
+                 document.getElementById('returnReason').innerText=reason
+
+        }
+   
+document.getElementById('acceptReturnBtn').addEventListener('click', function() {
+    // Send a fetch request to your server to process the return
+    
+    fetch('/admin/accept_return', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ order: orderid, productid: product_id})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Return accepted and stock updated successfully.');
+            // Optionally, you can update the UI to reflect the status change
+        } else {
+            alert('Failed to accept return.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing the return.');
+    });
+});
 
 
-
+    </script>
 
 
     <!-- for change the status--------------------------------------------------------------------------------------- -->
 
-
-    
     <script>
 
         function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 
-let orderID = getQueryParam('orderID');
+        let orderID = getQueryParam('orderID');
 
 
         let productid
@@ -483,89 +525,89 @@ let orderID = getQueryParam('orderID');
             productid = id
 
         }
-        let  currentStatus
+        let currentStatus
         function getStatus(buttonElement) {
-    // Find the closest status-indicator div relative to the clicked button
-    const statusDiv = buttonElement.closest('tr').querySelector('.status-indicator');
-    
-    // Get the status value from the data-status attribute
-     currentStatus = statusDiv.getAttribute('data-status');
-    
-    // Output or use the status as needed
-    console.log("Current Status:", currentStatus);
-    
-    
-}
+            // Find the closest status-indicator div relative to the clicked button
+            const statusDiv = buttonElement.closest('tr').querySelector('.status-indicator');
+
+            // Get the status value from the data-status attribute
+            currentStatus = statusDiv.getAttribute('data-status');
+
+            // Output or use the status as needed
+            console.log("Current Status:", currentStatus);
+
+
+        }
 
         document.getElementById('saveStatusBtn').addEventListener('click', () => {
-        const selectedStatus = document.getElementById('orderStatus').value;
-       console.log(selectedStatus);
-        console.log(productid);
-       
-        const statusHierarchy = ['Cancelled','Pending', 'Dispatch', 'Shipped', 'Delivered'];
-        // Check if the status change is valid
-        if (statusHierarchy.indexOf(selectedStatus) < statusHierarchy.indexOf(currentStatus)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Status Change',
-                text: 'You cannot move the order status backward!'
-            });
-            return;
-        }
-        if (statusHierarchy.indexOf(selectedStatus) ==statusHierarchy.indexOf(currentStatus)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Status Change',
-                text: `its already ${currentStatus}`
-            });
-            return;
-        }
+            const selectedStatus = document.getElementById('orderStatus').value;
+            console.log(selectedStatus);
+            console.log(productid);
 
-        fetch(`/admin/detailorder`,{
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ status: selectedStatus,productid,orderID})
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Close the modal
-                $('#statusModal').modal('hide');
-                // Optionally, update the UI to reflect the new status
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Order status updated successfully!'
-                }).then(() => {
-            // Reload the page after the Swal modal is closed
-            window.location.reload();
-        });
-            } else {
+            const statusHierarchy = ['Cancelled', 'Pending', 'Dispatch', 'Shipped', 'Delivered'];
+            // Check if the status change is valid
+            if (statusHierarchy.indexOf(selectedStatus) < statusHierarchy.indexOf(currentStatus)) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Update Failed',
-                    text: 'Failed to update status'
+                    title: 'Invalid Status Change',
+                    text: 'You cannot move the order status backward!'
                 });
+                return;
             }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while updating the status'
-            });
-          
+            if (statusHierarchy.indexOf(selectedStatus) == statusHierarchy.indexOf(currentStatus)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Status Change',
+                    text: `its already ${currentStatus}`
+                });
+                return;
+            }
+
+            fetch(`/admin/detailorder`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: selectedStatus, productid, orderID })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Close the modal
+                        $('#statusModal').modal('hide');
+                        // Optionally, update the UI to reflect the new status
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order status updated successfully!'
+                        }).then(() => {
+                            // Reload the page after the Swal modal is closed
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Update Failed',
+                            text: 'Failed to update status'
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while updating the status'
+                    });
+
+                });
         });
-    });
 
     </script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 
     <%- include('../partials/footer') %>

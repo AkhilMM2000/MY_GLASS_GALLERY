@@ -1,0 +1,315 @@
+<%- include('../partials/admheader') %>
+
+  
+<div class="container-scroller">
+  <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: hsl(0, 10%, 92%);">
+    <div class="navbar-brand-wrapper d-flex align-items-center">
+      <a class="navbar-brand brand-logo" href="/admin/dashboard" style="text-decoration: none;">
+        <span style="font-size: 24px; font-weight: bold; color: #333; display: flex; align-items: center;">
+          <i class="mdi mdi-glasses mr-2" style="font-size: 28px;"></i>
+          <span style="margin-left: 5px;">EYEGAZE</span>
+        </span>
+      </a>
+    </div>
+    <div class="navbar-menu-wrapper d-flex align-items-stretch justify-content-end">
+      <ul class="navbar-nav navbar-nav-right">
+        <li class="nav-item">
+          <span class="nav-link nav-profile">Akhil</span>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <!-- partial:../../partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/dashboard">
+              <span class="menu-title">Dashboard</span>
+              <i class="mdi mdi-home menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/products">
+              <span class="menu-title">Products</span>
+              <i class="mdi mdi-package-variant-closed menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/category">
+              <span class="menu-title">Categories</span>
+              <i class="mdi mdi-shape menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/brand">
+              <span class="menu-title">Brands</span>
+              <i class="mdi mdi-tag menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/orders">
+              <span class="menu-title">Orders</span>
+              <i class="mdi mdi-cart menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/offers">
+              <span class="menu-title">Offers</span>
+              <i class="mdi mdi-gift menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/users">
+              <span class="menu-title">Users</span>
+              <i class="mdi mdi-account-multiple menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/coupons">
+              <span class="menu-title">Coupons</span>
+              <i class="mdi mdi-ticket-percent menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/banners">
+              <span class="menu-title">Banners</span>
+              <i class="mdi mdi-image menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/banners">
+              <span class="menu-title">logout</span>
+              <i class="mdi mdi-image menu-icon"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+        <!-- partial -->
+        <div class="content-wrapper">
+      
+            
+              
+            <div class="row">
+           
+                <div class="col-md-4 stretch-card grid-margin">
+                    <div class="card bg-gradient-success text-white">
+                      <div class="card-body">
+                        <h4 class="font-weight-normal mb-3">Offer Name: New Year Sale</h4>
+                        <p>Description: Enjoy 40% off on selected items.</p>
+                        <p>Discount: 40%</p>
+                        <p>Type: Festive</p>
+                        <p>Status: <span class="badge bg-success">Active</span></p>
+                        <p>
+                          <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#newYearSaleProducts" aria-expanded="false" aria-controls="newYearSaleProducts">
+                            Show Products
+                          </button>
+                        </p>
+                        <div class="collapse" id="newYearSaleProducts">
+                          <ul>
+                            <li>Product Alpha</li>
+                            <li>Product Beta</li>
+                            <li>Product Gamma</li>
+                          </ul>
+                        </div>
+                        <div class="mt-3">
+                          <button class="btn btn-warning btn-sm">Change Status</button>
+                          <button class="btn btn-info btn-sm">Edit Offer</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+            </div>
+        
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOfferModal">Add Offer</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryOfferModal">
+                Add Category Offer
+              </button>
+              
+          </div>
+          <!-- add product offer modal below ------------------------------------------------------------------------------>
+
+          <div class="modal fade" id="addOfferModal" tabindex="-1" aria-labelledby="addOfferModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addOfferModalLabel">Add New Offer</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="addOfferForm">
+                    <div class="mb-3">
+                      <label for="offerName" class="form-label">Offer Name</label>
+                      <input type="text" class="form-control" id="offerName" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="offerDescription" class="form-label">Description</label>
+                      <textarea class="form-control" id="offerDescription" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="offerDiscount" class="form-label">Discount (%)</label>
+                      <input type="number" class="form-control" id="offerDiscount" min="0" max="100" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="offerType" class="form-label">status</label>
+                      <select class="form-select" id="offerType" name="offerType" required>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                      
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="offerProducts" class="form-label">Products</label>
+                        <div class="form-control" style="height: 150px; overflow-y: auto; padding-left: 25px;">
+                            <%productdata.forEach(item => { %>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="<%=item._id%>" id="product1" name="offerProducts" style="margin-left: -1.5em;">
+                            <label class="form-check-label" for="product1"><%=item.productName%></label>
+                          </div>
+                          <% }); %>
+                        </div>
+                      </div>
+            
+                 
+                </div>
+                <div class="modal-footer">
+               
+                  <button type="submit" class="btn btn-primary" >Add Offer</button>
+                </div>
+            </form>
+              </div>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+            <!--  --------------------------------------------------------------------add product offer modal end here---------->
+
+             <!--  --------------------------------------------------------------------add product category modal start here---------->
+            <div class="modal fade" id="addCategoryOfferModal" tabindex="-1" aria-labelledby="addCategoryOfferModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addCategoryOfferModalLabel">Add New Category Offer</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="addCategoryOfferForm">
+                        <div class="mb-3">
+                          <label for="categoryOfferName" class="form-label">Offer Name</label>
+                          <input type="text" class="form-control" id="categoryOfferName" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="categoryOfferDescription" class="form-label">Description</label>
+                          <textarea class="form-control" id="categoryOfferDescription" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                          <label for="categoryOfferDiscount" class="form-label">Discount (%)</label>
+                          <input type="number" class="form-control" id="categoryOfferDiscount" min="0" max="100" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="categoryOfferType" class="form-label">Status</label>
+                          <select class="form-select" id="categoryOfferType" name="categoryOfferType" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="categoryOfferCategories" class="form-label">Categories</label>
+                          <div class="form-control" style="height: 150px; overflow-y: auto; padding-left: 25px;">
+                            <% categorydata.forEach(item => { %>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" value="<%=item._id%>" id="category1" name="categoryOfferCategories" style="margin-left: -1.5em;">
+                              <label class="form-check-label" for="category1"><%=item.categoryName%></label>
+                            </div>
+                            <% }); %>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Add Category Offer</button>
+                    </div>
+                    </form>
+                  </div>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+                <!--  --------------------------------------------------------------------add category offer modal end here---------->
+              
+          <script>
+document.getElementById('addOfferForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Prevent form from submitting the traditional way
+     
+  const modal = new bootstrap.Modal(document.getElementById('addOfferModal'));
+  const formData = {
+        offerName: document.getElementById('offerName').value,
+        offerDescription: document.getElementById('offerDescription').value,
+        offerDiscount: document.getElementById('offerDiscount').value,
+        offerType: document.getElementById('offerType').value,
+        offerProducts: []
+    };
+
+    // Collect checked product IDs
+    document.querySelectorAll('input[name="offerProducts"]:checked').forEach((checkbox) => {
+        formData.offerProducts.push(checkbox.value);
+    });
+console.log(formData);
+fetch('/admin/add-offer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Offer added successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                 
+                    modal.hide();
+                  
+                    location.reload();
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error: ' + data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+           
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+       
+        });
+      
+    })
+ 
+});
+</script>
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+          <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+<%- include('../partials/footer') %>
+
+

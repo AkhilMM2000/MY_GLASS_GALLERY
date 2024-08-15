@@ -390,15 +390,15 @@
                         <li><a href="#">Sign Out</a></li>
                     </ul>
                 </div>
-               
+                <%wallet.forEach(item=>{%>
 <div class="col-md-9 wallet-section">
     <div class="card shadow-sm mb-4 border-0 balance-card">
       <div class="card-body p-4">
         <h4 class="card-title mb-4">Wallet</h4>
         <div class="row">
           <div class="col-md-6">
-            <p class="mb-2">Current Balance:</p>
-            <span id="walletBalance">$100.00</span>
+            <p class="mb-2">Current Balance</p>
+            <span id="walletBalance">RS:<%=item.balance%></span>
           </div>
         </div>
       </div>
@@ -410,28 +410,29 @@
         <div class="table-responsive">
           <table class="table">
             <thead>
+            
               <tr>
                 <th scope="col">Date</th>
                 <th scope="col">Description</th>
-                <th scope="col">Type</th>
+                <!-- <th scope="col">Type</th> -->
                 <th scope="col">Amount</th>
               </tr>
+        
             </thead>
             <tbody>
+                <%item.transactions.forEach(trans=>{%>
               <tr>
-                <td>2024-08-13</td>
-                <td>Order #12345</td>
-                <td><span class="transaction-type debit">Debit</span></td>
-                <td>-$50.00</td>
+                <td><%=trans.date.toISOString().split('T')[0]%></td>
+                <td><%=trans.description%></td>
+                <!-- <td><span class="transaction-type debit">Debit</span></td>
+                <td><span class="transaction-type credit">Credit</span></td> -->
+                <td>RS:<%=trans.amount%></td>
               </tr>
-              <tr>
-                <td>2024-08-10</td>
-                <td>Refund #54321</td>
-                <td><span class="transaction-type credit">Credit</span></td>
-                <td>+$30.00</td>
-              </tr>
+              <%})%>
+             
               <!-- More rows as needed -->
             </tbody>
+            <%})%>
           </table>
         </div>
       </div>

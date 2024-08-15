@@ -6,6 +6,7 @@ const Cart = require('../model/cartModel')
 const Address = require('../model/addressModel')
 const Orders = require('../model/orderModel')
 const Razorpay = require('razorpay')
+const userwallet = require('../model/walletModal')
 
 const load_checkout = async (req, res) => {
 
@@ -219,12 +220,14 @@ const update_order = async (req, res) => {
 ///for get wallet----------------------------
 const load_wallet = async (req, res) => {
     try {
-        res.render('users/wallet')
+
+        const wallet = await userwallet.find()
+console.log(wallet);
+
+        res.render('users/wallet', { wallet })
     } catch (error) {
         console.log(error);
-
     }
-
 
 }
 //return the order------------------------------------------------------------>
@@ -235,13 +238,13 @@ const return_request = async (req, res) => {
 
         console.log(reason, order, product);
 
-        const orderdata = await Orders.findOne({ orderId:order
+        const orderdata = await Orders.findOne({
+            orderId: order
         });
 
         if (!orderdata) {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
-
 
         const productIndex = orderdata.products.findIndex(p => p.productId.toString() === product);
 
@@ -262,6 +265,75 @@ const return_request = async (req, res) => {
     }
 
 }
+//admin accept return request
+const return_accept = async (req, res) => {
+    try {
+
+        const { order, productid } = req.body
+        // console.log(order,productid);
+
+        const orderdata = await Orders.findOne({
+            orderId: order
+        })
+        const productdata = await product.findOne({
+            _id: productid
+        });
+
+        const user_id = orderdata.userId
+
+        if (!orderdata) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        const productIndex = orderdata.products.findIndex(p => p.productId.toString() === productid);
+
+        if (productIndex === -1) {
+            return res.status(404).json({ success: false, message: 'Product not found in order' });
+        }
+
+        orderdata.products[productIndex].return_request = false;
+        orderdata.products[productIndex].status = 'Returned';
+        const number = orderdata.products[productIndex].quantity;
+        const amount = orderdata.products[productIndex].price * number;
+        console.log(amount);
+
+        // Update the product stock
+        await product.updateOne(
+            { _id: productid },
+            { $inc: { stock: number } }
+        );
+
+        // Check if the user already has a wallet
+        let wallet = await userwallet.findOne({ user_id: user_id });
+        console.log(wallet);
+        if (!wallet) {
+
+            wallet = new userwallet({
+                user_id: userId,
+                balance: amount,
+                transactions: [{
+                    amount: amount,
+                    description: 'product:' + productdata.productName
+                }]
+            });
+        } else {
+
+            wallet.balance += amount;
+            wallet.transactions.push({
+                amount: amount,
+                description: 'product:' + productdata.productName
+            });
+        }
+        // Save the wallet
+        await wallet.save();
+        await orderdata.save();
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error processing return:', error);
+        res.json({ success: false, error: error.message });
+    }
+
+}
 
 
 module.exports = {
@@ -272,5 +344,6 @@ module.exports = {
     view_order,
     update_order,
     load_wallet,
-    return_request
+    return_request,
+    return_accept
 }

@@ -167,6 +167,19 @@
     color: #007bff;
     transform: translateX(5px);
 }
+
+        .message span {
+            color: #ff6347;
+            font-weight: bold;
+        }
+        .messageone span{
+            color: #470875;
+            font-weight: bold;
+        }
+        .first{
+            color: #8d1c85;
+            font-weight: bold;
+        }
     </style>
 
     <div class="colorlib-loader"></div>
@@ -298,21 +311,35 @@
                                                     </span>
                                                     <% } else if (array.status==='Delivered' ) { %>
                                                         <span class="badge badge-success">delivered</span>
-                                                        <% } else { %>
-                                                            <!-- <span class="badge badge-cancel">canceled</span> -->
+                                                        <% } else if(array.status==='Returned' ) { %>
+                                                            <span class="badge badge-cancel">     <%=array.status%></span>
+                                                         
+
                                                             <%} %>
                                             </td>
                                             <td>
                                                 <% if (array.status==='Cancelled' ) { %>    
-                                                    <span class="text-muted">Order Cancelled</span>
-                                                    <% }else if (array.status==='Delivered' ) { %>
+                                                    <div class="first">
+                                                        <span>order_cancelled</span>
+                                                    </div>
+                                                    <% }else if (array.status==='Delivered'&&array.return_request==false ) { %>
                                                     <button class="btn btn-sm btn-success" data-target="#myModal" data-toggle="modal" onclick="productReturn('<%=item.orderId%>','<%=array.productId._id%>')">Return</button>
                                                  
-                                                    <% } else { %>
+                                                    <% } else if(array.status!=='Returned'&&array.status!=='Delivered') { %>
                                                         <button class="btn btn-sm btn-danger"
                                                             onclick="cancelOrder('<%=item.orderId%>','<%=array.productId._id%>')">cancel</button>
 
+                                                            <% } else if(array.status=='Returned') { %>
+                                                                <div class="messageone">
+                                                                    <span>return accept</span>
+                                                                </div>
+                                                                <% } else if(array.return_request==true) { %>
+                                                                    <div class="message">
+                                                                        <span>requested</span>
+                                                                    </div>
                                                         <%} %>
+
+
                                             </td>
                                     </tr>
                                     <%})%>
