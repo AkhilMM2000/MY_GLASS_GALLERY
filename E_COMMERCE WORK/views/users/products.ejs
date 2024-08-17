@@ -216,34 +216,38 @@
                     <!-- Product listing -->
                     <div class="col-lg-9">
                         <div class="row row-pb-md">
-                            <% for (let i=0; i < products.length; i++) { %>
-                                <div class="col-lg-4 mb-4 text-center product-div"
-                                    data-product-id="<%= products[i]._id %>">
+                            <% for (let i = 0; i < products.length; i++) { %>
+                                <div class="col-lg-4 mb-4 text-center product-div" data-product-id="<%= products[i]._id %>">
                                     <div class="product-entry border position-relative">
-                                        <!-- <div class="offer-tag">30% OFF</div> -->
+                                        <% if (products[i].discountPrice < products[i].price) { %>
+                                            <div class="offer-tag">
+                                                <%= ((1 - (products[i].discountPrice / products[i].price)) * 100).toFixed(0) %>% OFF
+                                            </div>
+                                        <% } %>
                                         <a href="#" class="prod-img d-block overflow-hidden">
-                                            <img src="productimage/<%= products[i].productimages[0] %>"
-                                                class="img-fluid" alt="<%= products[i].productName %>">
+                                            <img src="productimage/<%= products[i].productimages[0] %>" class="img-fluid" alt="<%= products[i].productName %>">
                                         </a>
                                         <div class="desc p-3">
-                                            <h2 class="product-title"><a href="#">
-                                                    <%= products[i].productName %>
-                                                </a></h2>
+                                            <h2 class="product-title"><a href="#"><%= products[i].productName %></a></h2>
                                             <div class="price-wrap">
-                                                <span class="price">RS <%= products[i].price %></span>
-                                                <del class="old-price">RS <%= (products[i].price * 1.3).toFixed(2) %>
-                                                        </del>
+                                                <% if (products[i].discountPrice < products[i].price) { %>
+                                                    <span class="price">RS <%= products[i].discountPrice %></span>
+                                                    <del class="old-price">RS <%= products[i].price %></del>
+                                                <% } else { %>
+                                                    <span class="price">RS <%= products[i].price %></span>
+                                                <% } %>
                                             </div>
-                                            <button class="btn btn-primary btn-sm mt-2">view product</button>
+                                            <button class="btn btn-primary btn-sm mt-2">View Product</button>
                                         </div>
                                     </div>
                                 </div>
-                                <% if ((i + 1) % 3===0 && i !==products.length - 1) { %>
+                                <% if ((i + 1) % 3 === 0 && i !== products.length - 1) { %>
                                     <div class="w-100"></div>
-                                    <% } %>
-                                        <% } %>
+                                <% } %>
+                            <% } %>
                         </div>
                     </div>
+                    
                 </div>
                  <!-- //---------------------------------------------------------------------------pagination start here ---------------------->
                   

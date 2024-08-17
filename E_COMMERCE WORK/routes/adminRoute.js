@@ -63,12 +63,12 @@ admin_route.get("/detailorder",islogin.verifyLogin,orderController.view_order)
 admin_route.patch('/detailorder',islogin.verifyLogin,orderController.update_order)
 admin_route.patch('/accept_return',islogin.verifyLogin,orderController.return_accept)
 
-
 //offer route for admin
 admin_route.get('/offers',islogin.verifyLogin,offerController.get_addoffer)
 admin_route.post("/add-offer",islogin.verifyLogin,offerController.add_offer)
-
-
+admin_route.post("/category-offer",islogin.verifyLogin,offerController.category_offer)
+admin_route.patch('/edit-offercategory/:offerId',islogin.verifyLogin,offerController.categoryoffer_edit)
+admin_route.patch('/edit-productoffer/:offerId',islogin.verifyLogin,offerController.productoffer_edit)
 
 admin_route.get('*',function(req,res){
     res.redirect('/admin')

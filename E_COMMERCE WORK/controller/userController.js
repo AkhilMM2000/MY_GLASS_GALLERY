@@ -390,7 +390,7 @@ const googleSuccess = async (req, res, next) => {
 //--------------------------------------------------------------------------------------------------------------END HERE---------------------------------------
 const load_product = async (req, res) => {
   try {
-    ////backend stop here
+
     const page = parseInt(req.query.page) || 1;
     const limit = 6; // Number of products per page
     const skip = (page - 1) * limit;
@@ -432,6 +432,7 @@ const load_product = async (req, res) => {
     const product_data = await product.find(filterObject)
       .populate('category')
       .populate('productBrand')
+      .populate('offers')
       .sort(sortOption)
       .skip(skip)
       .limit(limit);;
@@ -440,6 +441,27 @@ const load_product = async (req, res) => {
       .filter(([key]) => key !== 'page')
       .map(([key, value]) => `&${key}=${value}`)
       .join('');
+
+      product_data.forEach(prod => {
+        if (prod.offers && prod.offers.length > 0) {
+          let biggestDiscount = 0;
+          let bestOffer = null;
+      
+          prod.offers.forEach(offer => {
+            const discountAmount = (prod.price * offer.discount) / 100;
+            if (offer.discount > biggestDiscount) {
+              biggestDiscount = offer.discount;
+              prod.discountPrice = prod.price - discountAmount;
+              bestOffer = offer;
+            }
+          });
+      
+          // Optionally store the best offer if needed
+          prod.bestOffer = bestOffer;
+        } else {
+          prod.discountPrice = prod.price;
+        }
+      });
 
     res.render("users/products", {
       products: product_data,
@@ -458,7 +480,9 @@ const load_product = async (req, res) => {
     console.log(error);
     res.status(500).send("An error occurred while loading products");
   }
+
 }
+
 
 
 const product_detail = async (req, res) => {
@@ -685,7 +709,6 @@ const logout=async(req,res)=>{
   }
 
 }
-
 
 module.exports = {
   loginhome,

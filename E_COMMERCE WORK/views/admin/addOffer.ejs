@@ -96,34 +96,69 @@
             
               
             <div class="row">
-           
+              <%offerdata.forEach(item => { %>
                 <div class="col-md-4 stretch-card grid-margin">
                     <div class="card bg-gradient-success text-white">
                       <div class="card-body">
-                        <h4 class="font-weight-normal mb-3">Offer Name: New Year Sale</h4>
-                        <p>Description: Enjoy 40% off on selected items.</p>
-                        <p>Discount: 40%</p>
-                        <p>Type: Festive</p>
-                        <p>Status: <span class="badge bg-success">Active</span></p>
+                        <h4 class="font-weight-normal mb-3">Offer Name:<%= item.offerName%></h4>
+                        <p>Description: <%=item.description%></p>
+                        <p>Discount: <%=item.discount%></p>
+                        <p>Type:<%=item.type%></p>
+                        <% if (item.status === true) { %>
+                          <p>Status: <span class="badge bg-success">Active</span></p>
+                      <% } else { %>
+                          <p>Status: <span class="badge bg-danger">Inactive</span></p>
+                      <% } %>
+                      <% if (item.type === 'categoryOffer') { %>
                         <p>
                           <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#newYearSaleProducts" aria-expanded="false" aria-controls="newYearSaleProducts">
-                            Show Products
+                            Show categories
                           </button>
                         </p>
                         <div class="collapse" id="newYearSaleProducts">
                           <ul>
-                            <li>Product Alpha</li>
-                            <li>Product Beta</li>
-                            <li>Product Gamma</li>
+                            <% item.category.forEach(function(cat) { %>
+                            <li><%=cat.categoryId.categoryName%></li>
+                          
+                            <% }) %>
                           </ul>
                         </div>
+                        <% } else if (item.type === 'productOffer') { %>
+                          <p>
+                            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#newYearSaleProducts" aria-expanded="false" aria-controls="newYearSaleProducts">
+                              Show Products
+                            </button>
+                          </p>
+                          <div class="collapse" id="newYearSaleProducts">
+                            <ul>
+                              <% item.products.forEach(function(cat) { %>
+                              <li><%=cat.productId.productName%></li>
+                            
+                              <% }) %>
+                            </ul>
+                          </div>
+                          <% } else { %>
+                            <p>No relevant data to display.</p>
+                        <% } %>
+
                         <div class="mt-3">
-                          <button class="btn btn-warning btn-sm">Change Status</button>
-                          <button class="btn btn-info btn-sm">Edit Offer</button>
+                       
+                          <% if (item.type === 'categoryOffer') { %>
+<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#editCategoryOfferModal<%=item._id%>"> 
+  Edit Category Offer
+</button>
+<% } else { %>
+                          <!-- Button to open the Edit Product Offer Modal -->
+<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProductOfferModal<%=item._id%>">
+  Edit Product Offer
+</button>
+<% } %>
+
                         </div>
                       </div>
                     </div>
                   </div>
+                <% }); %>
                   
             </div>
         
@@ -133,13 +168,12 @@
               </button>
               
           </div>
-          <!-- add product offer modal below ------------------------------------------------------------------------------>
-
+    <!-- add product offer modal below -------------------------------------------------add product offer modal below ----------------------------->
           <div class="modal fade" id="addOfferModal" tabindex="-1" aria-labelledby="addOfferModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="addOfferModalLabel">Add New Offer</h5>
+                  <h5 class="modal-title" id="addOfferModalLabel" >Add New Offer</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -175,11 +209,10 @@
                           <% }); %>
                         </div>
                       </div>
-            
-                 
+          
                 </div>
                 <div class="modal-footer">
-               
+
                   <button type="submit" class="btn btn-primary" >Add Offer</button>
                 </div>
             </form>
@@ -187,9 +220,9 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
-            <!--  --------------------------------------------------------------------add product offer modal end here---------->
+    <!--------------------------------------------------------------------add product offer modal end here---------->
 
-             <!--  --------------------------------------------------------------------add product category modal start here---------->
+         <!--  --------------------------------------------------------------------add  categoryoffer modal start here---------->
             <div class="modal fade" id="addCategoryOfferModal" tabindex="-1" aria-labelledby="addCategoryOfferModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -223,7 +256,7 @@
                           <div class="form-control" style="height: 150px; overflow-y: auto; padding-left: 25px;">
                             <% categorydata.forEach(item => { %>
                             <div class="form-check">
-                              <input class="form-check-input" type="checkbox" value="<%=item._id%>" id="category1" name="categoryOfferCategories" style="margin-left: -1.5em;">
+                              <input class="form-check-input" type="checkbox" value="<%=item._id%>" id="category1" name="categoryOffer" style="margin-left: -1.5em;">
                               <label class="form-check-label" for="category1"><%=item.categoryName%></label>
                             </div>
                             <% }); %>
@@ -240,6 +273,281 @@
               </div>
                 <!--  --------------------------------------------------------------------add category offer modal end here---------->
               
+<!-------------------------------------------- edit cattegoryoffer modal here------------------------------------- -->
+<%offerdata.forEach(item => { %>
+<div class="modal fade" id="editCategoryOfferModal<%=item._id%>" tabindex="-1" aria-labelledby="editCategoryOfferModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCategoryOfferModalLabel">Edit Category Offer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editCategoryOfferForm">
+          <div class="mb-3">
+            <label for="categoryOfferName" class="form-label">Offer Name</label>
+            <input type="text" class="form-control" id="categoryOfferName<%=item._id%>" value="<%=item.offerName%>" required>
+          </div>
+          <div class="mb-3">
+            <label for="categoryOfferDescription" class="form-label">Description</label>
+            <textarea class="form-control" id="categoryOfferDescription<%=item._id%>" required><%=item.description%></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="categoryOfferDiscount" class="form-label">Discount (%)</label>
+            <input type="number" class="form-control" id="categoryOfferDiscount<%=item._id%>" value="<%=item.discount%>" min="0" max="100" required>
+          </div>
+          <div class="mb-3">
+            <label for="categoryOfferType" class="form-label">Status</label>
+            <select class="form-select" id="categoryOfferType<%=item._id%>" name="categoryOfferType" required>
+
+              <option value="Active" <%=item.status===true?'selected':''%> >Active</option>
+              <option value="Inactive" <%=item.status===false?'selected':''%> >Inactive</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="categoryOfferCategories" class="form-label">Categories</label>
+            <div class="form-control" style="height: 150px; overflow-y: auto; padding-left: 25px;">
+              <% categorydata.forEach(category => { %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" 
+                         value="<%= category._id %>" 
+                         id="category<%= category._id %>" 
+                         name="categoryOfferCategories" 
+                         style="margin-left: -1.5em;"
+                         <% if (item.category.some(cat => cat.categoryId._id.toString() === category._id.toString())) { %> 
+                           checked 
+                         <% } %>>
+                  <label class="form-check-label" for="category<%= category._id %>">
+                    <%= category.categoryName %>
+                  </label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        
+        <button type="submit" class="btn btn-primary" onclick="submitCategoryOfferForm('<%=item._id%>')">Update Category Offer</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<% }); %>
+
+<!-- Edit Product Offer Modal -------------------------------------------------------------------------------------------->
+<%offerdata.forEach(item => { %>
+<div class="modal fade" id="editProductOfferModal<%=item._id%>" tabindex="-1" aria-labelledby="editProductOfferModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProductOfferModalLabel">Edit Product Offer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editProductOfferForm">
+          <div class="mb-3">
+            <label for="productOfferName" class="form-label">Offer Name</label>
+            <input type="text" class="form-control" id="productOfferName<%=item._id%>" value="<%=item.offerName%>" required>
+          </div>
+          <div class="mb-3">
+            <label for="productOfferDescription" class="form-label">Description</label>
+            <textarea class="form-control" id="productOfferDescription<%=item._id%>"  required><%=item.description%></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="productOfferDiscount" class="form-label">Discount (%)</label>
+            <input type="number" class="form-control" id="productOfferDiscount<%=item._id%>" value="<%=item.discount%>" min="0" max="100" required>
+          </div>
+          <div class="mb-3">
+            <label for="productOfferType" class="form-label">Status</label>
+            <select class="form-select" id="productOfferType<%=item._id%>" name="productOfferType" required>
+            
+                  <option value="Active" <%=item.status===true?'selected':''%> >Active</option>
+              <option value="Inactive" <%=item.status===false?'selected':''%> >Inactive</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="productOfferProducts" class="form-label">Products</label>
+
+            <div class="form-control" style="height: 150px; overflow-y: auto; padding-left: 25px;">
+              <% productdata.forEach(product=> { %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" 
+                         value="<%= product._id %>" 
+                         id="category<%= product._id %>" 
+                         name="categoryOfferCategories" 
+                         style="margin-left: -1.5em;"
+                         <% if (item.products.some(cat => cat.productId._id.toString() === product._id.toString())) { %> 
+                           checked 
+                         <% } %>>
+                  <label class="form-check-label" for="category<%= product._id %>">
+                    <%= product.productName%>
+                  </label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" onclick="editproductOffer('<%=item._id%>')">Update Product Offer</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<% }); %>
+<script>
+
+function editproductOffer(offerId) {
+    // Prevent default form submission behavior
+    event.preventDefault();
+    // Get form data
+    const offerName = document.getElementById(`productOfferName${offerId}`).value;
+    const offerDescription = document.getElementById(`productOfferDescription${offerId}`).value;
+    const offerDiscount = document.getElementById(`productOfferDiscount${offerId}`).value;
+    const offerStatus = document.getElementById(`productOfferType${offerId}`).value;
+
+    // Get selected products
+    const selectedProducts = [];
+    const productCheckboxes = document.querySelectorAll(`#editProductOfferModal${offerId} input[name="categoryOfferCategories"]:checked`);
+    productCheckboxes.forEach((checkbox) => {
+        selectedProducts.push(checkbox.value);
+    });
+
+    // Prepare the payload
+    const data = {
+        offerName: offerName,
+        offerDescription: offerDescription,
+        offerDiscount: offerDiscount,
+        offerStatus: offerStatus ,
+        selectedProducts: selectedProducts
+    };
+   console.log(data);
+   
+    const modal = document.getElementById(`editProductOfferModal${offerId}`);
+            const bootstrapModal = bootstrap.Modal.getInstance(modal);
+           
+    // Use fetch API to send the data to the backend
+    fetch(`/admin/edit-productoffer/${offerId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            // Show SweetAlert success notification and reload the page
+            Swal.fire({
+                title: 'Success!',
+                text: 'Offer updated successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+              bootstrapModal.hide();
+                location.reload(); // Reload the page to see the changes
+            });
+        } else {
+            // Show SweetAlert error notification
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to update offer. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+           
+        }
+    })
+    .catch(error => {
+        console.error('Error updating offer:', error);
+        // Show SweetAlert error notification for catch block errors
+        Swal.fire({
+            title: 'Error!',
+            text: 'An error occurred. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+            
+        });
+        bootstrapModal.hide();
+    });
+}
+
+  function submitCategoryOfferForm(offerId) {
+    event.preventDefault(); 
+    const offerName = document.getElementById(`categoryOfferName${offerId}`).value;
+    const offerDescription = document.getElementById(`categoryOfferDescription${offerId}`).value;
+    const offerDiscount = document.getElementById(`categoryOfferDiscount${offerId}`).value;
+    const offerStatus = document.getElementById(`categoryOfferType${offerId}`).value;
+  
+    const selectedCategories = [];
+    document.querySelectorAll(`#editCategoryOfferModal${offerId} input[name="categoryOfferCategories"]:checked`).forEach(checkbox => {
+      selectedCategories.push(checkbox.value);
+    });
+
+    const modal = document.getElementById(`editCategoryOfferModal${offerId}`);
+            const bootstrapModal = bootstrap.Modal.getInstance(modal);
+
+    const data = {
+      offerName,
+      description: offerDescription,
+      discount: offerDiscount,
+      status: offerStatus,
+      categories: selectedCategories
+    };
+
+    fetch(`/admin/edit-offercategory/${offerId}`, {
+      method: 'PATCH', 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'categorryoffer updated  successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                 
+                  bootstrapModal.hide()
+                  
+                    location.reload();
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error: ' + data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+           
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+       
+        });
+      
+    })
+
+  }
+  
+  </script>
+
           <script>
 document.getElementById('addOfferForm').addEventListener('submit', function(e) {
   e.preventDefault(); // Prevent form from submitting the traditional way
@@ -252,7 +560,6 @@ document.getElementById('addOfferForm').addEventListener('submit', function(e) {
         offerType: document.getElementById('offerType').value,
         offerProducts: []
     };
-
     // Collect checked product IDs
     document.querySelectorAll('input[name="offerProducts"]:checked').forEach((checkbox) => {
         formData.offerProducts.push(checkbox.value);
@@ -304,6 +611,75 @@ fetch('/admin/add-offer', {
     })
  
 });
+
+//add category offer script is below.....................................................
+document.getElementById('addCategoryOfferForm').addEventListener('submit', function(e) {
+  e.preventDefault(); 
+     
+  const modal = new bootstrap.Modal(document.getElementById('addCategoryOfferModal'));
+  const formData = {
+        offerName: document.getElementById('categoryOfferName').value,
+        offerDescription: document.getElementById('categoryOfferDescription').value,
+        offerDiscount: document.getElementById('categoryOfferDiscount').value,
+        offerType: document.getElementById('categoryOfferType').value,
+        offerProducts: []
+    };
+
+    // Collect checked product IDs
+    document.querySelectorAll('input[name="categoryOffer"]:checked').forEach((checkbox) => {
+        formData.offerProducts.push(checkbox.value);
+    });
+console.log(formData);
+fetch('/admin/category-offer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Offer added successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                 
+                    modal.hide();
+                  
+                    location.reload();
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error: ' + data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+           
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+       
+        });
+      
+    })
+ 
+});
+
+
+
+
 </script>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -311,5 +687,6 @@ fetch('/admin/add-offer', {
           <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
           <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
 <%- include('../partials/footer') %>
+
 
 

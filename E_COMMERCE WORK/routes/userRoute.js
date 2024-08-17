@@ -47,14 +47,14 @@ user_route.get('/auth/google',islogin.verifyLogout,passport.authenticate('google
 user_route.get('/product',userController.load_product)
 user_route.get('/productdetail/:id',userController.product_detail)
 
-//route for cart......................................................................................................................>
+//route for cart.............................................................................................................................>
 user_route.get('/cart',islogin.verifyLogin,userController.load_cart)
 user_route.post('/cart/:productid/:count',islogin.verifyLogin,userController.add_cart)
 user_route.post('/cart/update/:count/:productid',islogin.verifyLogin,userController.update_cart)
 user_route.delete('/cart/delete/:productid',islogin.verifyLogin,userController.cart_remove)
 
 
-//route for order
+//route for order-----
 user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)
 user_route.post('/place-order',islogin.verifyLogin,orderController.place_order)
 user_route.get('/placeorder',islogin.verifyLogin,orderController.order_success)
@@ -75,9 +75,6 @@ user_route.patch('/cancelorder',islogin.verifyLogin,accountController.cancel_ord
 
 //route for wallet 
 user_route.get('/wallet',islogin.verifyLogin,orderController.load_wallet)
-
-
-
 
 // routes for myaccount
 user_route.get('/myaccount',islogin.verifyLogin,userController.my_account)

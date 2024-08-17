@@ -41,12 +41,18 @@ const productSchema = new mongoose.Schema({
   Date: {
     type: Date,
     default: Date.now,
-    require:true
+    require: true
   },
   listed: {
     type: Boolean,
     required: true
   },
+  
+  offers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Offer'
+  }],
+
   stock: {
     type: Number,
     required: true
