@@ -202,7 +202,6 @@ const add_product = async (req, res) => {
 };
 
 
-
 //  listproduct in the admin on table wise
 
 const listproduct = async (req, res) => {

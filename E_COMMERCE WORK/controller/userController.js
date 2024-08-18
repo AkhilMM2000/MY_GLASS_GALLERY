@@ -204,7 +204,7 @@ const new_password = async (req, res) => {
     if (!check_mail) {
       return res.status(404).json({ success: false, message: "You are not registered" });
     }
-     req.session.link=get_email
+    req.session.link = get_email
     await passwordmail(get_email, link);
     res.status(200).json({ success: true, message: "A link has been sent to your email. Please check it." });
   } catch (error) {
@@ -238,8 +238,8 @@ const save_password = async (req, res) => {
       if (err) {
         return res.status(500).json({ success: false, message: "Failed to destroy session" });
       }
-  })
-  
+    })
+
     res.status(200).json({ success: true, message: "Successfully reset your password", redirect: `/sign` });
   } catch (error) {
     console.log(error);
@@ -442,26 +442,26 @@ const load_product = async (req, res) => {
       .map(([key, value]) => `&${key}=${value}`)
       .join('');
 
-      product_data.forEach(prod => {
-        if (prod.offers && prod.offers.length > 0) {
-          let biggestDiscount = 0;
-          let bestOffer = null;
-      
-          prod.offers.forEach(offer => {
-            const discountAmount = (prod.price * offer.discount) / 100;
-            if (offer.discount > biggestDiscount) {
-              biggestDiscount = offer.discount;
-              prod.discountPrice = prod.price - discountAmount;
-              bestOffer = offer;
-            }
-          });
-      
-          // Optionally store the best offer if needed
-          prod.bestOffer = bestOffer;
-        } else {
-          prod.discountPrice = prod.price;
-        }
-      });
+    product_data.forEach(prod => {
+      if (prod.offers && prod.offers.length > 0) {
+        let biggestDiscount = 0;
+        let bestOffer = null;
+
+        prod.offers.forEach(offer => {
+          const discountAmount = (prod.price * offer.discount) / 100;
+          if (offer.discount > biggestDiscount) {
+            biggestDiscount = offer.discount;
+            prod.discountPrice = prod.price - discountAmount;
+            bestOffer = offer;
+          }
+        });
+
+        // Optionally store the best offer if needed
+        prod.bestOffer = bestOffer;
+      } else {
+        prod.discountPrice = prod.price;
+      }
+    });
 
     res.render("users/products", {
       products: product_data,
@@ -488,8 +488,27 @@ const load_product = async (req, res) => {
 const product_detail = async (req, res) => {
   try {
     const product_id = await req.params.id
-    const product_data = await product.findById(product_id).populate('category')
+    const product_data = await product.findById(product_id).populate('category').populate('offers')
       .populate('productBrand');
+
+      let highestDiscountPrice = product_data.price; 
+
+      if (product_data.offers && product_data.offers.length > 0) {
+        let biggestDiscount = 0;
+  
+        product_data.offers.forEach(offer => {
+          const discountAmount = (product_data.price * offer.discount) / 100;
+          const discountedPrice = product_data.price - discountAmount;
+  
+          if (discountedPrice < highestDiscountPrice) {
+            biggestDiscount = offer.discount;
+            highestDiscountPrice = discountedPrice;
+          }
+        });
+      }
+
+      // Set the highest discount price for rendering
+      product_data.discountPrice = highestDiscountPrice;
 
     res.render("users/productdetail", { pro: product_data })
   } catch (error) {
@@ -504,15 +523,37 @@ const load_cart = async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ user: userId }).populate({
-      path: 'products.product'
-
+      path: 'products.product',
+      populate: [
+        { path: 'offers' }, // Populate the offers for each product
+        { path: 'category' },
+        { path: 'productBrand' } 
+      ]
     });
 
-    // cart.products.forEach(item => {  
-    //   console.log(item);
-    //   console.log('Product Images:', item.product.productimages);
-    //   console.log(item.quantity);
-    // });
+    if (cart && cart.products.length > 0) {
+      cart.products.forEach(item => {
+        const product = item.product;
+
+        let highestDiscountPrice = product.price; // Default to normal price
+
+        if (product.offers && product.offers.length > 0) {
+          product.offers.forEach(offer => {
+            const discountAmount = (product.price * offer.discount) / 100;
+            const discountedPrice = product.price - discountAmount;
+
+            if (discountedPrice < highestDiscountPrice) {
+              highestDiscountPrice = discountedPrice;
+            }
+          });
+        }
+
+        // Set the highest discount price to the cart item for rendering
+        item.discountPrice = highestDiscountPrice;
+      });
+    }
+
+
     res.render('users/cart', { cart });
   } catch (error) {
     console.error(error);
@@ -524,7 +565,7 @@ const load_cart = async (req, res) => {
 const add_cart = async (req, res) => {
 
   try {
-    const userId = req.session.userid // Get the user ID from the session
+    const userId = req.session.userid 
     const productId = req.params.productid
     const count = parseInt(req.params.count)
 
@@ -540,8 +581,6 @@ const add_cart = async (req, res) => {
     if (existing_stock < 1) {
       return res.status(404).json({ message: 'no stock left the product' });
     }
-
-
 
     let cart = await Cart.findOne({ user: userId });
 
@@ -697,18 +736,18 @@ const change_profile = async (req, res) => {
 
 }
 
-
-const logout=async(req,res)=>{
+const logout = async (req, res) => {
   try {
-    
+
     delete req.session.userid
     res.redirect('/')
   } catch (error) {
     console.log(error);
-    
+
   }
 
 }
+
 
 module.exports = {
   loginhome,
@@ -737,3 +776,54 @@ module.exports = {
 }
 
 
+//test mode on
+// const load_cart = async (req, res) => {
+//   const userId = req.session.userid;
+
+//   try {
+//     const cart = await Cart.findOne({ user: userId }).populate({
+//       path: 'products.product',
+//       populate: [
+//         { path: 'offers' }, // Populate the offers for each product
+//         { path: 'category' },
+//         { path: 'productBrand' }
+//       ]
+//     });
+
+//     if (cart && cart.products.length > 0) {
+//       let totalCartAmount = 0; // Initialize the total amount
+
+//       cart.products.forEach(item => {
+//         const product = item.product;
+
+//         let highestDiscountPrice = product.price; // Default to normal price
+
+//         if (product.offers && product.offers.length > 0) {
+//           product.offers.forEach(offer => {
+//             const discountAmount = (product.price * offer.discount) / 100;
+//             const discountedPrice = product.price - discountAmount;
+
+//             if (discountedPrice < highestDiscountPrice) {
+//               highestDiscountPrice = discountedPrice;
+//             }
+//           });
+//         }
+
+//         // Set the highest discount price to the cart item for rendering
+//         item.discountPrice = highestDiscountPrice;
+
+//         // Add the discounted price to the total cart amount
+//         totalCartAmount += highestDiscountPrice * item.quantity; // Assuming item.quantity exists
+//       });
+
+//       // Pass the total amount to the view
+//       res.render('users/cart', { cart, totalCartAmount });
+//     } else {
+//       // Handle empty cart
+//       res.render('users/cart', { cart: [], totalCartAmount: 0 });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Server Error');
+//   }
+// }

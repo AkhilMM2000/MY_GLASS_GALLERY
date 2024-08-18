@@ -16,6 +16,29 @@
         }
 
 </style> -->
+<style>
+    .out-of-stock {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.rainbow-text {
+    background-image: linear-gradient(to right, violet, indigo, blue, green, yellow, orange, red);
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: rainbow 5s ease infinite;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+</style>
 
     <div class="colorlib-loader"></div>
      <div id="page">
@@ -222,6 +245,11 @@
                                         <% if (products[i].discountPrice < products[i].price) { %>
                                             <div class="offer-tag">
                                                 <%= ((1 - (products[i].discountPrice / products[i].price)) * 100).toFixed(0) %>% OFF
+                                            </div>
+                                        <% } %>
+                                        <% if (products[i].stock <= 0) { %>
+                                            <div class="out-of-stock rainbow-text">
+                                                Out of Stock
                                             </div>
                                         <% } %>
                                         <a href="#" class="prod-img d-block overflow-hidden">

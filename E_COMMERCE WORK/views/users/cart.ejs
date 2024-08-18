@@ -108,52 +108,61 @@
                     </div>
                                <!-- start here-->
                            
-                                <% cart.products.forEach((item, index) => { %> 
-                    <div class="product-cart d-flex">
-                      <div class="one-forth">
-                        <div class="product-img">
-                            <img src="/productimage/<%=item.product.productimages[0]  %>" alt="Product Image">
-                        </div>
-                        <div class="display-tc">
-                          <h3><%=item.product.productName%></h3>
-                        </div>
-                      </div>
-                      <div class="one-eight text-center">
-                        <div class="display-tc">
-                          <span class="price">&#8377;<%=item.product.price%></span>
-                        </div>
-                      </div>
-                      <div class="one-eight text-center">
-                        <div class="display-tc d-flex align-items-center justify-content-center">
-                          <button class="btn btn-outline-secondary decrementBtn" type="button">-</button>
-                        
-                  <!-- <input type="text" class="form-control input-number text-center mx-2 quantity" value="<%= item.quantity %>" data-product-id="<%= item.product._id %>" data-index="<%=index %>" min="1" max="10" style="width: 60px;"> -->
-                  <input type="text" class="form-control input-number text-center mx-2 quantity" data-product-qty="<%= item.product.stock %>" value="<%= item.quantity %>" data-product-id="<%= item.product._id %>" data-index="<%= index %>" min="1" max="" style="width: 60px;">
-                          <button class="btn btn-outline-secondary incrementBtn" type="button">+</button>
-                <!-- /// stock left-->
-                <% if (item.product.stock<= 5) { %>
-                    <span class="stock-left text-danger ml-2">Only <%= item.product.stock %> in stock</span>
-                  <% } else { %>
-                    <!-- <span class="stock-left text-success ml-2">stock<%= item.product.stock %> left</span> -->
-                  <% } %>
-
-                        </div>
-                      </div>
-                      <div class="one-eight text-center">
-                        
-                        <div class="display-tc">
-                            <span class="total-price" id="total-price-<%= index %>">&#8377;<%= item.product.price * item.quantity %></span>
-                        </div>
-                      </div>
-                      <div class="one-eight text-center">
-                        <div class="display-tc">
-                            <a href="#" class="closed" onclick="removecart('<%=item.product._id%>')"></a>
-
-                        </div>
-                      </div>
-                    </div>
-               <% })%>
-
+                               <% cart.products.forEach((item, index) => { %> 
+                                <div class="product-cart d-flex">
+                                  <div class="one-forth">
+                                    <div class="product-img">
+                                      <img src="/productimage/<%=item.product.productimages[0]  %>" alt="Product Image">
+                                    </div>
+                                    <div class="display-tc">
+                                      <h3><%=item.product.productName%></h3>
+                                    </div>
+                                  </div>
+                                  <div class="one-eight text-center">
+                                    <div class="display-tc">
+                                      <% if (item.discountPrice < item.product.price) { %>
+                                        <!-- Display discounted price -->
+                                        <span class="price text-success">&#8377;<%= item.discountPrice %></span>
+                                        <!-- <br>
+                                        <span class="original-price text-muted" style="text-decoration: line-through;">&#8377;<%= item.product.price %></span> -->
+                                      <% } else { %>
+                                        <!-- Display regular price -->
+                                        <span class="price">&#8377;<%= item.product.price %></span>
+                                      <% } %>
+                                    </div>
+                                  </div>
+                                  <div class="one-eight text-center">
+                                    <div class="display-tc d-flex align-items-center justify-content-center">
+                                      <button class="btn btn-outline-secondary decrementBtn" type="button">-</button>
+                              
+                                      <input type="text" class="form-control input-number text-center mx-2 quantity" data-product-qty="<%= item.product.stock %>" value="<%= item.quantity %>" data-product-id="<%= item.product._id %>" data-index="<%= index %>" min="1" max="<%= item.product.stock %>" style="width: 60px;">
+                                      <button class="btn btn-outline-secondary incrementBtn" type="button">+</button>
+<!--                               
+                                      <% if (item.product.stock <= 5) { %>
+                                        <span class="stock-left text-danger ml-2">Only <%= item.product.stock %> in stock</span>
+                                      <% } %> -->
+                                    </div>
+                                  </div>
+                                  <div class="one-eight text-center">
+                                    <div class="display-tc">
+                                      <% if (item.discountPrice < item.product.price) { %>
+                                        <!-- Total with discounted price -->
+                                        <span class="total-price" id="total-price-<%= index %>">&#8377;<%= item.discountPrice * item.quantity %></span>
+                                       
+                                      <% } else { %>
+                                        <!-- Total with regular price -->
+                                        <span class="total-price" id="total-price-<%= index %>">&#8377;<%= item.product.price * item.quantity %></span>
+                                      <% } %>
+                                    </div>
+                                  </div>
+                                  <div class="one-eight text-center">
+                                    <div class="display-tc">
+                                      <a href="#" class="closed" onclick="removecart('<%=item.product._id%>')"></a>
+                                    </div>
+                                  </div>
+                                </div>
+                              <% })%>
+                              
                     <!-- end here -->
                      
                   </div>
