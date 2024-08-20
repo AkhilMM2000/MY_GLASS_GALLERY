@@ -5,6 +5,7 @@ const config = require('../config/config');
 const passport = require('passport');
 const nocache =require('nocache')
 const islogin=require('../middleWares/islogin')
+const couponController=require('../controller/coupenController')
 user_route.use(session({
     secret: config.sessionSecret,
     resave: false,
@@ -72,7 +73,6 @@ user_route.get("/orders",islogin.verifyLogin,accountController.load_orders)
 user_route.get('/detailorder',islogin.verifyLogin,accountController.order_details)
 user_route.patch('/cancelorder',islogin.verifyLogin,accountController.cancel_order)
 
-
 //route for wallet 
 user_route.get('/wallet',islogin.verifyLogin,orderController.load_wallet)
 
@@ -82,7 +82,11 @@ user_route.patch('/password/change',islogin.verifyLogin,userController.change_pa
 user_route.patch('/user/edit-profile',islogin.verifyLogin,userController.change_profile)
 user_route.get('/logout',userController.logout)
 
+//routes for coupon applying
+user_route.post('/apply-coupon',islogin.verifyLogin,couponController.applyCoupon)
+
 
 module.exports=user_route
+
 
  

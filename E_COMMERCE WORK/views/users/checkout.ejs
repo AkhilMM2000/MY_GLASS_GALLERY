@@ -1,5 +1,305 @@
 <%- include('../partials/header') %>
 
+
+<style>
+
+     .modal-header {
+    border-bottom: none;
+  }
+  
+  .modal-footer {
+    border-top: none;
+  }
+  
+  .coupon-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .coupon-item {
+    border: 2px dashed #007bff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+  }
+  
+  .coupon-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  .coupon-code {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px;
+  }
+  
+  .coupon-description {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-bottom: 10px;
+  }
+  
+  .copy-btn {
+    float: right;
+  }
+    /* Style for the address boxes */
+    .address-box {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .address-box input[type="radio"] {
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .address-details p {
+        margin: 0;
+    }
+
+    /* Style for the 'Add New Address' link */
+    .add-new-address {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .add-new-address a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .add-new-address a:hover {
+        text-decoration: underline;
+    }
+
+    /* Style for the address boxes */
+    .address-box {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .address-box input[type="radio"] {
+        margin-right: 15px;
+        cursor: pointer;
+        accent-color: #007bff;
+        /* For modern browsers with support for accent-color */
+    }
+
+    .address-details p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    .address-details p:first-child {
+        font-weight: bold;
+    }
+
+    /* Style for the 'Add New Address' link */
+    .add-new-address {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .add-new-address a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .add-new-address a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+    .cart-detail {
+border: 1px solid #ddd;
+padding: 20px;
+border-radius: 8px;
+background-color: #f9f9f9;
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.cart-detail h2 {
+font-size: 24px;
+margin-bottom: 15px;
+color: #333;
+}
+
+.cart-summary {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+
+.cart-item {
+display: flex;
+justify-content: space-between;
+padding: 10px 0;
+border-bottom: 1px solid #eee;
+}
+
+.cart-item:last-child {
+border-bottom: none;
+}
+
+.product-list {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+
+.product-list li {
+display: flex;
+justify-content: space-between;
+padding: 5px 0;
+}
+
+.free-shipping {
+color: #28a745; /* Green color for free shipping */
+font-weight: bold;
+}
+.coupon-section {
+                        margin-bottom: 20px;
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        background-color: #f9f9f9;
+                    }
+                    
+                    .coupon-input {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                    
+                    #coupon-code {
+                        flex: 1;
+                        padding: 5px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                    }
+                    .coupon-section {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.coupon-section:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    color: #333;
+    font-weight: bold;
+}
+
+.input-group {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#coupon-code {
+    border: none;
+    padding: 10px 15px;
+}
+
+.apply-coupon-btn {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+.apply-coupon-btn:hover {
+    background-color: #0056b3;
+}
+
+.show-coupons-btn {
+    border: 2px dashed #6c757d;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.show-coupons-btn:hover {
+    background-color: hsl(204, 13%, 8%);
+    color: white;
+    
+}
+.coupon-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .coupon-section:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .card-title {
+        color: #333;
+        font-weight: bold;
+    }
+
+    .input-group {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    #coupon-code {
+        border: none;
+        padding: 10px 15px;
+        padding-right: 80px; /* Make space for the button */
+    }
+
+    .input-group-append {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+    }
+
+    .apply-coupon-btn {
+        background-color: #007bff;
+        border: none;
+        padding: 5px 15px;
+        transition: background-color 0.3s ease;
+    }
+
+    .apply-coupon-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .show-coupons-btn {
+        border: 2px dashed #6c757d;
+        padding: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .show-coupons-btn:hover {
+        background-color: #6c757d;
+        color: white;
+    }
+
+</style>
+
+
     <div class="colorlib-loader"></div>
 
     <div id="page">
@@ -103,6 +403,24 @@
             </div> -->
                 <div class="row">
                     <div class="col-lg-8">
+                        <div class="coupon-section card shadow-sm p-4 mb-4">
+                            <h5 class="card-title mb-3">Discount Coupons</h5>
+                            <form id="couponForm" class="mb-3">
+                                <div class="input-group">
+                                    <input type="text" id="coupon-code" name="couponCode" class="form-control" placeholder="Enter coupon code" required>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary apply-coupon-btn">Apply</button>
+                                        <button type="button" id="removeCouponBtn" class="btn btn-danger">Remove</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <button type="button" class="btn btn-outline-secondary show-coupons-btn w-100" data-toggle="modal" data-target="#myModal">
+                                <i class="fas fa-tags me-2"></i>Show All Available Coupons
+                            </button>
+                        </div>
+                        
+                        
+                        
                         <h2>Select an Address</h2>
                         <div class="add-new-address">
                             <a href="/address">Add New Address</a>
@@ -140,19 +458,37 @@
                             <div class="col-md-12">
                                 <div class="cart-detail">
                                     <h2>Cart Total</h2>
-                                    <ul>
-                                        <li>
-                                            <span>Subtotal</span> <span>&#8377;<%= totalCartAmount %></span>
-                                            <!-- <ul>
-                                            <li><span>1 x Product Name</span> <span>$99.00</span></li>
-                                            <li><span>1 x Product Name</span> <span>$78.00</span></li>
-                                        </ul>
-                                    </li> -->
-                                            <!-- <li><span>Shipping</span> <span>$0.00</span></li> -->
-                                        <li><span>Order Total</span> <span>&#8377;<%= totalCartAmount %></span></li>
+                                    <ul class="cart-summary">
+                                        <li class="cart-item">
+                                            <ul class="product-list">
+                                                <% if (cart && cart.products.length > 0) { %>
+                                                    <% cart.products.forEach(item => { %>
+                                                        <li>
+                                                            <span><%= item.quantity %> x <%= item.product.productName %></span>
+                                                            <span>&#8377;<%= item.discountPrice ? item.discountPrice.toFixed(2) : item.product.price.toFixed(2) %></span>
+                                                        </li>
+                                                    <% }) %>
+                                               
+                                                <% } %>
+                                            </ul>
+                                        </li>
+                                        <li class="cart-item">
+                                            <span>Shipping</span> <span class="free-shipping">Free</span>
+                                        </li>
+                                        <li class="cart-item">
+                                            <span>Order Total</span> <span>&#8377;<%= totalCartAmount.toFixed(2) %></span>
+                                        </li>
+                                        <li class="discount-item" style="display: none;">
+                                            <span>coupon discount</span> <span class="discount-amount">&#8377;</span>
+                                        </li>
+                                        <li class="subtotal-item" style="display: none;">
+                                            <span>subtotal</span> <span class="subtotal-amount">&#8377;</span>
+                                        </li>
                                     </ul>
+                                  
                                 </div>
                             </div>
+                            
 
                             <div class="w-100"></div>
 
@@ -202,179 +538,92 @@
 
         <!-- content end here -->
 
-        <!-- ///	 Footer start here-->
-        <footer id="colorlib-footer" role="contentinfo">
-            <div class="container">
-                <div class="row row-pb-md">
-                    <div class="col footer-col colorlib-widget">
-                        <h4>About Footwear</h4>
-                        <p>Even the all-powerful Pointing has no control about the blind texts it is an almost
-                            unorthographic life</p>
-                        <p>
-                        <ul class="colorlib-social-icons">
-                            <li><a href="#"><i class="icon-twitter"></i></a></li>
-                            <li><a href="#"><i class="icon-facebook"></i></a></li>
-                            <li><a href="#"><i class="icon-linkedin"></i></a></li>
-                            <li><a href="#"><i class="icon-dribbble"></i></a></li>
-                        </ul>
-                        </p>
-                    </div>
-                    <div class="col footer-col colorlib-widget">
-                        <h4>Customer Care</h4>
-                        <p>
-                        <ul class="colorlib-footer-links">
-                            <li><a href="#">Contact</a></li>
-                            <li><a href="#">Returns/Exchange</a></li>
-                            <li><a href="#">Gift Voucher</a></li>
-                            <li><a href="#">Wishlist</a></li>
-                            <li><a href="#">Special</a></li>
-                            <li><a href="#">Customer Services</a></li>
-                            <li><a href="#">Site maps</a></li>
-                        </ul>
-                        </p>
-                    </div>
-                    <div class="col footer-col colorlib-widget">
-                        <h4>Information</h4>
-                        <p>
-                        <ul class="colorlib-footer-links">
-                            <li><a href="#">About us</a></li>
-                            <li><a href="#">Delivery Information</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Support</a></li>
-                            <li><a href="#">Order Tracking</a></li>
-                        </ul>
-                        </p>
-                    </div>
-
-                    <div class="col footer-col">
-                        <h4>News</h4>
-                        <ul class="colorlib-footer-links">
-                            <li><a href="blog.html">Blog</a></li>
-                            <li><a href="#">Press</a></li>
-                            <li><a href="#">Exhibitions</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="col footer-col">
-                        <h4>Contact Information</h4>
-                        <ul class="colorlib-footer-links">
-                            <li>291 South 21th Street, <br> Suite 721 New York NY 10016</li>
-                            <li><a href="tel://1234567920">+ 1235 2355 98</a></li>
-                            <li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
-                            <li><a href="#">yoursite.com</a></li>
-                        </ul>
-                    </div>
+        <!-- modal for show coupon -------------------------------------------------------------------------------------------------->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title" id="couponModalLabel">Available Coupon Codes</h5>
+                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
-            </div>
-            <div class="copy">
-                <div class="row">
-                    <div class="col-sm-12 text-center">
-                        <p>
-                            <span><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                Copyright &copy;
-                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This
-                                template is made with <i class="icon-heart" aria-hidden="true"></i> by <a
-                                    href="https://colorlib.com" target="_blank">Colorlib</a>
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                            </span>
-                            <span class="block">Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a>
-                                , <a href="http://pexels.com/" target="_blank">Pexels.com</a></span>
-                        </p>
-                    </div>
+                <div class="modal-body">
+                  <div class="coupon-list">
+                    <% if (coupon && coupon.length > 0) { %>
+                        <% coupon.forEach((coup) => { %>
+                            <div class="coupon-item">
+                                <div class="coupon-code"><%= coup.code %></div>
+                                <button class="btn btn-sm btn-outline-primary copy-btn" data-coupon="<%= coup.code %>">Copy Code</button>
+                                <span>just click the copycode and use it</span>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No coupons available at this time.</p>
+                    <% } %>
+                    
+                  </div>
                 </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
             </div>
-        </footer>
-    </div>
+          </div>
+          
+<script>
+document.getElementById('couponForm').addEventListener('submit', async function(e) {
+    e.preventDefault(); 
 
-    <div class="gototop js-top">
-        <a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
-    </div>
+    const couponCode = document.getElementById('coupon-code').value;
+    
+    try {
+        const response = await fetch('/apply-coupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ couponCode })
+        });
 
-    <style>
-        /* Style for the address boxes */
-        .address-box {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        const result = await response.json();
+console.log(result);
+
+        if (response.ok) {
+         
+            
+            document.querySelector('.discount-item').style.display = 'block';
+            document.querySelector('.subtotal-item').style.display = 'block';
+            
+            document.querySelector('.discount-amount').innerHTML = `&#8377;${parseFloat(result.discountAmount).toFixed(2)}`;
+document.querySelector('.subtotal-amount').innerHTML = `&#8377;${parseFloat(result.totalCartAmount).toFixed(2)}`;
+
+        } else {
+            alert(result.message); // Show error message
+            document.querySelector('.discount-item').style.display = 'none';
+            document.querySelector('.subtotal-item').style.display = 'none';
         }
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+        alert('There was an error applying the coupon. Please try again.');
+           document.querySelector('.discount-item').style.display = 'none';
+            document.querySelector('.subtotal-item').style.display = 'none';
+    }
+});
 
-        .address-box input[type="radio"] {
-            margin-right: 10px;
-            cursor: pointer;
-        }
 
-        .address-details p {
-            margin: 0;
-        }
+document.getElementById('removeCouponBtn').addEventListener('click', function() {
+    document.getElementById('coupon-code').value = '';
+    document.querySelector('.discount-item').style.display = 'none';
+    document.querySelector('.subtotal-item').style.display = 'none';
+});
 
-        /* Style for the 'Add New Address' link */
-        .add-new-address {
-            text-align: center;
-            margin-top: 20px;
-        }
 
-        .add-new-address a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
 
-        .add-new-address a:hover {
-            text-decoration: underline;
-        }
+</script>
+       
 
-        /* Style for the address boxes */
-        .address-box {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .address-box input[type="radio"] {
-            margin-right: 15px;
-            cursor: pointer;
-            accent-color: #007bff;
-            /* For modern browsers with support for accent-color */
-        }
-
-        .address-details p {
-            margin: 0;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .address-details p:first-child {
-            font-weight: bold;
-        }
-
-        /* Style for the 'Add New Address' link */
-        .add-new-address {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .add-new-address a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .add-new-address a:hover {
-            text-decoration: underline;
-            color: #0056b3;
-        }
-    </style>
-
+   
 <script>
     document.getElementById('placeOrderBtn').addEventListener('click', async function (event) {
 event.preventDefault();
@@ -478,6 +727,25 @@ console.log(razorpayOrderData,"hhhhhhhhhhhhhhhhhh");
 });
 
 </script>
+<!-- copy code -->
+<script>
+    document.querySelectorAll('.copy-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const couponCode = this.getAttribute('data-coupon');
+        navigator.clipboard.writeText(couponCode).then(() => {
+          // Change button text temporarily
+          const originalText = this.textContent;
+          this.textContent = 'Copied!';
+          setTimeout(() => {
+            this.textContent = originalText;
+          }, 2000);
+        });
+      });
+    });
+    </script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script src="/js/jquery.min.js"></script>
@@ -503,7 +771,10 @@ console.log(razorpayOrderData,"hhhhhhhhhhhhhhhhhh");
 
     <%- include('../partials/footer') %>
 
-
-
+  
     
-    
+   
+      
+        <!-- Modal -->
+        
+     

@@ -358,36 +358,8 @@ const googleSuccess = async (req, res, next) => {
   }
 };
 
-///product load for user   ------- -------------------------------------.//sort start here bewlo-----------------------------------------------
-// const load_product = async (req, res) => {
-//   try {
-//     let sortOption = {};
-//     let selectedSort = req.query.sort || ''; 
-//    if (selectedSort === 'low-high') {
-//       sortOption = { price: 1 };
-//     } else if (selectedSort === 'high-low') {
-//       sortOption = { price: -1 };
-//     } else if (selectedSort === 'name_asc') {
-//       sortOption = { productName: 1 };
-//     } else if (selectedSort === 'name_desc') {
-//       sortOption = { productName: -1 };
-//     }
+//product in shop page load below-------------------------------------------------------------
 
-//   const categories=await category.find()
-//   const brands=await brand.find()
-//     const product_data = await product.find({ listed: true })
-//     .populate('category')
-//     .populate('productBrand')
-//     .sort(sortOption);
-
-//      res.render("users/products", { products: product_data, selectedSort ,categories,brands});
-
-//   } catch (error) {
-//     console.log(error);
-//   }
-
-// }
-//--------------------------------------------------------------------------------------------------------------END HERE---------------------------------------
 const load_product = async (req, res) => {
   try {
 
@@ -448,12 +420,14 @@ const load_product = async (req, res) => {
         let bestOffer = null;
 
         prod.offers.forEach(offer => {
+          if (offer.status === true) { 
           const discountAmount = (prod.price * offer.discount) / 100;
           if (offer.discount > biggestDiscount) {
             biggestDiscount = offer.discount;
             prod.discountPrice = prod.price - discountAmount;
             bestOffer = offer;
           }
+        }
         });
 
         // Optionally store the best offer if needed
@@ -497,6 +471,7 @@ const product_detail = async (req, res) => {
         let biggestDiscount = 0;
   
         product_data.offers.forEach(offer => {
+          if (offer.status === true) {
           const discountAmount = (product_data.price * offer.discount) / 100;
           const discountedPrice = product_data.price - discountAmount;
   
@@ -504,6 +479,7 @@ const product_detail = async (req, res) => {
             biggestDiscount = offer.discount;
             highestDiscountPrice = discountedPrice;
           }
+        }
         });
       }
 
@@ -539,12 +515,14 @@ const load_cart = async (req, res) => {
 
         if (product.offers && product.offers.length > 0) {
           product.offers.forEach(offer => {
+            if (offer.status === true) { 
             const discountAmount = (product.price * offer.discount) / 100;
             const discountedPrice = product.price - discountAmount;
 
             if (discountedPrice < highestDiscountPrice) {
               highestDiscountPrice = discountedPrice;
             }
+          }
           });
         }
 

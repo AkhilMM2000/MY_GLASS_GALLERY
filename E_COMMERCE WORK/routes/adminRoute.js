@@ -9,6 +9,7 @@ const productController=require('../controller/productController')
 const orderController=require('../controller/orderController')
 const offerController=require('../controller/offerController')
 const islogin=require('../middleWares/isAdmin')
+const couponController=require('../controller/coupenController')
 const nocache =require('nocache')
 admin_route.use(session({
     secret: config.sessionSecretos,
@@ -69,6 +70,14 @@ admin_route.post("/add-offer",islogin.verifyLogin,offerController.add_offer)
 admin_route.post("/category-offer",islogin.verifyLogin,offerController.category_offer)
 admin_route.patch('/edit-offercategory/:offerId',islogin.verifyLogin,offerController.categoryoffer_edit)
 admin_route.patch('/edit-productoffer/:offerId',islogin.verifyLogin,offerController.productoffer_edit)
+
+//coupon route for admin
+admin_route.get('/coupon',islogin.verifyLogin,couponController.load_coupon)
+admin_route.post('/add-coupon',islogin.verifyLogin,couponController.add_coupon)
+admin_route.put('/edit-coupon/:couponid',islogin.verifyLogin,couponController.edit_coupon)
+
+
+
 
 admin_route.get('*',function(req,res){
     res.redirect('/admin')
