@@ -630,6 +630,9 @@ event.preventDefault();
 
 const paymentMethod = document.querySelector('input[name="optradio"]:checked').value;
 const addressId = document.querySelector('input[name="address"]:checked').value;
+const coupon_code=document.getElementById('coupon-code').value
+
+
 
 if (paymentMethod === 'razorpay') {
     try {
@@ -641,12 +644,15 @@ if (paymentMethod === 'razorpay') {
             },
             body: JSON.stringify({
                 paymentMethod: paymentMethod,
-                addressId: addressId
+                addressId: addressId,
+                coupon: coupon_code
             })
         });
 
         const razorpayOrderData = await razorpayOrderResponse.json();
-console.log(razorpayOrderData,"hhhhhhhhhhhhhhhhhh");
+        const discountAmount = razorpayOrderData.discountAmount;
+        const discountPercentage = razorpayOrderData.discountPercentage;
+
 
         if (razorpayOrderData.success) {
             // Proceed with Razorpay payment
@@ -668,7 +674,9 @@ console.log(razorpayOrderData,"hhhhhhhhhhhhhhhhhh");
                             paymentMethod: paymentMethod,
                             addressId: addressId,
                             razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id
+                            razorpay_order_id: response.razorpay_order_id,
+                            couponDiscountPercentage: discountPercentage,
+                            couponDiscountAmount: discountAmount
                         })
                     })
                     .then(response => response.json())
@@ -709,7 +717,8 @@ console.log(razorpayOrderData,"hhhhhhhhhhhhhhhhhh");
         },
         body: JSON.stringify({
             paymentMethod: paymentMethod,
-            addressId: addressId
+            addressId: addressId,
+            coupon: coupon_code
         })
     })
     .then(response => response.json())

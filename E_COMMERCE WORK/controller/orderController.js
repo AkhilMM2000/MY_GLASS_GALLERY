@@ -7,13 +7,13 @@ const Address = require('../model/addressModel')
 const Orders = require('../model/orderModel')
 const Razorpay = require('razorpay')
 const userwallet = require('../model/walletModal')
-const coupon=require('../model/coupenModel')
+const Coupon=require('../model/coupenModel')
 
 const load_checkout = async (req, res) => {
 
   try {
 
-const coupon_data=await coupon.find()
+const coupon_data=await Coupon.find()
 
     const addres_data = await Address.find({ user_id: req.session.userid })
     const userId = req.session.userid;
@@ -65,15 +65,15 @@ const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET
 });
-//place order start here
-
+//place order start here--------------------------------------------------------------------------------------place order--------------------------------
 const place_order = async (req, res) => {
   try {
-    const { paymentMethod, addressId, razorpay_order_id, razorpay_payment_id } = req.body;
-    const user = req.session.userid;
+    const { paymentMethod, addressId, coupon, razorpay_order_id, razorpay_payment_id, couponDiscountPercentage, couponDiscountAmount } = req.body;
+    const userId = req.session.userid;
+console.log(req.body);
 
     // Fetch the cart for the user
-    const cart = await Cart.findOne({ user: user }).populate({
+    const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       populate: [{ path: 'offers' }]
     });
@@ -91,6 +91,10 @@ const place_order = async (req, res) => {
 
     // Initialize total amount and prepare product details with discounts
     let totalAmount = 0;
+    let discountAmount = 0;
+    let discountPercentage = null;
+    let couponApplied = null;
+
     const productsWithDiscounts = cart.products.map(item => {
       const product = item.product;
       let highestDiscountPrice = product.price; // Default to normal price
@@ -98,8 +102,8 @@ const place_order = async (req, res) => {
       // Calculate the highest discount price
       if (product.offers && product.offers.length > 0) {
         product.offers.forEach(offer => {
-          const discountAmount = (product.price * offer.discount) / 100;
-          const discountedPrice = product.price - discountAmount;
+          const discount = (product.price * offer.discount) / 100;
+          const discountedPrice = product.price - discount;
 
           if (discountedPrice < highestDiscountPrice) {
             highestDiscountPrice = discountedPrice;
@@ -119,6 +123,25 @@ const place_order = async (req, res) => {
       };
     });
 
+    // Apply coupon if provided
+
+    if (coupon) {
+      const foundCoupon = await Coupon.findOne({ code: coupon });
+
+
+      if (foundCoupon && foundCoupon.status) {
+        if (totalAmount >= foundCoupon.minPurchaseAmount) {
+          discountAmount = (totalAmount * foundCoupon.discount) / 100;
+          discountAmount = Math.min(discountAmount, foundCoupon.maxDiscountAmount);
+          totalAmount -= discountAmount;
+          discountPercentage = foundCoupon.discount;
+          couponApplied = foundCoupon._id;
+        } else {
+          return res.status(400).json({ success: false, message: `Minimum purchase amount for this coupon is ₹${foundCoupon.minPurchaseAmount}.` });
+        }
+      }
+    }
+
     // Handle Razorpay payment method
     if (paymentMethod === 'razorpay' && !razorpay_order_id) {
       const options = {
@@ -134,29 +157,55 @@ const place_order = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to create Razorpay order" });
       }
 
+      console.log('Discount amunt: ', discountAmount);
+      console.log('Discount rate: ', discountPercentage);
+
       return res.json({
         success: true,
         key_id: process.env.RAZORPAY_KEY_ID,
         order_id: razorpayOrder.id,
         amount: razorpayOrder.amount,
-        currency: razorpayOrder.currency
+        currency: razorpayOrder.currency,
+        discountPercentage: discountPercentage,
+        discountAmount: discountAmount
       });
     }
 
+    console.log("req.body next time come",req.body);
+    
+    if (req.body.paymentMethod == 'razorpay' && req.body.razorpay_order_id)
+    {
+      console.log('Discount details changed');
+      
+      discountAmount = req.body.couponDiscountAmount;
+      discountPercentage =  req.body.couponDiscountPercentage;
+      console.log('Final Discount amunt:got ', req.body.couponDiscountAmount);
+      console.log('Final Discount rate: got', req.body.couponDiscountPercentage);
+
+    }
+
+    console.log('Final Discount amunt: ', req.body.couponDiscountAmount);
+    console.log('Final Discount rate: ', req.body.couponDiscountPercentage);
+
+console.log(discountAmount,discountPercentage,);
+
     // Create a new order with discounted prices
     const newOrder = new Orders({
-      userId: user,
+      userId: userId,
       orderId: generateOrderId(),
       paymentMethod: paymentMethod,
-      shippingCharge: 0,
       address: address,
       products: productsWithDiscounts, // Use products with discounted prices
       totalAmount: totalAmount,
+      discountAmount: discountAmount,
+      discountPercentage: discountPercentage,
       razorpay_id: razorpay_payment_id,
       orderDate: new Date()
     });
 
-    
+    // Save the new order
+    await newOrder.save();
+
     // Update stock for each product in the cart
     for (const item of cart.products) {
       const product_array = await product.findById(item.product._id);
@@ -166,9 +215,15 @@ const place_order = async (req, res) => {
       }
     }
 
-    // Save the new order and clear the cart
-    await newOrder.save();
-    await Cart.findOneAndUpdate({ user: user }, { $set: { products: [] } });
+    // Save the coupon to usedCoupons if a coupon was applied
+    if (couponApplied) {
+      const user = await User.findById(userId);
+      user.usedCoupons.push(couponApplied);
+      await user.save();
+    }
+
+    // Clear the cart after successful order
+    await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [] } });
 
     res.json({ success: true, message: 'Order placed successfully', redirect: `/placeorder?id=${newOrder.orderId}` });
   } catch (error) {
@@ -177,8 +232,7 @@ const place_order = async (req, res) => {
   }
 };
 
-
-////place order end here--------------------------------------------------------------------
+////place order end here--------------------------------------------------------------------------------place order end here----------------------
 
 
 const order_success = async (req, res) => {
@@ -404,3 +458,4 @@ module.exports = {
   return_request,
   return_accept
 }
+

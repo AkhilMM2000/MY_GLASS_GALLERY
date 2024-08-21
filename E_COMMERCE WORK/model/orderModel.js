@@ -63,7 +63,12 @@ const orderSchema = new mongoose.Schema({
         type: Date,
         // default: Date.now,
         require:true
-      }
+      },
+      discountAmount: {
+        type: Number,
+        default: 0
+    },
+    discountPercentage: { type: Number, default: null },
 });
 
 module.exports = mongoose.model('order', orderSchema);
