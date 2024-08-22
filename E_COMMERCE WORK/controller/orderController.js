@@ -9,6 +9,7 @@ const Razorpay = require('razorpay')
 const userwallet = require('../model/walletModal')
 const Coupon=require('../model/coupenModel')
 
+
 const load_checkout = async (req, res) => {
 
   try {
@@ -128,10 +129,9 @@ console.log(req.body);
     if (coupon) {
       const foundCoupon = await Coupon.findOne({ code: coupon });
 
-
       if (foundCoupon && foundCoupon.status) {
         if (totalAmount >= foundCoupon.minPurchaseAmount) {
-          discountAmount = (totalAmount * foundCoupon.discount) / 100;
+          discountAmount =Math.floor( (totalAmount * foundCoupon.discount) / 100);
           discountAmount = Math.min(discountAmount, foundCoupon.maxDiscountAmount);
           totalAmount -= discountAmount;
           discountPercentage = foundCoupon.discount;
@@ -167,7 +167,8 @@ console.log(req.body);
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         discountPercentage: discountPercentage,
-        discountAmount: discountAmount
+        discountAmount: discountAmount,
+        couponApplied:couponApplied
       });
     }
 
@@ -176,9 +177,9 @@ console.log(req.body);
     if (req.body.paymentMethod == 'razorpay' && req.body.razorpay_order_id)
     {
       console.log('Discount details changed');
-      
       discountAmount = req.body.couponDiscountAmount;
       discountPercentage =  req.body.couponDiscountPercentage;
+      couponApplied=req.body. couponid
       console.log('Final Discount amunt:got ', req.body.couponDiscountAmount);
       console.log('Final Discount rate: got', req.body.couponDiscountPercentage);
 
@@ -216,7 +217,9 @@ console.log(discountAmount,discountPercentage,);
     }
 
     // Save the coupon to usedCoupons if a coupon was applied
+    
     if (couponApplied) {
+      
       const user = await User.findById(userId);
       user.usedCoupons.push(couponApplied);
       await user.save();
@@ -420,7 +423,7 @@ const return_accept = async (req, res) => {
     if (!wallet) {
 
       wallet = new userwallet({
-        user_id: userId,
+        user_id:  user_id,
         balance: amount,
         transactions: [{
           amount: amount,
@@ -445,6 +448,61 @@ const return_accept = async (req, res) => {
   }
 
 }
+ //get the sales report page here----------------------------------------------------------------
+ const load_sales = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3;
+    const skip = (page - 1) * limit;
+    const filter = req.query.filter || 'monthly'; // Default to monthly if no filter is selected
+console.log(req.query);
+
+    // Construct the query string for pagination links, excluding the 'page' parameter
+    const queryString = Object.entries(req.query)
+    .filter(([key]) => key !== 'page')
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
+  console.log(req.query.filter);
+  
+    
+    let dateFilter = {};
+    const now = new Date();
+
+    if (filter === 'daily') {
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      dateFilter = { orderDate: { $gte: startOfDay } };
+    } else if (filter === 'weekly') {
+      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+      dateFilter = { orderDate: { $gte: startOfWeek } };
+    } else if (filter === 'monthly') {
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      dateFilter = { orderDate: { $gte: startOfMonth } };
+    }
+
+    const orders = await Orders.find(dateFilter)
+      .populate('products.productId')
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const totalOrders = await Orders.countDocuments(dateFilter);
+
+    res.render('admin/salesreport', {
+      orders,
+      currentPage: page,
+      totalPages: Math.ceil(totalOrders / limit),
+      selectedFilter: filter,
+      queryString: queryString ? `&${queryString}` : ''
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred while loading the sales report.");
+  }
+};
+
+
+
+
 
 
 module.exports = {
@@ -456,6 +514,7 @@ module.exports = {
   update_order,
   load_wallet,
   return_request,
-  return_accept
+  return_accept,
+  load_sales
 }
 

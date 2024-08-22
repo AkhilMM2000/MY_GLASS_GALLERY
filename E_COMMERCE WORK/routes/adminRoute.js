@@ -76,7 +76,8 @@ admin_route.get('/coupon',islogin.verifyLogin,couponController.load_coupon)
 admin_route.post('/add-coupon',islogin.verifyLogin,couponController.add_coupon)
 admin_route.put('/edit-coupon/:couponid',islogin.verifyLogin,couponController.edit_coupon)
 
-
+// sales route for admin
+admin_route.get('/sales',islogin.verifyLogin,orderController.load_sales)
 
 
 admin_route.get('*',function(req,res){

@@ -5,6 +5,7 @@ const product = require('../model/productModel')
 const Cart = require('../model/cartModel')
 const Address = require('../model/addressModel')
 const Orders = require("../model/orderModel");
+const userwallet = require('../model/walletModal')
 
 const load_address = async (req, res) => {
     try {
@@ -128,11 +129,14 @@ const order_details = async (req, res) => {
     }
 }
 
+
 const cancel_order = async (req, res) => {
     try {
 
         const { orderid, productid } = req.body;
-        const products = await product.findById(productid);
+        const productdata = await product.findOne({
+            _id: productid
+        });
 
         const order = await Orders.findOne({ orderId: orderid });
         if (!order) {
@@ -142,6 +146,45 @@ const cancel_order = async (req, res) => {
         if (productIndex === -1) {
             return res.status(404).json({ success: false, message: 'Product not found in this order' });
         }
+        const totalamount = order.products[productIndex].quantity * order.products[productIndex].price
+        const user_id = order.userId
+        if (order.paymentMethod === 'razorpay') {
+            let wallet = await userwallet.findOne({ user_id: user_id });
+            let refunt_amount = 0
+            if (order.discountAmount != 0) {
+                const refund_persontage = Math.ceil(order.discountAmount * 100 / order.totalAmount)
+                refunt_amount = totalamount - Math.ceil(totalamount * (refund_persontage / 100))
+                console.log(refund_persontage, refunt_amount);
+
+            } else {
+                refunt_amount = totalamount
+
+            }
+            if (!wallet) {
+
+                wallet = new userwallet({
+                    user_id: user_id,
+                    balance: refunt_amount,
+                    transactions: [{
+                        amount: amount,
+                        description: 'product:' + productdata.productName
+                    }]
+                });
+            } else {
+
+                wallet.balance +=  refunt_amount;
+                wallet.transactions.push({
+                    amount: refunt_amount,
+                    description: 'product:' + productdata.productName
+                });
+            }
+            // Save the wallet
+            console.log('reach here');
+            
+            await wallet.save();
+
+        }
+
         order.products[productIndex].status = 'Cancelled';
         await order.save();
         await product.findByIdAndUpdate(productid, { $inc: { stock: order.products[productIndex].quantity } });

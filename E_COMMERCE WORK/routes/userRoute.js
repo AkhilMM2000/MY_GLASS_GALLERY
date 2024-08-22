@@ -86,6 +86,8 @@ user_route.get('/logout',userController.logout)
 user_route.post('/apply-coupon',islogin.verifyLogin,couponController.applyCoupon)
 
 
+
+
 module.exports=user_route
 
 

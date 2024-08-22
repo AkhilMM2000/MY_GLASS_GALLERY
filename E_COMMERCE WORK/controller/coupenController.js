@@ -115,7 +115,7 @@ try {
 
 }
 
-//user apply that coupon while checkout---------------------------------------------------
+//user apply that coupon while checkout---------------------------------------user apply that coupon while checkout------------
 const applyCoupon = async (req, res) => {
     try {
       const { couponCode } = req.body;
@@ -174,10 +174,9 @@ const applyCoupon = async (req, res) => {
       discountAmount = (totalCartAmount * coupon.discount) / 100;
       discountAmount = Math.min(discountAmount, coupon.maxDiscountAmount);
       totalCartAmount -= discountAmount;
-
-     
+      
       res.json({ 
-        discountAmount:Math.ceil( discountAmount.toFixed(2)), 
+        discountAmount:Math.floor( discountAmount.toFixed(2)), 
         totalCartAmount:Math.ceil(totalCartAmount.toFixed(2))
       });
 

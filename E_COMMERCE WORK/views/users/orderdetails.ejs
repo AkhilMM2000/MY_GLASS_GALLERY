@@ -143,10 +143,25 @@
                                         <td colspan="4" class="text-right"><strong>Shipping:</strong></td>
                                         <td><strong>&#8377;0</strong></td>
                                     </tr>
-                                    <tr class="table-active">
-                                        <td colspan="4" class="text-right"><strong>Total Amount:</strong></td>
-                                        <td><strong>&#8377;<%=order.totalAmount%></strong></td>
-                                    </tr>
+                                    <% if (order.discountAmoun!=0) { %>
+                                        <% if (order.discountAmount > 0) { %>
+                                            <tr>
+                                                <td colspan="4" class="text-right"><strong>Discount:</strong></td>
+                                                <td><strong>&#8377;<%= order.discountAmount %></strong></td>
+                                            </tr>
+                                        <% } %>
+                                        
+                                        <tr class="table-active">
+                                            <td colspan="4" class="text-right"><strong>Total Amount:</strong></td>
+                                            <td><strong>&#8377;<%= order.totalAmount-order.discountAmount %></strong></td>
+                                        </tr>
+                                    <% } else { %>
+                                        <tr class="table-active">
+                                            <td colspan="4" class="text-right"><strong>Total Amount:</strong></td>
+                                            <td><strong>&#8377;<%= order.totalAmount%></strong></td>
+                                        </tr>
+                                    <% } %>
+                                    
                                 </tfoot>
                             </table>
                         </div>

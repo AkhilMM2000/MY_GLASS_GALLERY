@@ -419,8 +419,6 @@ font-weight: bold;
                             </button>
                         </div>
                         
-                        
-                        
                         <h2>Select an Address</h2>
                         <div class="add-new-address">
                             <a href="/address">Add New Address</a>
@@ -648,11 +646,11 @@ if (paymentMethod === 'razorpay') {
                 coupon: coupon_code
             })
         });
-
+        
         const razorpayOrderData = await razorpayOrderResponse.json();
         const discountAmount = razorpayOrderData.discountAmount;
         const discountPercentage = razorpayOrderData.discountPercentage;
-
+const couponApplied=razorpayOrderData.couponApplied
 
         if (razorpayOrderData.success) {
             // Proceed with Razorpay payment
@@ -676,7 +674,8 @@ if (paymentMethod === 'razorpay') {
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_order_id: response.razorpay_order_id,
                             couponDiscountPercentage: discountPercentage,
-                            couponDiscountAmount: discountAmount
+                            couponDiscountAmount: discountAmount,
+                            couponid:couponApplied
                         })
                     })
                     .then(response => response.json())
