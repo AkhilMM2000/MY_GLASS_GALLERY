@@ -155,20 +155,30 @@
                                   <option value="daily" <%= selectedFilter === 'daily' ? 'selected' : '' %>>Daily</option>
                                   <option value="weekly" <%= selectedFilter === 'weekly' ? 'selected' : '' %>>Weekly</option>
                                   <option value="monthly" <%= selectedFilter === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                                  <option value="custom" <%= selectedFilter === 'custom' ? 'selected' : '' %>>Custom</option>
                                 </select>
+                                <div id="customDateRange" style="<%=selectedFilter=== 'custom' ? 'display: block;' : 'display: none;' %> margin-top: 10px;">
+                                  <label for="startDate" class="mr-2">Start Date:</label>
+                                  <input type="date" id="startDate" class="form-control-sm mr-2" value="<%= startDate %>">
+                                  
+                                  <label for="endDate" class="mr-2">End Date:</label>
+                                  <input type="date" id="endDate" class="form-control-sm mr-2" value="<%= endDate %>">
+                                  <button class="btn btn-sm btn-primary" onclick="applyCustomFilter()">Apply Filter</button>
+                                </div>
                               </div>
+                             
 
-                          <div class="btn-group">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Export
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="exportDropdown">
-                                <a class="dropdown-item" href="#" onclick="validate('excel')">Excel</a>
-
-                              <a class="dropdown-item" href="#">PDF</a>
-                            </div>
-                            <button class="btn btn-primary ml-2">+ Generate</button>
-                          </div>
+                         
+<div class="btn-group">
+  <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Export
+  </button>
+  <div class="dropdown-menu" aria-labelledby="exportDropdown">
+    <a class="dropdown-item" href="#" onclick="downloadPDF()">PDF</a>
+    <a class="dropdown-item" href="#" >EXCEL</a>
+  </div>
+  <button class="btn btn-primary ml-2">+ Generate</button>
+</div>
                         </div>
                         <!-- Sales report table -->
                         <div class="table-responsive">
@@ -244,12 +254,113 @@
 
               <script>
    
-  function applyFilter() {
+///***************************************************************************************download the report as pdf
+
+async function downloadPDF() {
     const filter = document.getElementById('filters').value;
-    window.location.href = `?filter=${filter}${'<%= queryString %>'}`;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    const data = { filter };
+    if (filter === 'custom') {
+      data.startDate = startDate;
+      data.endDate = endDate;
+    }
+
+    const response = await fetch('/admin/sales', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sales-report.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to download the PDF.'
+      });
+    }
   }
 
+
+///***************************************************************************************download the report as pdf end here
+   function applyFilter() {
+  const filter = document.getElementById('filters').value;
+  const customDateRange = document.getElementById('customDateRange');
+  
+  if (filter === 'custom') {
+    customDateRange.style.display = 'block';
+  } else {
+    customDateRange.style.display = 'none';
+    window.location.href = `/admin/sales?filter=${filter}`;
+  }
+}
+
+
+
               </script>
+
+<script>
+
+
+async function applyCustomFilter() {
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  if (!startDate || !endDate) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Input',
+      text: 'Please select both start and end dates.'
+    });
+    return;
+  }
+
+  if (new Date(startDate) > new Date(endDate)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Date Range',
+      text: 'Start date cannot be greater than the end date.'
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(`/admin/sales?filter=custom&startDate=${startDate}&endDate=${endDate}`, {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      window.location.href = response.url;
+     
+    } else {
+      throw new Error('Failed to apply the custom filter.');
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message
+    });
+  }
+}
+
+</script>
+
+
+
+
 
               <script>
 
@@ -258,8 +369,12 @@
                     
                 }
               </script>
+
+
               <!-- jQuery (required for Bootstrap 4) -->
+               
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Popper.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -269,5 +384,6 @@
 
           
 <%- include('../partials/footer') %>
+
 
 

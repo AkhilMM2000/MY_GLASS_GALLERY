@@ -66,7 +66,6 @@ async function sendOTPViaEmail(email, otp) {
   });
 }
 
-
 const register_user = async (req, res) => {
   try {
     const existingUser = await User.findOne({ userName: req.body.userName });

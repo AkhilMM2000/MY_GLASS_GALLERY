@@ -8,7 +8,10 @@ const Orders = require('../model/orderModel')
 const Razorpay = require('razorpay')
 const userwallet = require('../model/walletModal')
 const Coupon=require('../model/coupenModel')
+const PDFDocument = require('pdfkit');
 
+const fs = require('fs');
+const path = require('path');
 
 const load_checkout = async (req, res) => {
 
@@ -454,29 +457,41 @@ const return_accept = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 3;
     const skip = (page - 1) * limit;
-    const filter = req.query.filter || 'monthly'; // Default to monthly if no filter is selected
-console.log(req.query);
-
+    const filter = req.query.filter || 'monthly';
     // Construct the query string for pagination links, excluding the 'page' parameter
     const queryString = Object.entries(req.query)
     .filter(([key]) => key !== 'page')
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
-  console.log(req.query.filter);
-  
-    
+ 
     let dateFilter = {};
-    const now = new Date();
+    if (filter === 'custom') {
+      const startDate = new Date(req.query.startDate);
+      let endDate = new Date(req.query.endDate);
 
-    if (filter === 'daily') {
-      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      dateFilter = { orderDate: { $gte: startOfDay } };
-    } else if (filter === 'weekly') {
-      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-      dateFilter = { orderDate: { $gte: startOfWeek } };
-    } else if (filter === 'monthly') {
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      dateFilter = { orderDate: { $gte: startOfMonth } };
+      // Adjust endDate to include the full day
+      endDate.setHours(23, 59, 59, 999);
+
+      if (startDate && endDate) {
+        dateFilter = {
+          orderDate: {
+            $gte: startDate,
+            $lte: endDate
+          }
+        };
+      }
+    } else {
+      const now = new Date();
+      if (filter === 'daily') {
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        dateFilter = { orderDate: { $gte: startOfDay } };
+      } else if (filter === 'weekly') {
+        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        dateFilter = { orderDate: { $gte: startOfWeek } };
+      } else if (filter === 'monthly') {
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        dateFilter = { orderDate: { $gte: startOfMonth } };
+      }
     }
 
     const orders = await Orders.find(dateFilter)
@@ -492,6 +507,9 @@ console.log(req.query);
       currentPage: page,
       totalPages: Math.ceil(totalOrders / limit),
       selectedFilter: filter,
+      
+      startDate: req.query.startDate || '',
+      endDate: req.query.endDate || '',
       queryString: queryString ? `&${queryString}` : ''
     });
   } catch (error) {
@@ -500,6 +518,103 @@ console.log(req.query);
   }
 };
 
+////download the sales report as pdf form using pdfkit 
+
+const pdf_download = async (req, res) => {
+  try {
+    const filter = req.body.filter || 'monthly';
+    let dateFilter = {};
+
+    if (filter === 'custom') {
+      const startDate = new Date(req.body.startDate);
+      let endDate = new Date(req.body.endDate);
+      endDate.setHours(23, 59, 59, 999);
+      dateFilter = { orderDate: { $gte: startDate, $lte: endDate } };
+    } else {
+      const now = new Date();
+      if (filter === 'daily') {
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        dateFilter = { orderDate: { $gte: startOfDay } };
+      } else if (filter === 'weekly') {
+        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        dateFilter = { orderDate: { $gte: startOfWeek } };
+      } else if (filter === 'monthly') {
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        dateFilter = { orderDate: { $gte: startOfMonth } };
+      }
+    }
+
+    const orders = await Orders.find(dateFilter)
+      .populate('products.productId')
+      .lean();
+
+    const doc = new PDFDocument({ margin: 30 });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=sales-report.pdf');
+    doc.pipe(res);
+
+    let totalOrders = orders.length;
+    let totalAmount = 0;
+    let totalDiscount = 0;
+
+    orders.forEach(order => {
+      totalAmount += order.totalAmount;
+      totalDiscount += order.discountAmount || 0;
+    });
+
+    // Add report title and summary
+    doc.fontSize(18).text('Sales Report', { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(12).text(`Total Orders: ${totalOrders}`);
+    doc.text(`Total Amount: ${totalAmount.toFixed(2)}`);
+    doc.text(`Total Discount: ${totalDiscount.toFixed(2)}`);
+    doc.moveDown(2);
+
+    // Adjusted column positions for better visibility
+    const columnPositions = {
+      orderId: 50,
+      date: 200,
+      product: 300,
+      price: 450,
+      total: 520
+    };
+    // Add table headers
+    doc.fontSize(10)
+    .text('Order ID', columnPositions.orderId, doc.y, { continued: true, width: 140 })
+    .text('Date', columnPositions.date, doc.y, { continued: true, width: 90 })
+    .text('Product', columnPositions.product, doc.y, { continued: true, width: 140 })
+    .text('Price', columnPositions.price, doc.y, { continued: true, width: 60 })
+    .text('Total', columnPositions.total, doc.y);
+
+    // Draw a line below headers
+    doc.moveTo(50, doc.y + 10).lineTo(550, doc.y + 10).stroke();
+    doc.moveDown(1);
+
+    // Add table rows with consistent alignment and spacing
+    orders.forEach(order => {
+      order.products.forEach((product, index) => {
+        const productNameWithQuantity = `${product.productId.productName} (${product.quantity})`;
+        
+        doc.fontSize(9)
+          .text(index === 0 ? order.
+            orderId: '', columnPositions.orderId, doc.y, { continued: true, width: 140 })
+          .text(index === 0 ? order.orderDate.toISOString().split('T')[0] : '', columnPositions.date, doc.y, { continued: true, width: 90 })
+          .text(productNameWithQuantity, columnPositions.product, doc.y, { continued: true, width: 140 })
+          .text(product.productId.price.toFixed(2), columnPositions.price, doc.y, { continued: true, align: 'right', width: 60 })
+          .text((product.quantity * product.productId.price).toFixed(2), columnPositions.total, doc.y, { align: 'right', width: 60 });
+        doc.moveDown(0.5);
+      });
+      doc.moveTo(50, doc.y + 5).lineTo(550, doc.y + 5).stroke();
+      doc.moveDown(0.5);
+    });
+
+    doc.end();
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred while generating the PDF report.");
+  }
+};
 
 
 
@@ -515,6 +630,9 @@ module.exports = {
   load_wallet,
   return_request,
   return_accept,
-  load_sales
+  load_sales,
+  pdf_download
 }
+
+
 
