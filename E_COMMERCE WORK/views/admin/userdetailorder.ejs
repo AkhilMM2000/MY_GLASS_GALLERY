@@ -181,68 +181,74 @@
                 <!-- partial:../../partials/_sidebar.html -->
                 <nav class="sidebar sidebar-offcanvas" id="sidebar">
                     <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/dashboard">
-                                <span class="menu-title">Dashboard</span>
-                                <i class="mdi mdi-home menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/products">
-                                <span class="menu-title">Products</span>
-                                <i class="mdi mdi-package-variant-closed menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/category">
-                                <span class="menu-title">Categories</span>
-                                <i class="mdi mdi-shape menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/brand">
-                                <span class="menu-title">Brands</span>
-                                <i class="mdi mdi-tag menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/orders">
-                                <span class="menu-title">Orders</span>
-                                <i class="mdi mdi-cart menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/offers">
-                                <span class="menu-title">Offers</span>
-                                <i class="mdi mdi-gift menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/users">
-                                <span class="menu-title">Users</span>
-                                <i class="mdi mdi-account-multiple menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/coupons">
-                                <span class="menu-title">Coupons</span>
-                                <i class="mdi mdi-ticket-percent menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/banners">
-                                <span class="menu-title">Banners</span>
-                                <i class="mdi mdi-image menu-icon"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/banners">
-                                <span class="menu-title">logout</span>
-                                <i class="mdi mdi-image menu-icon"></i>
-                            </a>
-                        </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                          <span class="menu-title">Dashboard</span>
+                          <i class="mdi mdi-home menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/products">
+                          <span class="menu-title">Products</span>
+                          <i class="mdi mdi-package-variant-closed menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/category">
+                          <span class="menu-title">Categories</span>
+                          <i class="mdi mdi-shape menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/brand">
+                          <span class="menu-title">Brands</span>
+                          <i class="mdi mdi-tag menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/orders">
+                          <span class="menu-title">Orders</span>
+                          <i class="mdi mdi-cart menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/sales">
+                          <span class="menu-title">sales</span>
+                          <i class="mdi mdi-cart menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/offers">
+                          <span class="menu-title">Offers</span>
+                          <i class="mdi mdi-gift menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/users">
+                          <span class="menu-title">Users</span>
+                          <i class="mdi mdi-account-multiple menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/coupon">
+                          <span class="menu-title">Coupons</span>
+                          <i class="mdi mdi-ticket-percent menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/banners">
+                          <span class="menu-title">Banners</span>
+                          <i class="mdi mdi-image menu-icon"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/admin/banners">
+                          <span class="menu-title">logout</span>
+                          <i class="mdi mdi-image menu-icon"></i>
+                        </a>
+                      </li>
                     </ul>
-                </nav>
+                  </nav>
             </div>
         </div>
     </div>
@@ -347,9 +353,9 @@
                                         <td>
                                             <%=item.quantity%>
                                         </td>
-                                        <td>&#8377;<%=item.price%>
+                                        <td>RS:<%=item.price%>
                                         </td>
-                                        <td>&#8377;<%=item.price *item.quantity %>
+                                        <td>RS:<%=item.price *item.quantity %>
                                         </td>
                                         <td>
                                             <div class="badge badge-success status-indicator"
@@ -361,6 +367,9 @@
                                             <% if (item.status==='Cancelled' ) { %>
                                                 <!-- Show a message or alternative text -->
                                                 <span>Status is Cancelled</span>
+                                                <% } else if(item.status==='Returned' ) { %>
+                                                    <span style="color: green;">return success</span>
+
                                                 <% } else if(item.status!=='Delivered' ) { %>
 
                                                     <button class="btn btn-sm btn-outline-primary"
@@ -372,9 +381,6 @@
                                                         <button class="orange-btn" data-target="#myModal"
                                                             data-toggle="modal"
                                                             onclick="productReturn('<%=orderdata[0].orderId%>','<%=item.productId._id%>','<%=item.return_reason%>')">showrequest</button>
-
-
-
 
                                                         <% }else{ %>
 
@@ -393,16 +399,22 @@
                             <table class="table table-sm">
                                 <tr>
                                     <td class="text-muted">Subtotal:</td>
-                                    <td class="text-right">&#8377; <%= orderdata[0].totalAmount %>
+                                    <td class="text-right">RS: <%= orderdata[0].totalAmount %>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Shipping:</td>
-                                    <td class="text-right">&#8377;0</td>
+                                    <td class="text-right">RS:0</td>
                                 </tr>
+                                <% if (orderdata[0].discountAmount > 0) { %>
+                                <tr>
+                                    <td class="text-muted">discount:</td>
+                                    <td class="text-right">RS:<%=orderdata[0].discountAmount%></td>
+                                </tr>
+                                <% } %>
                                 <tr class="border-top">
                                     <td><strong>Total Amount:</strong></td>
-                                    <td class="text-right"><strong>&#8377; <%= orderdata[0].totalAmount %></strong></td>
+                                    <td class="text-right"><strong>RS:<%= orderdata[0].totalAmount-orderdata[0].discountAmount %></strong></td>
                                 </tr>
                             </table>
                         </div>
@@ -489,14 +501,26 @@ document.getElementById('acceptReturnBtn').addEventListener('click', function() 
         body: JSON.stringify({ order: orderid, productid: product_id})
     })
     .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Return accepted and stock updated successfully.');
-            // Optionally, you can update the UI to reflect the status change
-        } else {
-            alert('Failed to accept return.');
-        }
-    })
+.then(data => {
+    if (data.success) {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Return accepted and stock updated successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            location.reload(); // Reload the page after the user clicks "OK"
+        });
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to accept return.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+})
+
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred while processing the return.');

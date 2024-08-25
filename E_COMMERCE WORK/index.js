@@ -1,5 +1,6 @@
 const mongoose=require('mongoose');
-mongoose.connect('mongodb://localhost:27017/Glass_Gallery');
+require('dotenv').config();
+mongoose.connect(process.env.DB);
 
 require('dotenv').config()
 

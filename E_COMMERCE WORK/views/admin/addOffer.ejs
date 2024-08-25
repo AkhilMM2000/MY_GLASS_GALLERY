@@ -56,6 +56,12 @@
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/admin/sales">
+              <span class="menu-title">sales</span>
+              <i class="mdi mdi-cart menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/admin/offers">
               <span class="menu-title">Offers</span>
               <i class="mdi mdi-gift menu-icon"></i>
@@ -162,7 +168,7 @@
                   
             </div>
         
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOfferModal">Add Offer</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOfferModal">Add product Offer</button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryOfferModal">
                 Add Category Offer
               </button>
@@ -180,15 +186,18 @@
                   <form id="addOfferForm">
                     <div class="mb-3">
                       <label for="offerName" class="form-label">Offer Name</label>
-                      <input type="text" class="form-control" id="offerName" required>
+                      <input type="text" class="form-control" id="offerName" onkeyup="offername()" required>
+                      <div id="error-offername"></div>
                     </div>
                     <div class="mb-3">
                       <label for="offerDescription" class="form-label">Description</label>
-                      <textarea class="form-control" id="offerDescription" required></textarea>
+                      <textarea class="form-control" id="offerDescription" onkeyup="Description()" required></textarea>
+                      <div id="error-offerdescription"></div>
                     </div>
                     <div class="mb-3">
                       <label for="offerDiscount" class="form-label">Discount (%)</label>
-                      <input type="number" class="form-control" id="offerDiscount" min="0" max="100" required>
+                      <input type="number" class="form-control" id="offerDiscount" min="0" max="100" onkeyup="add_discount()" required>
+                      <div id="discount-error"></div>
                     </div>
                     <div class="mb-3">
                       <label for="offerType" class="form-label">status</label>
@@ -234,15 +243,18 @@
                       <form id="addCategoryOfferForm">
                         <div class="mb-3">
                           <label for="categoryOfferName" class="form-label">Offer Name</label>
-                          <input type="text" class="form-control" id="categoryOfferName" required>
+                          <input type="text" class="form-control" id="categoryOfferName" onkeyup="catOfferName()" required>
+                          <div id="cat-offername"></div>
                         </div>
                         <div class="mb-3">
                           <label for="categoryOfferDescription" class="form-label">Description</label>
-                          <textarea class="form-control" id="categoryOfferDescription" required></textarea>
+                          <textarea class="form-control" id="categoryOfferDescription" onkeyup="catdescription()" required></textarea>
+                        <div id="cat-description"></div>
                         </div>
                         <div class="mb-3">
                           <label for="categoryOfferDiscount" class="form-label">Discount (%)</label>
-                          <input type="number" class="form-control" id="categoryOfferDiscount" min="0" max="100" required>
+                          <input type="number" class="form-control" id="categoryOfferDiscount" min="0" max="100" onkeyup="catdiscount()" required>
+                          <div id="cat-discount"></div>
                         </div>
                         <div class="mb-3">
                           <label for="categoryOfferType" class="form-label">Status</label>
@@ -271,6 +283,7 @@
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
               </div>
+              
                 <!--  --------------------------------------------------------------------add category offer modal end here---------->
               
 <!-------------------------------------------- edit cattegoryoffer modal here------------------------------------- -->
@@ -286,7 +299,8 @@
         <form id="editCategoryOfferForm">
           <div class="mb-3">
             <label for="categoryOfferName" class="form-label">Offer Name</label>
-            <input type="text" class="form-control" id="categoryOfferName<%=item._id%>" value="<%=item.offerName%>" required>
+            <input type="text" class="form-control" id="categoryOfferName<%=item._id%>" value="<%=item.offerName%>" onkeyup="edit_catoffername('<%=item._id%>')" required>
+            <div id="edit-catname<%=item._id%>"></div>
           </div>
           <div class="mb-3">
             <label for="categoryOfferDescription" class="form-label">Description</label>
@@ -294,7 +308,8 @@
           </div>
           <div class="mb-3">
             <label for="categoryOfferDiscount" class="form-label">Discount (%)</label>
-            <input type="number" class="form-control" id="categoryOfferDiscount<%=item._id%>" value="<%=item.discount%>" min="0" max="100" required>
+            <input type="number" class="form-control" id="categoryOfferDiscount<%=item._id%>" value="<%=item.discount%>" min="0"  onkeyup="editcatdiscount('<%=item._id%>')" required>
+            <div id="edit-catdiscount<%=item._id%>"></div>
           </div>
           <div class="mb-3">
             <label for="categoryOfferType" class="form-label">Status</label>
@@ -349,15 +364,18 @@
         <form id="editProductOfferForm">
           <div class="mb-3">
             <label for="productOfferName" class="form-label">Offer Name</label>
-            <input type="text" class="form-control" id="productOfferName<%=item._id%>" value="<%=item.offerName%>" required>
+            <input type="text" class="form-control" id="productOfferName<%=item._id%>" value="<%=item.offerName%>" onkeyup="editoffername('<%=item._id%>')" required>
+            <div id="edit-offername<%=item._id%>"></div>
           </div>
           <div class="mb-3">
             <label for="productOfferDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="productOfferDescription<%=item._id%>"  required><%=item.description%></textarea>
+            <textarea class="form-control" id="productOfferDescription<%=item._id%>" onkeyup="editofferdescription('<%=item._id%>')"   required><%=item.description%></textarea>
+            <div id="edit-offerdescription<%=item._id%>"></div>
           </div>
           <div class="mb-3">
             <label for="productOfferDiscount" class="form-label">Discount (%)</label>
-            <input type="number" class="form-control" id="productOfferDiscount<%=item._id%>" value="<%=item.discount%>" min="0" max="100" required>
+            <input type="number" class="form-control" id="productOfferDiscount<%=item._id%>" value="<%=item.discount%>" onkeyup="editofferdiscount('<%=item._id%>')"  min="0" max="100" required>
+            <div id="edit-offerdiscount<%=item._id%>"></div>
           </div>
           <div class="mb-3">
             <label for="productOfferType" class="form-label">Status</label>
@@ -405,10 +423,14 @@ function editproductOffer(offerId) {
     // Prevent default form submission behavior
     event.preventDefault();
     // Get form data
+    if(!editoffername(offerId)||!editofferdescription(offerId)||!editofferdiscount(offerId)){
+      return
+    }
     const offerName = document.getElementById(`productOfferName${offerId}`).value;
     const offerDescription = document.getElementById(`productOfferDescription${offerId}`).value;
     const offerDiscount = document.getElementById(`productOfferDiscount${offerId}`).value;
     const offerStatus = document.getElementById(`productOfferType${offerId}`).value;
+
 
     // Get selected products
     const selectedProducts = [];
@@ -478,6 +500,9 @@ function editproductOffer(offerId) {
 
   function submitCategoryOfferForm(offerId) {
     event.preventDefault(); 
+    if(!edit_catoffername(offerId)||!editcatdiscount(offerId)){
+      return
+    }
     const offerName = document.getElementById(`categoryOfferName${offerId}`).value;
     const offerDescription = document.getElementById(`categoryOfferDescription${offerId}`).value;
     const offerDiscount = document.getElementById(`categoryOfferDiscount${offerId}`).value;
@@ -552,6 +577,10 @@ function editproductOffer(offerId) {
 document.getElementById('addOfferForm').addEventListener('submit', function(e) {
   e.preventDefault(); // Prevent form from submitting the traditional way
      
+if(!offername()||!Description()||!add_discount()){
+  return
+}
+
   const modal = new bootstrap.Modal(document.getElementById('addOfferModal'));
   const formData = {
         offerName: document.getElementById('offerName').value,
@@ -616,6 +645,10 @@ fetch('/admin/add-offer', {
 document.getElementById('addCategoryOfferForm').addEventListener('submit', function(e) {
   e.preventDefault(); 
      
+  if(!catOfferName()||!catdescription()||!catdiscount()){
+    return 
+  }
+
   const modal = new bootstrap.Modal(document.getElementById('addCategoryOfferModal'));
   const formData = {
         offerName: document.getElementById('categoryOfferName').value,
@@ -676,10 +709,202 @@ fetch('/admin/category-offer', {
     })
  
 });
+///validation for product offer---------------------------------------------
+function offername() {
+  const offerNameInput = document.getElementById('offerName').value.trim();
+  const errorDiv = document.getElementById('error-offername');
+  
+  // Regular expression to check if the input contains only letters and numbers
+  const regex = /^[a-zA-Z0-9\s]+$/;
+
+  if (!regex.test(offerNameInput)) {
+    errorDiv.textContent = 'Offer name can only contain letters and numbers.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+function Description() {
+    const offerDescriptionInput = document.getElementById('offerDescription').value.trim();
+    const errorDiv = document.getElementById('error-offerdescription');
+    
+    // Regular expression to allow alphanumeric characters, spaces, and basic punctuation
+    const regex = /^[a-zA-Z0-9\s.,!?-]+$/;
+
+    if (!regex.test(offerDescriptionInput)) {
+      errorDiv.textContent = 'Offer description can only contain letters, numbers, spaces, and basic punctuation.';
+      errorDiv.style.color = 'red';
+      return false;
+    } else {
+      errorDiv.textContent = ''; // Clear the error message if validation passes
+      return true;
+    }
+  }
+
+  function add_discount() {
+  const offerDiscountInput = parseInt(document.getElementById('offerDiscount').value.trim(), 10);
+  const errorDiv = document.getElementById('discount-error');
+  
+  // Check if the value is a number and within the range of 10 to 70
+  if (isNaN(offerDiscountInput) || offerDiscountInput < 10 || offerDiscountInput > 70) {
+    errorDiv.textContent = 'Discount must be a number between 10 and 70.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+
+//validation for addcategory offer below----------------------------------------------------------------------------------------
+function catOfferName() {
+  const categoryOfferNameInput = document.getElementById('categoryOfferName').value.trim();
+  const errorDiv = document.getElementById('cat-offername');
+  
+  // Regular expression to allow only letters and numbers
+  const regex = /^[a-zA-Z0-9]+$/;
+
+  if (!regex.test(categoryOfferNameInput)) {
+    errorDiv.textContent = 'Category offer name can only contain letters and numbers.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+function catdescription() {
+  const categoryOfferDescriptionInput = document.getElementById('categoryOfferDescription').value.trim();
+  const errorDiv = document.getElementById('cat-description');
+  
+  // Regular expression to allow alphanumeric characters and basic punctuation
+  const regex = /^[a-zA-Z0-9\s.,!?-]*$/;
+
+  if (!regex.test(categoryOfferDescriptionInput)) {
+    errorDiv.textContent = 'Category offer description can only contain letters, numbers, spaces, and basic punctuation.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+
+function catdiscount() {
+  const categoryOfferDiscountInput = parseInt(document.getElementById('categoryOfferDiscount').value.trim(), 10);
+  const errorDiv = document.getElementById('cat-discount');
+
+  // Check if the value is a number and within the range of 10 to 70
+  if (isNaN(categoryOfferDiscountInput) || categoryOfferDiscountInput < 10 || categoryOfferDiscountInput > 70) {
+    errorDiv.textContent = 'Discount must be a number between 10 and 70.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+///edit product offername >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>edit offer start here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+function editoffername(productId) {
+  // Get the input field and error div elements using the productId
+  const offerNameInput = document.getElementById(`productOfferName${productId}`).value.trim();
+  const errorDiv = document.getElementById(`edit-offername${productId}`);
+
+  // Regular expression to allow letters, numbers, and spaces
+  const regex = /^[a-zA-Z0-9\s]+$/;
+
+  if (!regex.test(offerNameInput)) {
+    errorDiv.textContent = 'Offer name can only contain letters, numbers, and spaces.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+function editofferdescription(productId) {
+  const descriptionInput = document.getElementById(`productOfferDescription${productId}`).value.trim();
+  const errorDiv = document.getElementById(`edit-offerdescription${productId}`);
+
+  // Regular expression to allow letters, numbers, and spaces
+  const regex = /^[a-zA-Z0-9\s%]+$/;
+
+  if (!regex.test(descriptionInput)) {
+    errorDiv.textContent = 'Description can only contain letters, numbers, and spaces.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+function editofferdiscount(productId) {
+  const discountInput = document.getElementById(`productOfferDiscount${productId}`).value.trim();
+  const errorDiv = document.getElementById(`edit-offerdiscount${productId}`);
+  
+  // Convert input to a number
+  const discountValue = Number(discountInput);
+  
+  // Check if the discount value is between 10 and 70
+  if (isNaN(discountValue) || discountValue < 10 || discountValue > 70) {
+    errorDiv.textContent = 'Discount must be a number between 10 and 70.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+
+///edit product offer end here-----------------------------------------------------------------------------------------------------------------------
+
+//edit category offer end here----------------------------------------------------------------------------------------------------------
+
+
+function editcatdiscount(productId) {
+  const discountInput = document.getElementById(`categoryOfferDiscount${productId}`).value.trim();
+  
+  const errorDiv = document.getElementById(`edit-catdiscount${productId}`);
+  console.log(discountInput);
+  console.log("hahhaa");
+  
+  // Convert input to a number
+  const discountValue = Number(discountInput);
+  
+  // Check if the discount value is between 10 and 70
+  if (isNaN(discountValue) || discountValue < 10 || discountValue > 70) {
+    errorDiv.textContent = 'Discount must be a number between 10 and 70.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
+
+  function edit_catoffername(productId) {
+  const offerNameInput = document.getElementById(`categoryOfferName${productId}`).value.trim();
+  const errorDiv = document.getElementById(`edit-catname${productId}`);
+
+  // Regular expression to allow letters, numbers, spaces, and %
+  const regex = /^[a-zA-Z0-9\s%]+$/;
+
+  if (!regex.test(offerNameInput)) {
+    errorDiv.textContent = 'Offer name can only contain letters, numbers, spaces, and %.';
+    errorDiv.style.color = 'red';
+    return false;
+  } else {
+    errorDiv.textContent = ''; // Clear the error message if validation passes
+    return true;
+  }
+}
 
 
 
 
+//edit category offer end here----------------------------------------------------------------------------------------------------------
 </script>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>

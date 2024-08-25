@@ -22,6 +22,7 @@ user_route.use(express.urlencoded({ extended: true }));
 const userController=require('../controller/userController')
 const orderController=require('../controller/orderController')
 const accountController=require('../controller/accountController')
+
 user_route.get('/',islogin.verifyLogout,userController.loginhome)
 user_route.get('/register',islogin.verifyLogout,userController.get_register)
 user_route.post('/register',islogin.verifyLogout,userController.register_user)
@@ -54,6 +55,11 @@ user_route.post('/cart/:productid/:count',islogin.verifyLogin,userController.add
 user_route.post('/cart/update/:count/:productid',islogin.verifyLogin,userController.update_cart)
 user_route.delete('/cart/delete/:productid',islogin.verifyLogin,userController.cart_remove)
 
+//route for wishlist under
+user_route.get('/whishlist',islogin.verifyLogin,userController.load_wishlist)
+user_route.post('/wishlist/:productid',islogin.verifyLogin,userController.add_wishlist)
+user_route.delete('/wishlist/delete/:productid',islogin.verifyLogin,userController.wishlist_remove)
+user_route.post('/wishlist/addtocart/:productId',islogin.verifyLogin,userController.whishlist_addcart)
 
 //route for order-----
 user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)

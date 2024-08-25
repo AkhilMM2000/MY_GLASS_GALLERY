@@ -308,37 +308,19 @@ font-weight: bold;
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-7 col-md-9">
-                            <div id="colorlib-logo"><a href="index.html">Footwear</a></div>
+                            <div id="colorlib-logo"><a href="/product">EYEGAZE</a></div>
                         </div>
-                        <div class="col-sm-5 col-md-3">
-                            <form action="#" class="search-wrap">
-                                <div class="form-group">
-                                    <input type="search" class="form-control search" placeholder="Search">
-                                    <button class="btn btn-primary submit-search text-center" type="submit"><i
-                                            class="icon-search"></i></button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                        
+                 </div>
                     <div class="row">
                         <div class="col-sm-12 text-left menu-1">
                             <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li class="has-dropdown active">
-                                    <a href="men.html">Men</a>
-                                    <ul class="dropdown">
-                                        <li><a href="product-detail.html">Product Detail</a></li>
-                                        <li><a href="cart.html">Shopping Cart</a></li>
-                                        <li><a href="checkout.html">Checkout</a></li>
-                                        <li><a href="order-complete.html">Order Complete</a></li>
-                                        <li><a href="add-to-wishlist.html">Wishlist</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="women.html">Women</a></li>
-                                <li><a href="about.html">About</a></li>
-                                <li><a href="contact.html">Contact</a></li>
-                                <li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a>
-                                </li>
+                            
+                            
+                                    <li class="cart"><a href="/myaccount">my account</a></li>
+                            
+                                    
+                            
                             </ul>
                         </div>
                     </div>
@@ -352,12 +334,12 @@ font-weight: bold;
                                 <div class="owl-carousel2">
                                     <div class="item">
                                         <div class="col">
-                                            <h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3>
+                                            <h3><a href="/cart">click here for cart</a></h3>
                                         </div>
                                     </div>
                                     <div class="item">
                                         <div class="col">
-                                            <h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3>
+                                            <h3><a href="/cart">see your for cart</a></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -403,7 +385,9 @@ font-weight: bold;
             </div> -->
                 <div class="row">
                     <div class="col-lg-8">
+                       
                         <div class="coupon-section card shadow-sm p-4 mb-4">
+                            
                             <h5 class="card-title mb-3">Discount Coupons</h5>
                             <form id="couponForm" class="mb-3">
                                 <div class="input-group">
@@ -414,6 +398,9 @@ font-weight: bold;
                                     </div>
                                 </div>
                             </form>
+                            <div class="error-message mb-3" id="message">
+                               
+                            </div>
                             <button type="button" class="btn btn-outline-secondary show-coupons-btn w-100" data-toggle="modal" data-target="#myModal">
                                 <i class="fas fa-tags me-2"></i>Show All Available Coupons
                             </button>
@@ -588,22 +575,26 @@ document.getElementById('couponForm').addEventListener('submit', async function(
 console.log(result);
 
         if (response.ok) {
-         
+          
+          
             
             document.querySelector('.discount-item').style.display = 'block';
             document.querySelector('.subtotal-item').style.display = 'block';
             
             document.querySelector('.discount-amount').innerHTML = `&#8377;${parseFloat(result.discountAmount).toFixed(2)}`;
 document.querySelector('.subtotal-amount').innerHTML = `&#8377;${parseFloat(result.totalCartAmount).toFixed(2)}`;
+ 
 
         } else {
-            alert(result.message); // Show error message
+            document.getElementById('message').textContent = result.message;
+            document.getElementById('message').style.color = 'red';
             document.querySelector('.discount-item').style.display = 'none';
             document.querySelector('.subtotal-item').style.display = 'none';
         }
     } catch (error) {
         console.error('Error applying coupon:', error);
-        alert('There was an error applying the coupon. Please try again.');
+        document.getElementById('message').textContent = 'There was an error applying the coupon. Please try again.';
+        document.getElementById('message').style.color = 'red';
            document.querySelector('.discount-item').style.display = 'none';
             document.querySelector('.subtotal-item').style.display = 'none';
     }
@@ -612,6 +603,7 @@ document.querySelector('.subtotal-amount').innerHTML = `&#8377;${parseFloat(resu
 
 document.getElementById('removeCouponBtn').addEventListener('click', function() {
     document.getElementById('coupon-code').value = '';
+    
     document.querySelector('.discount-item').style.display = 'none';
     document.querySelector('.subtotal-item').style.display = 'none';
 });
@@ -623,12 +615,14 @@ document.getElementById('removeCouponBtn').addEventListener('click', function() 
 
    
 <script>
+    
     document.getElementById('placeOrderBtn').addEventListener('click', async function (event) {
 event.preventDefault();
 
 const paymentMethod = document.querySelector('input[name="optradio"]:checked').value;
 const addressId = document.querySelector('input[name="address"]:checked').value;
 const coupon_code=document.getElementById('coupon-code').value
+
 
 
 
@@ -658,7 +652,7 @@ const couponApplied=razorpayOrderData.couponApplied
                 key: razorpayOrderData.key_id,
                 amount: razorpayOrderData.amount,
                 currency: razorpayOrderData.currency,
-                name: "Your Company Name",
+                name: "EYEGAZE",
                 description: "Test Transaction",
                 order_id: razorpayOrderData.order_id,
                 handler: function (response) {
@@ -691,9 +685,9 @@ const couponApplied=razorpayOrderData.couponApplied
                     });
                 },
                 prefill: {
-                    name: "Your Name",
-                    email: "your-email@example.com",
-                    contact: "9999999999"
+                    name: "EYEGAZE",
+                    email: "eyegazefit@gmail.com",
+                    contact: "9001 7001 78"
                 },
                 theme: {
                     color: "#F37254"
@@ -751,11 +745,12 @@ const couponApplied=razorpayOrderData.couponApplied
       });
     });
     </script>
+    
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/js/jquery.min.js"></script>
     <!-- popper -->
     <script src="/js/popper.min.js"></script>

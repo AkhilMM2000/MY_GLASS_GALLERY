@@ -101,6 +101,7 @@
 							<!-- Product Description -->
 							<p>
 								<%= pro.description%>
+								.Looking through the lenses of these spectacles, much like Alphabet Village meets Line Lane. A moment of reflection may cross your mind, but these spectacles will keep you moving forward with confidence
 							</p>
 							<!-- Product Price -->
 							<p class="price">
@@ -138,7 +139,7 @@
 										</p>
 									</div>
 									<p class="addtowishlist mt-3">
-										<a href="wishlist.html" class="btn btn-secondary btn-addtowishlist">
+										<a href="javascript:void(0)" class="btn btn-secondary btn-addtowishlist" onclick="addwishlist('<%=pro._id%>')">
 											<i class="icon-heart"></i> Add to Wishlist
 										</a>
 									</p>
@@ -603,7 +604,67 @@
 //       });
 //     });
 //   }
-	
+
+
+function addwishlist(productId) {
+  fetch(`/wishlist/${productId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => {
+    if (response.redirected) {
+      window.location.href = response.url;
+      return;
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.message === 'Product not found') {
+      Swal.fire({
+        title: 'Error',
+        text: 'Product not found.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    } else if (data.message === 'Product added to wishlist') {
+      Swal.fire({
+        title: 'Success',
+        text: 'Product added to wishlist.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+    } else if (data.message === 'Product already in wishlist') {
+      Swal.fire({
+        title: 'Info',
+        text: 'Product already exists in your wishlist.',
+        icon: 'info',
+        confirmButtonText: 'OK'
+      });
+    } else if (data) {
+      Swal.fire({
+        title: 'Error',
+        text: data.message,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'Server error. Please try again later.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  });
+}
+
+
+
+
 	
 function addcart(productId,count) {
     fetch(`/cart/${productId}/${count}`, {
