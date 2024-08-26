@@ -61,7 +61,7 @@ user_route.post('/wishlist/:productid',islogin.verifyLogin,userController.add_wi
 user_route.delete('/wishlist/delete/:productid',islogin.verifyLogin,userController.wishlist_remove)
 user_route.post('/wishlist/addtocart/:productId',islogin.verifyLogin,userController.whishlist_addcart)
 
-//route for order-----
+//route for order-------------------------------------------------------------------------------------------------------
 user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)
 user_route.post('/place-order',islogin.verifyLogin,orderController.place_order)
 user_route.get('/placeorder',islogin.verifyLogin,orderController.order_success)

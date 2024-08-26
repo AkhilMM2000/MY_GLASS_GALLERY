@@ -194,7 +194,7 @@ const add_product = async (req, res) => {
     await newProduct.save();
 
     //  console.log(result);
-    res.status(200).json({ message: 'Product uploaded successfully' });
+    res.status(200).json({ message: 'Product uploaded successfully'});
   } catch (error) {
 
     res.status(500).json({ message: error.message });
@@ -202,7 +202,7 @@ const add_product = async (req, res) => {
 };
 
 
-//  listproduct in the admin on table wise
+//  listproduct in the admin side in  table wise
 
 const listproduct = async (req, res) => {
   try {

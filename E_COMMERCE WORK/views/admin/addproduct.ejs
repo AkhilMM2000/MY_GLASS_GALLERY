@@ -168,7 +168,7 @@
                           <input type="number" class="form-control" id="discountPrice" name=" discountPrice" placeholder="Enter discount price" >
                         </div> -->
 
-                  <div class="form-group">
+                  <div class="form-group" style="visibility: hidden;">
                     <label for="gender">Gender</label>
                     <select class="form-control" id="gender" name="gender">
                       <option value="" disabled selected>Select Gender</option>
@@ -281,7 +281,6 @@
       if(!validatedescription()||!validatename()||!validateprice()||!validatestock()){
   return
 }
-
       try {
         const response = await fetch('/admin/addproduct', {
           method: 'POST',
@@ -289,7 +288,6 @@
         });
 
         const data = await response.json();
-
         if (response.ok) {
           // Show a success message using SweetAlert and reload the page on confirmation
           Swal.fire({
@@ -300,7 +298,7 @@
           }).then((result) => {
             if (result.isConfirmed) {
               // Reload the page
-              window.location.reload();
+              window.location.href = '/admin/products';
             }
           });
         } else {
@@ -324,9 +322,6 @@
     });
 
     /////////////////////////////////////////////////////////////////////////////End here
-
-
-
 
 
     document.addEventListener('DOMContentLoaded', function () {

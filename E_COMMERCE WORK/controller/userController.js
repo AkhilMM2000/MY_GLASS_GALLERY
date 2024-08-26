@@ -359,30 +359,20 @@ const googleSuccess = async (req, res, next) => {
 };
 
 //product in shop page load below-------------------------------------------------------------
-
 const load_product = async (req, res) => {
   try {
-
     const page = parseInt(req.query.page) || 1;
     const limit = 6; // Number of products per page
     const skip = (page - 1) * limit;
 
     let sortOption = {};
     let selectedSort = req.query.sort || '';
-    if (selectedSort === 'low-high') {
-      sortOption = { price: 1 };
-    } else if (selectedSort === 'high-low') {
-      sortOption = { price: -1 };
-    } else if (selectedSort === 'name_asc') {
-      sortOption = { productName: 1 };
-    } else if (selectedSort === 'name_desc') {
-      sortOption = { productName: -1 };
-    }
 
     // Get filter parameters
     const categoryIds = req.query.categories ? (Array.isArray(req.query.categories) ? req.query.categories : [req.query.categories]) : [];
     const brandIds = req.query.brands ? (Array.isArray(req.query.brands) ? req.query.brands : [req.query.brands]) : [];
     const searchQuery = req.query.search || '';
+
     // Prepare filter object
     let filterObject = { listed: true };
     if (categoryIds.length > 0) {
@@ -405,14 +395,8 @@ const load_product = async (req, res) => {
       .populate('category')
       .populate('productBrand')
       .populate('offers')
-      .sort(sortOption)
       .skip(skip)
-      .limit(limit);;
-
-    const queryString = Object.entries(req.query)
-      .filter(([key]) => key !== 'page')
-      .map(([key, value]) => `&${key}=${value}`)
-      .join('');
+      .limit(limit);
 
     product_data.forEach(prod => {
       if (prod.offers && prod.offers.length > 0) {
@@ -421,7 +405,7 @@ const load_product = async (req, res) => {
 
         prod.offers.forEach(offer => {
           if (offer.status === true) {
-            const discountAmount = (prod.price * offer.discount) / 100;
+            const discountAmount =Math.ceil( (prod.price * offer.discount) / 100);
             if (offer.discount > biggestDiscount) {
               biggestDiscount = offer.discount;
               prod.discountPrice = prod.price - discountAmount;
@@ -429,12 +413,37 @@ const load_product = async (req, res) => {
             }
           }
         });
-        // Optionally store the best offer if needed
         prod.bestOffer = bestOffer;
       } else {
         prod.discountPrice = prod.price;
       }
     });
+
+    // Sort based on discountPrice instead of price
+    if (selectedSort === 'low-high') {
+      sortOption = { discountPrice: 1 };
+    } else if (selectedSort === 'high-low') {
+      sortOption = { discountPrice: -1 };
+    } else if (selectedSort === 'name_asc') {
+      sortOption = { productName: 1 };
+    } else if (selectedSort === 'name_desc') {
+      sortOption = { productName: -1 };
+    }
+
+    // Sort the product_data array after applying discountPrice
+    product_data.sort((a, b) => {
+      if (sortOption.discountPrice) {
+        return sortOption.discountPrice * (a.discountPrice - b.discountPrice);
+      } else if (sortOption.productName) {
+        return sortOption.productName * a.productName.localeCompare(b.productName);
+      }
+      return 0;
+    });
+
+    const queryString = Object.entries(req.query)
+      .filter(([key]) => key !== 'page')
+      .map(([key, value]) => `&${key}=${value}`)
+      .join('');
 
     res.render("users/products", {
       products: product_data,
@@ -453,8 +462,9 @@ const load_product = async (req, res) => {
     console.log(error);
     res.status(500).send("An error occurred while loading products");
   }
-
 }
+
+
 
 const product_detail = async (req, res) => {
   try {

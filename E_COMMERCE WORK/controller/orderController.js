@@ -18,7 +18,12 @@ const load_checkout = async (req, res) => {
 
   try {
 
-    const coupon_data = await Coupon.find()
+    const coupon_data = await Coupon.find({
+      
+expirationDate: { $gt: new Date() }, 
+      status: true // Only coupons with status set to true
+    });
+    
 
     const addres_data = await Address.find({ user_id: req.session.userid })
     const userId = req.session.userid;
@@ -338,7 +343,8 @@ const update_order = async (req, res) => {
 const load_wallet = async (req, res) => {
   try {
 
-    const wallet = await userwallet.find()
+    const wallet = await userwallet.find({
+      user_id:req.session.userid})
     console.log(wallet);
 
     res.render('users/wallet', { wallet })
