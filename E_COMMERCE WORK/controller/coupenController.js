@@ -14,13 +14,22 @@ const Coupon=require('../model/coupenModel')
 
 const load_coupon = async (req, res) => {
     try {
-        const coupen_data=await Coupon.find()
-console.log(coupen_data);
+      const page = parseInt(req.query.page) || 1;  
+      const limit = 2;  
+      const skip = (page - 1) * limit;  
 
+      const coupen_data = await Coupon.find().skip(skip).limit(limit);
 
-        res.render('admin/addCoupen',{coupen:coupen_data})
+      const totalCoupons = await Coupon.countDocuments();
+
+      // Calculate the total number of pages
+      const totalPages = Math.ceil(totalCoupons / limit);
+
+        res.render('admin/addCoupen',{coupen:coupen_data, currentPage: page,
+          totalPages: totalPages})
     } catch (error) {
         console.log(error);
+        res.status(500).send('Server Error');
 
     }
 }

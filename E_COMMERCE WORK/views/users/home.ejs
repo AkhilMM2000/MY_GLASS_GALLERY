@@ -1,5 +1,122 @@
 <%- include('../partials/header') %>
+<style>
+.related-products {
+    background-color: #f8f9fa;
+}
 
+.section-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.section-title-underline {
+    width: 50px;
+    height: 3px;
+    background-color: #007bff;
+    margin: 0 auto;
+}
+
+.product-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.product-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.offer-badge, .stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+.offer-badge {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.stock-badge {
+    background-color: #34495e;
+    color: #fff;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.product-price {
+    font-weight: bold;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: hsl(173, 65%, 72%);
+    margin-right: 10px;
+}
+
+/* .new-price {
+    color: #822a2048;
+} */
+
+.price {
+    color: #007bff;
+}
+
+.out-of-stock .product-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.out-of-stock .product-title a,
+.out-of-stock .product-price {
+    color: #999;
+}
+</style>
 
 		
 <div class="colorlib-loader"></div>
@@ -122,63 +239,77 @@
               </ul>
           </div>
     </aside>
-    <div class="colorlib-intro">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <h2 class="intro">It started with a simple idea: Create quality, well-designed products that I wanted myself.</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="colorlib-product">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-6 text-center">
-                    <div class="featured">
-                        <a href="#" class="featured-img" style="background-image: url(images/underbg.webp);"></a>
-                        <div class="desc">
-                            <h2><a href="#">Shop Men's Collection</a></h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 text-center">
-                    <div class="featured">
-                        <a href="#" class="featured-img" style="background-image: url(images/underbg2.jpg);"></a>
-                        <div class="desc">
-                            <h2><a href="#">Shop Women's Collection</a></h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     
 
     <div class="colorlib-partner">
         <div class="container">
             <div class="row">
+                <section class="related-products py-5">
+                    <div class="container">
+                        <div class="row mb-5">
+                            <div class="col-12 text-center">
+                                <h2 class="section-title">LATEST PRODUCT</h2>
+                                <div class="section-title-underline"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <% for (let i = 0; i < products.length; i++) { %>
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="product-card shadow-sm border-0">
+                                    <div class="product-image position-relative">
+                                        <a href="#">
+                                            <img src="productimage/<%= products[i].productimages[0] %>" class="img-fluid w-100" alt="<%= products[i].productName %>">
+                                        </a>
+                                        <div class="product-overlay position-absolute d-flex justify-content-center align-items-center">
+                                            <a href="/productdetail/<%=products[i]._id%>" class="btn btn-primary btn-sm">Quick View</a>
+                                        </div>
+                                        
+                                        <% if (products[i].discountPrice < products[i].price) { %>
+                                        <div class="offer-badge position-absolute top-0 start-0 bg-danger text-white px-2 py-1">
+                                            <%= Math.round(((products[i].price - products[i].discountPrice) / products[i].price) * 100) %>% OFF
+                                        </div>
+                                        <% } %>
+                                        
+                                        <% if (products[i].stock <= 0) { %>
+                                        <div class="stock-badge position-absolute bottom-0 start-0 bg-secondary text-white px-2 py-1">
+                                            OUT OF STOCK
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                    <div class="product-info p-3 text-center">
+                                        <h3 class="product-title h6 mb-2"><a href="#" class="text-dark"><%= products[i].productName %></a></h3>
+                                        <% if (products[i].discountPrice < products[i].price) { %>
+                                        <p class="product-price mb-1">
+                                            <span class="old-price text-muted text-decoration-line-through">RS: <%= products[i].price %></span>
+                                            <span class="new-price text-danger ms-2">RS:<%= products[i].discountPrice %></span>
+                                        </p>
+                                        <% } else { %>
+                                        <p class="product-price text-danger mb-1">RS:<%= products[i].price %></p>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                        </div>
+                        
+                    </div>
+                </section>
                 <div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
                     <h2>Trusted Partners</h2>
                 </div>
             </div>
             <div class="row">
-                <div class="col partner-col text-center">
-                    <img src="images/brand-1.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
-                </div>
-                <div class="col partner-col text-center">
-                    <img src="images/brand-2.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
-                </div>
+                
                 <div class="col partner-col text-center">
                     <img src="images/brand-3.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
                 </div>
                 <div class="col partner-col text-center">
                     <img src="images/brand-4.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
                 </div>
-                <div class="col partner-col text-center">
-                    <img src="images/brand-5.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
-                </div>
+               
             </div>
         </div>
     </div>

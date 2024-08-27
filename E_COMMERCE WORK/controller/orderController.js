@@ -431,7 +431,7 @@ const return_accept = async (req, res) => {
     );
 
     // Calculate the refund amount
-    if (orderdata.paymentMethod ==='razorpay') {
+  
       let refundAmount = totalAmount;
   
       if (orderdata.discountAmount && orderdata.discountAmount !== 0) {
@@ -461,7 +461,7 @@ const return_accept = async (req, res) => {
   
       // Save the wallet and order data
       await wallet.save();
-  }
+
   
 
     await orderdata.save();

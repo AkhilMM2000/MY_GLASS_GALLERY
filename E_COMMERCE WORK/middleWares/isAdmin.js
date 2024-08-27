@@ -1,5 +1,9 @@
 
-function verifyLogin(req, res, next) {
+const User=require('../model/userModel')
+
+
+async function verifyLogin(req, res, next) {
+  
     if (req.session.admin) {
       
     } else {

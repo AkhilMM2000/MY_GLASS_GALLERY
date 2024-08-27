@@ -148,15 +148,29 @@ const addcategory = async (req, res) => {
 
 const load_category = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1; // Get current page from query params, default is 1
+        const limit = 3; // Number of categories per page
+        const skip = (page - 1) * limit; // Calculate the number of documents to skip
 
-        const categories = await category.find();
-        res.render('admin/category', { categories });
-        // console.log(categories);
+        // Fetch categories with pagination
+        const [categories, totalCategories] = await Promise.all([
+            category.find().skip(skip).limit(limit),
+            category.countDocuments() // Get total count of categories for pagination calculation
+        ]);
+
+        const totalPages = Math.ceil(totalCategories / limit); // Calculate total pages
+
+        res.render('admin/category', { 
+            categories, 
+            currentPage: page, 
+            totalPages: totalPages 
+        });
     } catch (error) {
         console.log(error);
+        res.status(500).send('Server Error');
     }
-
 }
+
 
 const category_listed = async (req, res) => {
     try {

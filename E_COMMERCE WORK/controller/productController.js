@@ -52,19 +52,31 @@ const add_brand = async (req, res) => {
   }
 
 }
-
 const load_brand = async (req, res) => {
   try {
-    const brands = await brand.find();
-    res.render('admin/brandlist', { brands })
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3; // Number of brands per page
+    const skip = (page - 1) * limit; // Calculate the number of documents to skip
 
+    // Fetch brands with pagination
+    const [brands, totalBrands] = await Promise.all([
+      brand.find().skip(skip).limit(limit),
+      brand.countDocuments() // Get total count of brands for pagination calculation
+    ]);
+
+    const totalPages = Math.ceil(totalBrands / limit); 
+
+    res.render('admin/brandlist', { 
+      brands, 
+      currentPage: page, 
+      totalPages: totalPages 
+    });
   } catch (error) {
-
     console.log(error);
-
+    res.status(500).send('Server Error');
   }
-
 }
+
 const brand_listed = async (req, res) => {
   try {
     const brandid = req.query.id;

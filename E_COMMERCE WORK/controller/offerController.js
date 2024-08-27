@@ -12,17 +12,37 @@ const category = require('../model/category')
 const Offer = require('../model/offerModel')
 const get_addoffer = async (req, res) => {
     try {
-        const [productdata, categorydata, offerdata] = await Promise.all([
+        const page = parseInt(req.query.page) || 1; // Get current page from query params, default is 1
+        const limit = 2; // Number of offers per page
+        const skip = (page - 1) * limit; // Calculate the number of documents to skip
+
+        // Fetch offers with pagination
+        const [productdata, categorydata, offerdata, totalOffers] = await Promise.all([
             product.find({ listed: true }),
             category.find({ listed: true }),
-            Offer.find().populate('category.categoryId').populate('products.productId')
+            Offer.find()
+                .populate('category.categoryId')
+                .populate('products.productId')
+                .skip(skip)
+                .limit(limit),
+            Offer.countDocuments() // Get total count of offers for pagination calculation
         ]);
-        res.render('admin/addOffer', { productdata, categorydata, offerdata })
+
+        const totalPages = Math.ceil(totalOffers / limit); // Calculate total pages
+
+        res.render('admin/addOffer', { 
+            productdata, 
+            categorydata, 
+            offerdata, 
+            currentPage: page, 
+            totalPages: totalPages 
+        });
     } catch (error) {
         console.log(error);
-
+        res.status(500).send('Server Error');
     }
 }
+
 
 const add_offer = async (req, res) => {
     try {

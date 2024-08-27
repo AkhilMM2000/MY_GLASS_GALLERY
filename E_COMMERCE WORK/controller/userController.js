@@ -247,13 +247,37 @@ const save_password = async (req, res) => {
   }
 }
 
-///--------------------------------------------------------------------------------currently work------------------------------------------
+///-------------------------------------------------------------------------------load home with lates product------------------------------------------
 const loginhome = async (req, res) => {
   try {
 
-    const userdata = await User.findById(req.session.userid)
+   const userdata = await User.findById(req.session.userid)
+  const latestProducts = await product.find({listed:true}).sort({ Date: -1 }).limit(4).populate('category')
+  .populate('productBrand')
+  .populate('offers');
 
-    res.render('users/home', { userdata })
+  latestProducts.forEach(prod => {
+    if (prod.offers && prod.offers.length > 0) {
+      let biggestDiscount = 0;
+      let bestOffer = null;
+
+      prod.offers.forEach(offer => {
+        if (offer.status === true) {
+          const discountAmount =Math.ceil( (prod.price * offer.discount) / 100);
+          if (offer.discount > biggestDiscount) {
+            biggestDiscount = offer.discount;
+            prod.discountPrice = prod.price - discountAmount;
+            bestOffer = offer;
+          }
+        }
+      });
+      prod.bestOffer = bestOffer;
+    } else {
+      prod.discountPrice = prod.price;
+    }
+  });
+
+   res.render('users/home', { userdata,   products:latestProducts })
 
   } catch (error) {
     console.log(error.message)

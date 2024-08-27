@@ -6,6 +6,7 @@ const passport = require('passport');
 const nocache =require('nocache')
 const islogin=require('../middleWares/islogin')
 const couponController=require('../controller/coupenController')
+
 user_route.use(session({
     secret: config.sessionSecret,
     resave: false,
