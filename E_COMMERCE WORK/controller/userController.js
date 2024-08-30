@@ -66,48 +66,43 @@ async function sendOTPViaEmail(email, otp) {
     });
   });
 }
-
 const register_user = async (req, res) => {
   try {
     const existingUser = await User.findOne({ userName: req.body.userName });
 
     if (existingUser) {
-      return res.render('users/register', { message: "Username already taken" });
-    }
-    const existingEmail = await User.findOne({ userEmail: req.body.userEmail });
-    if (existingEmail) {
-      return res.render('users/register', { message: "Email already in use" });
+      return res.status(400).json({ success: false, message: "Username already taken" });
     }
 
+    const existingEmail = await User.findOne({ userEmail: req.body.userEmail });
+    if (existingEmail) {
+      return res.status(400).json({ success: false, message: "Email already in use" });
+    }
 
     const { userName, userEmail, mobileNo, password } = req.body;
     const spassword = await securePassword(password);
 
-    const otp = generateOTP()
-    req.session.otp = otp
+    const otp = generateOTP();
+    req.session.otp = otp;
     console.log(req.session.otp);
+
     req.session.user = {
       userName,
       userEmail,
       mobileNo,
       password: spassword,
       is_admin: 0
-    }
+    };
 
-    // const userData=req.session.user
-    // const user=new User(userData)
-    //    await user.save()
-
-
-    await sendOTPViaEmail(req.body.userEmail, otp)
-    res.redirect("/otp")
+    await sendOTPViaEmail(req.body.userEmail, otp);
+    return res.status(200).json({ success: true, message: "OTP sent successfully", redirectUrl: "/otp" });
 
   } catch (error) {
-
-    console.log(error.message);
+    console.error(error.message);
+    return res.status(500).json({ success: false, message: "An error occurred, please try again later" });
   }
+};
 
-}
 
 const get_otp = async (req, res) => {
   try {
@@ -124,11 +119,8 @@ const get_otp = async (req, res) => {
 
 const verify_otp = async (req, res) => {
   try {
-    const otp1 = req.body.otp1;
-    const otp2 = req.body.otp2;
-    const otp3 = req.body.otp3;
-    const otp4 = req.body.otp4;
-    const otp = otp1 + otp2 + otp3 + otp4
+    const { otp1, otp2, otp3, otp4 } = req.body;
+    const otp = otp1 + otp2 + otp3 + otp4;
 
     const sessionOTP = req.session.otp;
 
@@ -138,15 +130,18 @@ const verify_otp = async (req, res) => {
       const user = new User(userData);
       user.isOTPVerified = true;
       await user.save();
-      req.session.userData = null;
-      res.redirect('/sign');
+      req.session.user = null;
+
+      return res.status(200).json({ success: true });
     } else {
-      res.render('users/otp');
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
     }
   } catch (error) {
-    console.log(error);
+    console.error('Error verifying OTP:', error);
+    return res.status(500).json({ success: false, message: 'Server error. Please try again later.' });
   }
-}
+};
+
 
 const resendOTP = async (req, res) => {
   try {
@@ -251,33 +246,33 @@ const save_password = async (req, res) => {
 const loginhome = async (req, res) => {
   try {
 
-   const userdata = await User.findById(req.session.userid)
-  const latestProducts = await product.find({listed:true}).sort({ Date: -1 }).limit(4).populate('category')
-  .populate('productBrand')
-  .populate('offers');
+    const userdata = await User.findById(req.session.userid)
+    const latestProducts = await product.find({ listed: true }).sort({ Date: -1 }).limit(4).populate('category')
+      .populate('productBrand')
+      .populate('offers');
 
-  latestProducts.forEach(prod => {
-    if (prod.offers && prod.offers.length > 0) {
-      let biggestDiscount = 0;
-      let bestOffer = null;
+    latestProducts.forEach(prod => {
+      if (prod.offers && prod.offers.length > 0) {
+        let biggestDiscount = 0;
+        let bestOffer = null;
 
-      prod.offers.forEach(offer => {
-        if (offer.status === true) {
-          const discountAmount =Math.ceil( (prod.price * offer.discount) / 100);
-          if (offer.discount > biggestDiscount) {
-            biggestDiscount = offer.discount;
-            prod.discountPrice = prod.price - discountAmount;
-            bestOffer = offer;
+        prod.offers.forEach(offer => {
+          if (offer.status === true) {
+            const discountAmount = Math.ceil((prod.price * offer.discount) / 100);
+            if (offer.discount > biggestDiscount) {
+              biggestDiscount = offer.discount;
+              prod.discountPrice = prod.price - discountAmount;
+              bestOffer = offer;
+            }
           }
-        }
-      });
-      prod.bestOffer = bestOffer;
-    } else {
-      prod.discountPrice = prod.price;
-    }
-  });
+        });
+        prod.bestOffer = bestOffer;
+      } else {
+        prod.discountPrice = prod.price;
+      }
+    });
 
-   res.render('users/home', { userdata,   products:latestProducts })
+    res.render('users/home', { userdata, products: latestProducts })
 
   } catch (error) {
     console.log(error.message)
@@ -429,7 +424,7 @@ const load_product = async (req, res) => {
 
         prod.offers.forEach(offer => {
           if (offer.status === true) {
-            const discountAmount =Math.ceil( (prod.price * offer.discount) / 100);
+            const discountAmount = Math.ceil((prod.price * offer.discount) / 100);
             if (offer.discount > biggestDiscount) {
               biggestDiscount = offer.discount;
               prod.discountPrice = prod.price - discountAmount;
@@ -561,7 +556,6 @@ const load_cart = async (req, res) => {
         item.discountPrice = highestDiscountPrice;
       });
     }
-
 
     res.render('users/cart', { cart });
   } catch (error) {
@@ -911,6 +905,37 @@ const whishlist_addcart = async (req, res) => {
 
 }
 
+
+const not_found = async (req, res) => {
+  try {
+    res.render('users/404error')
+  } catch (error) {
+    console.log(error);
+
+  }
+
+
+}
+//render abouts page
+const abouts =async (req, res) => {
+  try {
+    res.render('users/about')
+  } catch (error) {
+    console.log(error);
+
+  }
+}
+
+const contacts=async(req,res)=>{
+try {
+  res.render('users/contacts')
+} catch (error) {
+  console.log(error);
+  
+}
+
+}
+
 module.exports = {
   loginhome,
   get_register,
@@ -938,6 +963,10 @@ module.exports = {
   forget_password,
   new_password,
   save_password,
+  not_found,
+  abouts,
+  contacts,
   logout
 }
+
 

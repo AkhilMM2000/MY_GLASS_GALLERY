@@ -10,6 +10,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    paymentStatus: {
+        type: String,
+        enum: ['Success', 'Failed'],
+        required: true,
+       
+    },
     shippingCharge: {
         type: Number,
         default: 0

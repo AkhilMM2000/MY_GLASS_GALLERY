@@ -8,11 +8,11 @@
             <div class="card-body">
               <h3 class="text-center mb-4">Enter OTP</h3>
               <p class="text-center mb-4">We have sent you a 4-digit OTP to your email.</p>
-              <form id="otpForm"  action="/otp" method="post">
+              <form id="otpForm">
                 <div class="form-group d-flex justify-content-center">
-                  <input type="text" class="form-control otp-input" name="otp1" maxlength="1">
-                  <input type="text" class="form-control otp-input" name="otp2" maxlength="1">
-                  <input type="text" class="form-control otp-input" name="otp3" maxlength="1">
+                  <input type="text" class="form-control otp-input" name="otp1" maxlength="1" oninput="moveCursor(this, 'otp2')">
+                  <input type="text" class="form-control otp-input" name="otp2" maxlength="1" oninput="moveCursor(this, 'otp3')">
+                  <input type="text" class="form-control otp-input" name="otp3" maxlength="1" oninput="moveCursor(this, 'otp4')">
                   <input type="text" class="form-control otp-input" name="otp4" maxlength="1">
                 </div>
                 <button type="submit" class="btn btn-primary btn-block mt-4">Verify</button>
@@ -23,7 +23,7 @@
                 <button  id="resend-link" class="resend-link"  style="display:none;">Resend</button>
               </p>
               <p class="text-center text-muted mt-3 timer">      
-                <span id="timer">00.00</span> seconds remaining
+                <span id="timer"></span>
               </p>
             </div>
           </div>
@@ -31,6 +31,62 @@
       </div>
     </div>
   </div>
+
+
+
+
+
+<script>
+  
+
+
+document.getElementById('otpForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+
+    try {
+      const response = await fetch('/otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'OTP Verified!',
+          text: 'You will be redirected shortly.',
+          timer: 1500,
+          showConfirmButton: false,
+        }).then(() => {
+          window.location.href = '/sign';
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid OTP',
+          text: result.message || 'The OTP you entered is incorrect. Please try again.'
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      });
+    }
+  });
+
+</script>
+
   <script>
 let otpDurationSeconds = 60; // 1 minute
     const otpTimerElement = document.getElementById('timer');
@@ -54,7 +110,6 @@ let otpDurationSeconds = 60; // 1 minute
         // Check if the timer has reached 0
         if (otpDurationSeconds < 0) {
             clearInterval(timerInterval); // Stop the timer
-            otpTimerElement.textContent = '00:00';
             resendOTPBtn.style.display = 'block'; // Show the Resend OTP button
             otpForm.reset(); // Reset the form
         }
@@ -89,11 +144,39 @@ let otpDurationSeconds = 60; // 1 minute
 
     
     // Function to submit the OTP form
-    otpForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-        clearInterval(timerInterval); // Stop the timer
-        this.submit(); // Submit the form
+    // otpForm.addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Prevent the default form submission
+    //     clearInterval(timerInterval); // Stop the timer
+    //     this.submit(); // Submit the form
+    // });
+
+//for handling input come go to next input field
+    
+    document.addEventListener("DOMContentLoaded", function() {
+  const otpInputs = document.querySelectorAll('.otp-input');
+
+  otpInputs.forEach((input, index) => {
+    input.addEventListener('input', function() {
+      if (input.value.length === 1) {
+        // Move to the next input if exists
+        if (index < otpInputs.length - 1) {
+          otpInputs[index + 1].focus();
+        }
+      }
     });
- 
+
+    input.addEventListener('keydown', function(event) {
+      // Handle backspace event
+      if (event.key === 'Backspace' && input.value.length === 0) {
+        if (index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      }
+    });
+  });
+});
   </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+  
   <%- include('../partials/footer') %>

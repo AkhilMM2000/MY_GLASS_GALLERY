@@ -65,6 +65,8 @@ user_route.post('/wishlist/addtocart/:productId',islogin.verifyLogin,userControl
 //route for order-------------------------------------------------------------------------------------------------------
 user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)
 user_route.post('/place-order',islogin.verifyLogin,orderController.place_order)
+user_route.post('/retry-payment',islogin.verifyLogin,orderController.retry_payment)
+user_route.post('/update-payment-status',islogin.verifyLogin,orderController.update_orderstatus)
 user_route.get('/placeorder',islogin.verifyLogin,orderController.order_success)
 user_route.post('/return-product',islogin.verifyLogin,orderController.return_request)
 // account controller below routes------------------------------------------------------------------------------------------------------->
@@ -92,8 +94,14 @@ user_route.get('/logout',userController.logout)
 //routes for coupon applying
 user_route.post('/apply-coupon',islogin.verifyLogin,couponController.applyCoupon)
 
+//404 error page render
+user_route.get('/404',userController.not_found)
 
+//about page render
+user_route.get('/abouts',userController.abouts)
 
+//render the contacts page 
+user_route.get('/contacts',userController.contacts)
 
 module.exports=user_route
 

@@ -325,7 +325,12 @@
                                                             <%} %>
                                             </td>
                                             <td>
-                                                <% if (array.status==='Cancelled' ) { %>    
+                                                <% if (item.paymentStatus === 'Failed') { %>
+                                                    <a href="/detailorder?orderId=<%=item.orderId%>" class="btn btn-sm btn-warning">
+                                                        Retry 
+                                                    </a>  
+                                                       
+                                                <% } else if (array.status === 'Cancelled') { %>    
                                                     <div class="first">
                                                         <span>order_cancelled</span>
                                                     </div>

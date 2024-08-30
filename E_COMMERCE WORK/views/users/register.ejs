@@ -84,6 +84,13 @@
           padding: 7px 14px;
       }
   }
+  .form-control-lg {
+    font-weight: bold; /* Makes the input text bold */
+  }
+
+  .form-label {
+    font-weight: bold; /* Makes the label text bold */
+  }
   
   </style>
 
@@ -105,9 +112,10 @@ style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/
            
             <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="/sign"
               class="fw-bold text-body"><u>Login here</u></a></p>
-              <p class="text-center text-muted mt-5 mb-0">&nbsp;<%=locals.message %></p>   
-            <form action="/register" method="post" id="cform" >  
- 
+             
+
+            <form  id="cform" >  
+
               <div data-mdb-input-init class="form-outline mb-3">
                 <div id="name-error"></div>
                 <input type="text" id="form3Example1cg" class="form-control form-control-lg" onkeyup="validateName()" name="userName" />
@@ -132,17 +140,12 @@ style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/
                 <label class="form-label" for="form3Example4cg">Password</label>
               </div>
 
-      
-
               <div class="d-flex justify-content-center">
            
                   <button type="submit"" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
              
               </div>
-              
-
-           
-
+            
             </form>
 
           </div>
@@ -154,9 +157,65 @@ style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/
 </section>
 
 <script>
+ document.getElementById('cform').addEventListener('submit', async function(event) {
+  event.preventDefault(); // Prevent the default form submission
+if(!validateEmail()||!validateMobile()||!validateName()||!validatePassword()){
+  return
+}
+  // Get the form data
+  const formData = new FormData(this);
+
+  // Convert the FormData to a JSON object
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+
+  try {
+    // Send the POST request using fetch
+    const response = await fetch('/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      // SweetAlert for success
+      Swal.fire({
+        icon: 'success',
+        title: 'go to verifyotp',
+        text: result.message,
+        confirmButtonText: 'OK'
+      }).then(() => {
+        // Redirect to the OTP page
+        window.location.href = result.redirectUrl;
+      });
+    } else {
+      // SweetAlert for error
+      Swal.fire({
+        icon: 'error',
+        title: 'Registration Failed',
+        text: result.message,
+        confirmButtonText: 'OK'
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'An Error Occurred',
+      text: 'Please try again later.',
+      confirmButtonText: 'OK'
+    });
+  }
+});
 
 
-  
+
 function validateName() {
   let name = document.getElementById('form3Example1cg').value;
   let nameError = document.getElementById('name-error');
@@ -269,12 +328,9 @@ mobileError.innerHTML = 'Valid';
 
 
 
-document.getElementById('cform').addEventListener('submit', function(event) {
-  if (!validateName() || !validateEmail()||!validatePassword()||!validateMobile()) {
-    event.preventDefault(); // Prevent form submission if validation fails
-  }
-});
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
 
 
 

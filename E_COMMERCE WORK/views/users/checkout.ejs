@@ -1365,119 +1365,139 @@ document.getElementById('removeCouponBtn').addEventListener('click', function() 
 </script>
        
 
-   
+   <!-- paymenth method implementation below ----------------------------------------------------------------->
 <script>
     
     document.getElementById('placeOrderBtn').addEventListener('click', async function (event) {
-event.preventDefault();
+  event.preventDefault();
 
-const paymentMethod = document.querySelector('input[name="optradio"]:checked').value;
-const addressId = document.querySelector('input[name="address"]:checked').value;
-const coupon_code=document.getElementById('coupon-code').value
+  const paymentMethod = document.querySelector('input[name="optradio"]:checked').value;
+  const addressId = document.querySelector('input[name="address"]:checked').value;
+  const coupon_code = document.getElementById('coupon-code').value;
 
-
-
-if (paymentMethod === 'razorpay') {
+  if (paymentMethod === 'razorpay') {
     try {
-        // First, create a Razorpay order
-        const razorpayOrderResponse = await fetch('/place-order', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                paymentMethod: paymentMethod,
-                addressId: addressId,
-                coupon: coupon_code
-            })
-        });
-        
-        const razorpayOrderData = await razorpayOrderResponse.json();
-        const discountAmount = razorpayOrderData.discountAmount;
-        const discountPercentage = razorpayOrderData.discountPercentage;
-const couponApplied=razorpayOrderData.couponApplied
-
-        if (razorpayOrderData.success) {
-            // Proceed with Razorpay payment
-            var options = {
-                key: razorpayOrderData.key_id,
-                amount: razorpayOrderData.amount,
-                currency: razorpayOrderData.currency,
-                name: "EYEGAZE",
-                description: "Test Transaction",
-                order_id: razorpayOrderData.order_id,
-                handler: function (response) {
-                    // On successful payment, send payment details to the backend
-                    fetch('/place-order', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            paymentMethod: paymentMethod,
-                            addressId: addressId,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id,
-                            couponDiscountPercentage: discountPercentage,
-                            couponDiscountAmount: discountAmount,
-                            couponid:couponApplied
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = data.redirect;
-                        } else {
-                            alert('Error placing order: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                },
-                prefill: {
-                    name: "EYEGAZE",
-                    email: "eyegazefit@gmail.com",
-                    contact: "9001 7001 78"
-                },
-                theme: {
-                    color: "#F37254"
-                }
-            };
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-        } else {
-            alert('Error creating Razorpay order: ' + razorpayOrderData.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-} else if (paymentMethod === 'cod') {
-    // COD payment, directly place the order
-    fetch('/place-order', {
+      const razorpayOrderResponse = await fetch('/place-order', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            paymentMethod: paymentMethod,
-            addressId: addressId,
-            coupon: coupon_code
+          paymentMethod: paymentMethod,
+          addressId: addressId,
+          coupon: coupon_code
         })
+      });
+
+      const razorpayOrderData = await razorpayOrderResponse.json();
+      const discountAmount = razorpayOrderData.discountAmount;
+      const discountPercentage = razorpayOrderData.discountPercentage;
+      const couponApplied = razorpayOrderData.couponApplied;
+
+      if (razorpayOrderData.success) {
+        var options = {
+          key: razorpayOrderData.key_id,
+          amount: razorpayOrderData.amount,
+          currency: razorpayOrderData.currency,
+          name: "EYEGAZE",
+          description: "Test Transaction",
+          order_id: razorpayOrderData.order_id,
+          handler: function (response) {
+            fetch('/place-order', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                paymentMethod: paymentMethod,
+                addressId: addressId,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                couponDiscountPercentage: discountPercentage,
+                couponDiscountAmount: discountAmount,
+                couponid: couponApplied
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              window.location.href = data.redirect;
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              window.location.href = '/orders'; // Redirect on error
+            });
+          },
+          prefill: {
+            name: "EYEGAZE",
+            email: "eyegazefit@gmail.com",
+            contact: "9001 7001 78"
+          },
+          theme: {
+            color: "#F37254"
+          }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function(response){
+          // Payment failed, call backend to save order with failure status
+          fetch('/place-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              paymentMethod: paymentMethod,
+              addressId: addressId,
+              razorpay_order_id: response.error.metadata.order_id,
+              couponDiscountPercentage: discountPercentage,
+              couponDiscountAmount: discountAmount,
+              couponid: couponApplied
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            window.location.href = data.redirect;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            window.location.href = '/orders'; // Redirect on error
+          });
+        });
+        rzp1.open();
+      } else {
+
+        Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Error creating Razorpay order: ' + razorpayOrderData.message
+});
+
+
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  } else if (paymentMethod === 'cod') {
+    fetch('/place-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        paymentMethod: paymentMethod,
+        addressId: addressId,
+        coupon: coupon_code
+      })
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            window.location.href = data.redirect;
-        } else {
-            alert('Error placing order: ' + data.message);
-        }
+      window.location.href = data.redirect;
     })
     .catch(error => {
-        console.error('Error:', error);
+      console.error('Error:', error);
     });
-}
+  }
 });
+
 
 </script>
 <!-- copy code -->
@@ -1501,6 +1521,7 @@ const couponApplied=razorpayOrderData.couponApplied
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/js/jquery.min.js"></script>
     <!-- popper -->
