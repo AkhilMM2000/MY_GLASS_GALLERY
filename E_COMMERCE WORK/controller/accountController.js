@@ -122,6 +122,25 @@ const order_details = async (req, res) => {
         const orderid = req.query.orderId;
         const order_data = await Orders.find({ orderId: orderid }).populate("products.productId")
         const addressdata = order_data[0].address;
+
+        if (order_data[0].discountAmount && order_data[0].discountAmount !== 0) {
+            const discountPercentage = ((order_data[0].discountAmount * 100) / order_data[0].totalAmount)
+            if (order_data[0].products.length == 1) {
+                order_data[0].products.forEach(item => {
+                    item.product_discount = order_data[0].discountAmount
+                })
+
+            }
+
+            else {
+
+                order_data[0].products.forEach(item => {
+                    item.product_discount = Math.round((item.price * item.quantity) * (discountPercentage / 100))
+                })
+            }
+
+        }
+
         res.render('users/orderdetails', { order: order_data[0], addressdata })
 
     } catch (error) {
@@ -172,7 +191,7 @@ const cancel_order = async (req, res) => {
                 });
             } else {
 
-                wallet.balance +=  refunt_amount;
+                wallet.balance += refunt_amount;
                 wallet.transactions.push({
                     amount: refunt_amount,
                     description: 'product:' + productdata.productName
@@ -180,7 +199,7 @@ const cancel_order = async (req, res) => {
             }
             // Save the wallet
             console.log('reach here');
-            
+
             await wallet.save();
 
         }

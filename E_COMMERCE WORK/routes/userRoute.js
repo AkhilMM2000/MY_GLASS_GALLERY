@@ -69,6 +69,7 @@ user_route.post('/retry-payment',islogin.verifyLogin,orderController.retry_payme
 user_route.post('/update-payment-status',islogin.verifyLogin,orderController.update_orderstatus)
 user_route.get('/placeorder',islogin.verifyLogin,orderController.order_success)
 user_route.post('/return-product',islogin.verifyLogin,orderController.return_request)
+user_route.post('/order/invoice',islogin.verifyLogin,orderController.invoice_download)
 // account controller below routes------------------------------------------------------------------------------------------------------->
 
 //route for account adress

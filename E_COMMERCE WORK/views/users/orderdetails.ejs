@@ -130,7 +130,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <p class="bread"><span><a href="/home">home</a></span> / <span>Purchase Complete</span></p>
+                <p class="bread"><span><a href="/orders">orders</a></span> / <span>Purchase Complete</span></p>
             </div>
         </div>
     </div>
@@ -221,6 +221,7 @@
                                             <th>Quantity</th>
                                             <th>Price</th>
                                             <th>Total</th>
+                                            <th>discount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -231,6 +232,11 @@
                                                 <td><%= an.quantity %></td>
                                                 <td>&#8377;<%= an.price.toFixed(2) %></td>
                                                 <td>&#8377;<%= (an.quantity * an.price).toFixed(2) %></td>
+                                                <% if (an.product_discount> 0) { %>
+                                                <td><%=an.product_discount%></td>
+                                                <% } else { %>
+                                                    <td>00</td>
+                                                    <% } %> 
                                             </tr>
                                         <% }) %>
                                     </tbody>
@@ -274,7 +280,7 @@
             
 <!-- retry payment start here ---------------------------------------------------------------->
 <script>
-    console.log('ejdjjdjdddddddddd');
+ 
     
     function retry_payment(orderId) {
         console.log("orderid");

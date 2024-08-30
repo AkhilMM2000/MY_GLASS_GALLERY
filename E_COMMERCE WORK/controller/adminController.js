@@ -2,6 +2,8 @@ const User = require("../model/userModel")
 const product = require('../model/productModel')
 const bcrypt = require('bcrypt')
 const category = require("../model/category")
+const  Order=require('../model/orderModel')
+
 
 
 
@@ -42,15 +44,67 @@ const verify_admin = async (req, res) => {
     }
 
 }
+
+//admin dashboard start here
+
 const admhome = async (req, res) => {
     try {
-        res.render('admin/dashboard')
-        res
+        const { timeframe } = req.query; // Get the timeframe from the query
+
+        // Initialize the date range for filtering
+        let startDate, endDate;
+        
+        const currentDate = new Date();
+
+        if (timeframe === 'weekly') {
+            startDate = new Date(currentDate.setDate(currentDate.getDate() - 7));
+            endDate = new Date();
+        } else if (timeframe === 'monthly') {
+            startDate = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+            endDate = new Date();
+        } else {
+            // Default to yearly
+            startDate = new Date(currentDate.setFullYear(currentDate.getFullYear() - 1));
+            endDate = new Date();
+        }
+
+        // Aggregate sales data
+        const salesData = await Order.aggregate([
+            {
+                $match: {
+                   
+orderDate: { $gte: startDate, $lt: endDate }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { 
+                            format: timeframe === 'weekly' ? "%Y-%m-%d" : "%Y-%m", 
+                            date: "$orderDate" 
+                        }
+                    },
+                    totalSales: { $sum: "$totalAmount" }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        const totalSales = salesData.reduce((sum, day) => sum + day.totalSales, 0);
+
+        res.render('admin/dashboard', { 
+            salesData: JSON.stringify(salesData),
+            totalSales,
+            timeframe
+        });
     } catch (error) {
         console.log(error);
+        res.status(500).send('Server Error');
     }
-
 }
+
+
+
 
 const userlist = async (req, res) => {
     try {

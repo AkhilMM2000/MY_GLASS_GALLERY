@@ -1,5 +1,114 @@
 <%- include('../partials/admheader') %>
-
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .chart-placeholder {
+            height: 300px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .form-control-sm {
+            display: inline-block;
+            width: auto;
+            margin-left: 10px;
+        }
+        .text-right label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+   body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .chart-placeholder {
+            height: 200px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .legend {
+            margin-top: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .list-group-item {
+            background-color: #ffffff;
+            border: none;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+        .list-group-item .badge {
+            font-size: 0.9rem;
+            font-weight: bold;
+            background-color: #007bff;
+        }
+    .chart-container {
+        height: 300px;
+        position: relative;
+    }
+    .chart-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-style: italic;
+        color: #6c757d;
+    }
+    .legend {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 0 10px;
+    }
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+    }
+    
+</style>
   
 <div class="container-scroller">
   <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: hsl(0, 10%, 92%);">
@@ -97,66 +206,336 @@
   </div>
 </div>
         <!-- partial -->
-        <div class="content-wrapper">
-          <div class="row purchace-popup">
-            <div class="col-12">
-              <span class="d-flex alifn-items-center">
-                <p>Like what you see? Check out our premium version for more.</p>
-                <a href="https://github.com/BootstrapDash/PurpleAdmin-Free-Admin-Template" target="_blank" class="btn ml-auto download-button">Download Free Version</a>
-                <a href="https://www.bootstrapdash.com/product/purple-bootstrap-4-admin-template/" target="_blank" class="btn purchase-button">Upgrade To Pro</a>
-                <i class="mdi mdi-close popup-dismiss"></i>
-              </span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4 stretch-card grid-margin">
-              <div class="card bg-gradient-warning text-white">
-                <div class="card-body">
-                  <h4 class="font-weight-normal mb-3">Weekly Sales</h4>
-                  <h2 class="font-weight-normal mb-5">$ 15,00000.00</h2>
-                  <p class="card-text">Incresed by 60%</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 stretch-card grid-margin">
-              <div class="card bg-gradient-info text-white">
-                <div class="card-body">
-                  <h4 class="font-weight-normal mb-3">Weekly Orders</h4>
-                  <h2 class="font-weight-normal mb-5">45633456</h2>
-                  <p class="card-text">Decreased by 10%</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 stretch-card grid-margin">
-              <div class="card bg-gradient-success text-white">
-                <div class="card-body">
-                  <h4 class="font-weight-normal mb-3">Visitors Online</h4>
-                  <h2 class="font-weight-normal mb-5">955741235</h2>
-                  <p class="card-text">Increased by 5%</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-7 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Sale Overview</h4>
-                  <canvas id="sales-chart"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-5 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body d-flex flex-column">
-                  <h4 class="card-title">Satisfaction Graph</h4>
-                  <div class="mt-auto">
-                    <canvas id="satisfaction-chart" height="200"></canvas>
+        
+<div class="container mt-4">
+  <div class="row mb-4">
+      <div class="col-md-6">
+          <h2>Dashboard Overview</h2>
+      </div>
+      <div class="col-md-6 text-right">
+          <label for="timeFrame">Time Frame:</label>
+          <select id="timeFrame" class="form-control-sm">
+              <option>Yearly</option>
+              <option>Monthly</option>
+              <option>Weekly</option>
+          </select>
+      </div>
+  </div>
+  
+  <div class="row">
+    <!-- donut chart start here -------------------------------------------------------------------------------------------------------------->
+      
+    <div class="col-md-6 mb-4">
+      <div class="card">
+          <div class="card-body">
+              <h5 class="card-title">Order Status Overview</h5>
+              <div class="chart-container">
+                  <div class="chart-placeholder">
+                      <canvas id="orderStatusChart"></canvas>
                   </div>
-                </div>
               </div>
-            </div>
+              <div class="order-status-legend">
+                  <div class="legend-item">
+                      <div class="legend-color" style="background-color: #4bc0c0;"></div>
+                      <span>Delivered</span>
+                  </div>
+                  <div class="legend-item">
+                      <div class="legend-color" style="background-color: #ff6384;"></div>
+                      <span>Cancelled</span>
+                  </div>
+                  <div class="legend-item">
+                      <div class="legend-color" style="background-color: #ffce56;"></div>
+                      <span>Returned</span>
+                  </div>
+              </div>
+              <div class="text-center mt-3">
+                  <strong>Total Orders: </strong><span>7</span>
+              </div>
           </div>
+      </div>
+  </div>
+
+   <!-- donut chart end here --------------------------------------------------------------------------------------------------->
+    
+   <div class="col-md-6 mb-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Sales Over Time</h5>
+            <div class="chart-container">
+                <div class="chart-placeholder">
+                    <canvas id="salesOverTimeChart"></canvas>
+                </div>
+            </div>
+            <div class="sales-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #36a2eb;"></div>
+                    <span>Monthly Sales</span>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <strong>Total Sales: </strong><span id="totalSales">$0</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+      
+  </div>
+
+  <!-- New Section for Top Selling Categories, Brands, and Products -->
+  <div class="row">
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <div class="card-body">
+                  <h5 class="section-title">Top Selling Categories</h5>
+                  <ul class="list-group">
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Eyewear
+                          <span class="badge badge-primary">1500</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Sunglasses
+                          <span class="badge badge-primary">1200</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Contact Lenses
+                          <span class="badge badge-primary">900</span>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <div class="card-body">
+                  <h5 class="section-title">Top Selling Brands</h5>
+                  <ul class="list-group">
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Ray-Ban
+                          <span class="badge badge-primary">2000</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Oakley
+                          <span class="badge badge-primary">1800</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Gucci
+                          <span class="badge badge-primary">1500</span>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <div class="card-body">
+                  <h5 class="section-title">Top Selling Products</h5>
+                  <ul class="list-group">
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Aviator Sunglasses
+                          <span class="badge badge-primary">500</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Wayfarer Glasses
+                          <span class="badge badge-primary">400</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Polarized Lenses
+                          <span class="badge badge-primary">350</span>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('timeFrame').addEventListener('change', function() {
+      const selectedTimeFrame = this.value.toLowerCase(); // Get selected value and convert to lowercase
+      window.location.href = `/admin/dashboard?timeframe=${selectedTimeFrame}`;
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('salesOverTimeChart').getContext('2d');
+    const salesData = JSON.parse('<%- salesData %>');
+    const timeframe = '<%- timeframe %>';
+
+    const labels = salesData.map(item => item._id);
+    const data = salesData.map(item => item.totalSales);
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sales',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Sales Amount (RS)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: timeframe === 'weekly' ? 'Date' : 'Month'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: `Sales Over Time (${timeframe.charAt(0).toUpperCase() + timeframe.slice(1)})`
+                }
+            }
+        }
+    });
+
+    // Update total sales
+    document.getElementById('totalSales').textContent = `$${Number('<%- totalSales %>').toFixed(2)}`;
+});
+
+// Add event listener for timeframe select
+document.getElementById('timeFrame').addEventListener('change', function() {
+    window.location.href = `/admin/dashboard?timeframe=${this.value}`;
+});
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+              <script>
+                const ctx = document.getElementById('orderStatusChart').getContext('2d');
+                const orderStatusChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Delivered', 'Cancelled', 'Returned'],
+                        datasets: [{
+                            data: [3, 2, 2],  // Example data: Adjust according to your data
+                            backgroundColor: ['#4bc0c0', '#ff6384', '#ffce56'],
+                            hoverBackgroundColor: ['#4bc0c0', '#ff6384', '#ffce56']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,  // We already have a custom legend
+                            }
+                        }
+                    }
+                });
+            </script>
+
+<!-- <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+  const ctx = document.getElementById('salesOverTimeChart').getContext('2d');
+  let chart;
+
+  async function fetchSalesData() {
+    try {
+      const response = await fetch('/sales-data'); // Adjust the endpoint as necessary
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching sales data:', error);
+      return [];
+    }
+  }
+
+  async function renderChart() {
+    const salesData = await fetchSalesData();
+    
+    const labels = salesData.map(item => item._id);
+    const values = salesData.map(item => item.totalSales);
+
+    const totalSales = values.reduce((sum, value) => sum + value, 0);
+    document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+
+    const chartData = {
+      labels: labels,
+      datasets: [{
+        label: 'Daily Sales',
+        data: values,
+        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    };
+
+    const config = {
+      type: 'bar',
+      data: chartData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Sales Amount ($)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Date'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Daily Sales Overview'
+          }
+        }
+      }
+    };
+
+    if (chart) {
+      chart.destroy();
+    }
+    chart = new Chart(ctx, config);
+  }
+
+  renderChart();
+
+  // Optionally, update the chart periodically
+  // setInterval(renderChart, 300000); // Update every 5 minutes
+});
+</script> -->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 <%- include('../partials/footer') %>
 

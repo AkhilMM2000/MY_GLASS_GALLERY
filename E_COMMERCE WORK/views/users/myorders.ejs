@@ -244,7 +244,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <p class="bread"><span><a href="index.html">Home</a></span> / <span>Contact</span></p>
+                        <p class="bread"><span><a href="/product">products</a></span> / <span>Contact</span></p>
                     </div>
                 </div>
                 <div class="row">
@@ -284,82 +284,78 @@
                                     <th>Total</th>
                                     <th>Status</th>
                                     <th>Action</th>
+                                   <!-- New Invoice Column -->
                                 </tr>
                             </thead>
                             <tbody>
-                                <% order.forEach(item=> { %>
-                                    <tr>
-                                        <% item.products.forEach(array=> { %>
+                                <% order.forEach(item => { %>
+                                    <% item.products.forEach(array => { %>
+                                        <tr>
                                             <td>
-                                                <a href="/detailorder?orderId=<%=item.orderId%>" class="order-link">
-                                                    <%=item.orderId%>
+                                                <a href="/detailorder?orderId=<%= item.orderId %>" class="order-link">
+                                                    <%= item.orderId %>
                                                 </a>
-
-                                            </td>
-
-                                            <td>
-                                                
-                                                <img src="/productimage/<%=array.productId.productimages[0]%>"
-                                                    alt="Product" class="img-thumbnail"
-                                                    style="width: 50px; height: 50px;">
-
-                                                </td>
-
-                                            <td>
-                                                <%=array.quantity%>
-                                            </td>
-                                            <td>&#8377;<%=array.price*array.quantity%>
                                             </td>
                                             <td>
-                                                <% if (array.status==='Pending' || array.status==='Dispatch' ||
-                                                    array.status==='Shipped'||array.status=='Cancelled' ) { %>
+                                                <img src="/productimage/<%= array.productId.productimages[0] %>"
+                                                     alt="Product" class="img-thumbnail"
+                                                     style="width: 50px; height: 50px;">
+                                            </td>
+                                            <td>
+                                                <%= array.quantity %>
+                                            </td>
+                                            <td>&#8377;<%= array.price * array.quantity %></td>
+                                            <td>
+                                                <% if (array.status === 'Pending' || array.status === 'Dispatch' ||
+                                                       array.status === 'Shipped' || array.status === 'Cancelled') { %>
                                                     <span class="badge badge-danger">
-                                                        <%=array.status%>
+                                                        <%= array.status %>
                                                     </span>
-                                                    <% } else if (array.status==='Delivered' ) { %>
-                                                        <span class="badge badge-success">delivered</span>
-                                                        <% } else if(array.status==='Returned' ) { %>
-                                                            <span class="badge badge-cancel">     <%=array.status%></span>
-                                                         
-
-                                                            <%} %>
+                                                <% } else if (array.status === 'Delivered') { %>
+                                                    <span class="badge badge-success">Delivered</span>
+                                                <% } else if (array.status === 'Returned') { %>
+                                                    <span class="badge badge-cancel"><%= array.status %></span>
+                                                <% } %>
                                             </td>
                                             <td>
                                                 <% if (item.paymentStatus === 'Failed') { %>
-                                                    <a href="/detailorder?orderId=<%=item.orderId%>" class="btn btn-sm btn-warning">
-                                                        Retry 
+                                                    <a href="/detailorder?orderId=<%= item.orderId %>" class="btn btn-sm btn-warning">
+                                                        Retry
                                                     </a>  
-                                                       
-                                                <% } else if (array.status === 'Cancelled') { %>    
+                                                <% } else if (array.status === 'Cancelled') { %>
                                                     <div class="first">
-                                                        <span>order_cancelled</span>
+                                                        <span>Order Cancelled</span>
                                                     </div>
-                                                    <% }else if (array.status==='Delivered'&&array.return_request==false ) { %>
-                                                    <button class="btn btn-sm btn-success" data-target="#myModal" data-toggle="modal" onclick="productReturn('<%=item.orderId%>','<%=array.productId._id%>')">Return</button>
-                                                 
-                                                    <% } else if(array.status!=='Returned'&&array.status!=='Delivered') { %>
-                                                        <button class="btn btn-sm btn-danger"
-                                                            onclick="cancelOrder('<%=item.orderId%>','<%=array.productId._id%>')">cancel</button>
-
-                                                            <% } else if(array.status=='Returned') { %>
-                                                                <div class="messageone">
-                                                                    <span>return accept</span>
-                                                                </div>
-                                                                <% } else if(array.return_request==true) { %>
-                                                                    <div class="message">
-                                                                        <span>requested</span>
-                                                                    </div>
-                                                        <%} %>
-
-
+                                                <% } else if (array.status === 'Delivered' && array.return_request === false) { %>
+                                                    <button class="btn btn-sm btn-success" data-target="#myModal" data-toggle="modal" onclick="productReturn('<%= item.orderId %>','<%= array.productId._id %>')">Return</button>
+                                                <% } else if (array.status !== 'Returned' && array.status !== 'Delivered') { %>
+                                                    <button class="btn btn-sm btn-danger" onclick="cancelOrder('<%= item.orderId %>','<%= array.productId._id %>')">Cancel</button>
+                                                <% } else if (array.status === 'Returned') { %>
+                                                    <div class="messageone">
+                                                        <span>Return Accepted</span>
+                                                    </div>
+                                                <% } else if (array.return_request === true) { %>
+                                                    <div class="message">
+                                                        <span>Requested</span>
+                                                    </div>
+                                                <% } %>
                                             </td>
-                                    </tr>
-                                    <%})%>
-                                        <%})%>
+                                            <td>
+                                                <% if (array.status === 'Delivered') { %>
+                                                    <button onclick="downloadInvoice('<%= item.orderId %>', '<%= array.productId._id %>')" class="btn btn-sm btn-primary">
+                                                        Invoice
+                                                    </button>
+                                                    
+                                                    <% } %>
+                                                
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% }) %>
                             </tbody>
                         </table>
-
                     </div>
+                    
 
                 </div>
                 <nav aria-label="Page navigation">
@@ -430,10 +426,42 @@
     </div>
   </div>
   
-
-
-       
         <script>
+
+
+// -----------------here below function for invoicedownload 
+
+function downloadInvoice(orderId, productId) {
+    fetch('/order/invoice', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderId, productId }),
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Failed to download invoice');
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `Invoice-${orderId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+///pdf download end here-------------------------------------------------------------------------------------------------------------------
 
 let orderid;
 let productid;
