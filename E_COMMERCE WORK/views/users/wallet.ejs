@@ -390,54 +390,73 @@
                         <li><a href="#">Sign Out</a></li>
                     </ul>
                 </div>
-                <%wallet.forEach(item=>{%>
-<div class="col-md-9 wallet-section">
-    <div class="card shadow-sm mb-4 border-0 balance-card">
-      <div class="card-body p-4">
-        <h4 class="card-title mb-4">Wallet</h4>
-        <div class="row">
-          <div class="col-md-6">
-            <p class="mb-2">Current Balance</p>
-            <span id="walletBalance">RS:<%=item.balance%></span>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-    <div class="card shadow-sm mb-4 border-0">
-      <div class="card-body p-4">
-        <h4 class="card-title mb-4">Transaction History</h4>
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-            
-              <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Description</th>
-                <!-- <th scope="col">Type</th> -->
-                <th scope="col">Amount</th>
-              </tr>
-        
-            </thead>
-            <tbody>
-                <%item.transactions.forEach(trans=>{%>
-              <tr>
-                <td><%=trans.date.toISOString().split('T')[0]%></td>
-                <td><%=trans.description%></td>
-                <!-- <td><span class="transaction-type debit">Debit</span></td>
-                <td><span class="transaction-type credit">Credit</span></td> -->
-                <td>RS:<%=trans.amount%></td>
-              </tr>
-              <%})%>
-             
-              <!-- More rows as needed -->
-            </tbody>
-            <%})%>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="col-md-9 wallet-section">
+                    <div class="card shadow-sm mb-4 border-0 balance-card">
+                      <div class="card-body p-4">
+                        <h4 class="card-title mb-4">Wallet</h4>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <p class="mb-2">Current Balance</p>
+                            <span id="walletBalance">RS:<%= wallet.balance %></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  
+                    <div class="card shadow-sm mb-4 border-0">
+                      <div class="card-body p-4">
+                        <h4 class="card-title mb-4">Transaction History</h4>
+                        <div class="table-responsive">
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% transactions.forEach(trans => { %>
+                                <tr>
+                                  <td><%= trans.date.toISOString().split('T')[0] %></td>
+                                  <td><%= trans.description %></td>
+                                  <% if (trans.type === 'debit') { %>
+                                    <td><span class="transaction-type debit">Debit</span></td>
+                                  <% } else if (trans.type === 'credit') { %>
+                                    <td><span class="transaction-type credit">Credit</span></td>
+                                  <% } %>
+                                  <td>RS:<%= trans.amount %></td>
+                                </tr>
+                              <% }) %>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  
+                    <!-- Pagination Controls -->
+                    <nav aria-label="Transaction pagination">
+                      <ul class="pagination">
+                        <% if (currentPage > 1) { %>
+                          <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=5">Previous</a>
+                          </li>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&limit=5"><%= i %></a>
+                          </li>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                          <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=5">Next</a>
+                          </li>
+                        <% } %>
+                      </ul>
+                    </nav>
+                  </div>
+                  
                 <!-- ////// -->
             </div>
         </div>

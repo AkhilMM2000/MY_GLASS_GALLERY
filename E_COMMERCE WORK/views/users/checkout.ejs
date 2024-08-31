@@ -395,7 +395,7 @@ font-weight: bold;
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <p class="bread"><span><a href="index.html">Home</a></span> / <span>Checkout</span></p>
+                        <p class="bread"><span><a href="/product">shop</a></span> / <span>Checkout</span></p>
                     </div>
                 </div>
             </div>
@@ -525,13 +525,13 @@ font-weight: bold;
                             <div class="col-md-12">
                                 <div class="cart-detail">
                                     <h2>Payment Method</h2>
-                                    <!-- <div class="form-group">
+                                    <div class="form-group">
                                     <div class="col-md-12">
                                         <div class="radio">
-                                           <label><input type="radio" name="optradio"> Direct Bank Tranfer</label>
+                                           <label><input type="radio" name="optradio" value="wallet"> wallet</label>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                                     <div class="form-group">
                                     <div class="col-md-12">
                                         <div class="radio">
@@ -546,19 +546,14 @@ font-weight: bold;
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="form-group">
-                                    <div class="col-md-12">
-                                        <div class="checkbox">
-                                           <label><input type="checkbox" value=""> I have read and accept the terms and conditions</label>
-                                        </div>
-                                    </div>
-                                </div> -->
+                                
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 text-center">
-                                <p><button class="btn btn-primary" id="placeOrderBtn">Place an order</button> </p>
+                                <p><button class="btn btn-primary" id="placeOrderBtn">Place an order</button></p>
+                                <p><button class="btn btn-primary" id="walletplaceOrderBtn" style="display: none;">Place an order</button></p>
                             </div>
                         </div>
                     </div>
@@ -764,6 +759,83 @@ font-weight: bold;
 
 
           <script>
+
+// wallet paymet method implementation---------------------------------------------------------------------------------------
+
+document.getElementById('walletplaceOrderBtn').addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    const paymentMethod = document.querySelector('input[name="optradio"]:checked').value;
+    const addressId = document.querySelector('input[name="address"]:checked').value;
+    const coupon_code = document.getElementById('coupon-code').value;
+
+    try {
+        const response = await fetch('/walletplace-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                paymentMethod: paymentMethod,
+                addressId: addressId,
+                coupon: coupon_code
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            // Display success message using SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Placed!',
+                text: `Your order has been placed successfully. Order ID: ${result.orderId}`,
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.href = `/placeorder?id=${result.orderId}`; // Redirect to the order success page
+            });
+        } else {
+            // Display error message using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Order Failed',
+                text: result.message || 'Failed to place the order.',
+                confirmButtonText: 'OK'
+            });
+        }
+    } catch (error) {
+        console.error('Error placing order:', error);
+        // Display error message using SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'An Error Occurred',
+            text: 'An error occurred while placing your order. Please try again.',
+            confirmButtonText: 'OK'
+        });
+    }
+});
+
+
+//place order btn selection implementation here ------------------------------------------------------------------------------------------------------
+
+document.addEventListener('DOMContentLoaded', function () {
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const walletplaceOrderBtn = document.getElementById('walletplaceOrderBtn');
+    const paymentOptions = document.querySelectorAll('input[name="optradio"]');
+    
+    paymentOptions.forEach(option => {
+        option.addEventListener('change', function () {
+            if (this.value === 'wallet') {
+                placeOrderBtn.style.display = 'none';
+                walletplaceOrderBtn.style.display = 'inline-block';
+            } else {
+                placeOrderBtn.style.display = 'inline-block';
+                walletplaceOrderBtn.style.display = 'none';
+            }
+        });
+    });
+});
+
 
 // edit validations 
 

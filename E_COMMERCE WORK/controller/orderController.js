@@ -204,7 +204,7 @@ const place_order = async (req, res) => {
       paymentMethod: paymentMethod,
       address: address,
       products: productsWithDiscounts,
-      totalAmount: totalAmount,
+      totalAmount: totalAmount+discountAmount,
       discountAmount: discountAmount,
       discountPercentage: discountPercentage,
       razorpay_id: razorpay_payment_id,
@@ -262,6 +262,160 @@ const place_order = async (req, res) => {
 };
 
 ////place order end here--------------------------------------------------------------------------------place order end here----------------------
+
+//place order using wallet amount-------------------------------------------------------------------------wallet payment start here
+
+const walletplace_order=async(req,res)=>{
+  try {
+    const userId = req.session.userid;
+    const { paymentMethod, addressId, coupon } = req.body;
+
+    // Fetch the user's cart
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: 'products.product',
+      populate: [{ path: 'offers' }]
+    });
+
+    if (!cart || cart.products.length === 0) {
+      return res.json({ success: false, message: 'Your cart is empty' });
+    }
+
+    const foundCoupon = await Coupon.findOne({ code: coupon });
+    if(foundCoupon){
+    const user = await User.findById(userId);
+  
+    
+    // Check if the coupon has already been used by the user
+    const usedCoupon = user.usedCoupons.some(item => item.equals(foundCoupon._id));
+    
+    if (usedCoupon) {
+      return res.json({ success: false, message: 'Coupon already used' });
+    }
+  }
+
+    // Fetch the selected address
+    const address = await Address.findById(addressId);
+    if (!address) {
+      return res.json({ success: false, message: 'Invalid address selected' });
+    }
+
+    let totalAmount = 0;
+    let discountAmount = 0;
+    let discountPercentage = null;
+    let couponApplied = null;
+
+    // Calculate total amount with applicable discounts
+    const productsWithDiscounts = cart.products.map(item => {
+      const product = item.product;
+      let highestDiscountPrice = product.price;
+
+      if (product.offers && product.offers.length > 0) {
+        product.offers.forEach(offer => {
+          const discount = (product.price * offer.discount) / 100;
+          const discountedPrice = product.price - discount;
+
+          if (discountedPrice < highestDiscountPrice) {
+            highestDiscountPrice = discountedPrice;
+          }
+        });
+      }
+
+      totalAmount += highestDiscountPrice * item.quantity;
+
+      return {
+        productId: product._id,
+        quantity: item.quantity,
+        price: highestDiscountPrice,
+        status: 'Pending'
+      };
+    });
+
+    // Apply coupon if available
+    if (coupon) {
+      const foundCoupon = await Coupon.findOne({ code: coupon });
+
+      if (foundCoupon && foundCoupon.status) {
+        if (totalAmount >= foundCoupon.minPurchaseAmount) {
+          discountAmount = Math.floor((totalAmount * foundCoupon.discount) / 100);
+          discountAmount = Math.min(discountAmount, foundCoupon.maxDiscountAmount);
+          totalAmount -= discountAmount;
+          discountPercentage = foundCoupon.discount;
+          couponApplied = foundCoupon._id;
+        } else {
+          return res.status(400).json({ success: false, message: `Minimum purchase amount for this coupon is ₹${foundCoupon.minPurchaseAmount}.` });
+        }
+      }
+    }
+
+    // If payment method is wallet, check the wallet balance
+    
+   const wallet = await userwallet.findOne({ user_id: userId });
+
+if (!wallet) {
+  return res.json({ success: false, message: 'Wallet not found' });
+}
+
+if (wallet.balance < totalAmount) {
+  return res.json({ success: false, message: 'Insufficient wallet balance' });
+}
+
+// Deduct the total amount from the wallet balance
+wallet.balance -= totalAmount;
+
+// Add a debit transaction record
+wallet.transactions.push({
+  amount: totalAmount,
+  description: 'Order Payment',
+  type: 'debit' // This indicates that this is a debit transaction
+});
+
+// Save the wallet with the updated balance and transaction
+await wallet.save();
+    // Save the order
+    const newOrder = new Orders({
+      userId: userId,
+      orderId:  generateOrderId(),
+      paymentMethod: paymentMethod,
+      address: address,
+      products: productsWithDiscounts,
+      totalAmount: totalAmount+discountAmount,
+      discountAmount: discountAmount,
+      discountPercentage: discountPercentage,
+      orderDate: new Date(),
+      paymentStatus:'Success'
+    });
+
+    await newOrder.save();
+
+    // Update product stock
+    for (const item of cart.products) {
+      await product.findByIdAndUpdate(
+        item.product._id,
+        { $inc: { stock: -item.quantity } }, // Decrease the stock by item.quantity
+        { new: true } // Returns the updated document
+      );
+    }
+
+    // If a coupon was applied, add it to the user's used coupons
+    if (couponApplied) {
+      const user = await User.findById(userId);
+      user.usedCoupons.push(couponApplied);
+      await user.save();
+    }
+
+    // Clear the user's cart after the order is placed
+    await Cart.findOneAndUpdate({ user: userId }, { $set: { products: [] } });
+
+    // Send success response
+    return res.json({ success: true, message: 'Order placed successfully', orderId: newOrder.orderId });
+
+  } catch (error) {
+    console.error('Error placing order:', error);
+    return res.status(500).json({ success: false, message: 'Something went wrong. Please try again later.' });
+  }
+
+}
+
 
 ////retry_payment start here-----------------------------------------------------------------------------------------------------------
 const retry_payment = async (req, res) => {
@@ -420,18 +574,38 @@ const update_order = async (req, res) => {
 ///for get wallet----------------------------
 const load_wallet = async (req, res) => {
   try {
+    const userId = req.session.userid;
+    const page = parseInt(req.query.page) || 1; // Current page, default is 1
+    const limit = parseInt(req.query.limit) || 5; // Transactions per page, default is 5
 
-    const wallet = await userwallet.find({
-      user_id: req.session.userid
-    })
-    console.log(wallet);
+    // Fetch the user's wallet
+    const wallet = await userwallet.findOne({ user_id: userId });
 
-    res.render('users/wallet', { wallet })
+    if (!wallet) {
+      return res.render('users/wallet', { wallet: null, transactions: [], currentPage: page, totalPages: 0 });
+    }
+
+    // Total transactions
+    const totalTransactions = wallet.transactions.length;
+    const totalPages = Math.ceil(totalTransactions / limit); // Calculate total pages
+    const startIndex = (page - 1) * limit; // Starting index for slicing
+    const endIndex = page * limit; // Ending index for slicing
+
+    // Slice transactions for the current page
+    const paginatedTransactions = wallet.transactions.slice(startIndex, endIndex);
+
+    // Render the wallet page with the paginated transactions
+    res.render('users/wallet', {
+      wallet,
+      transactions: paginatedTransactions,
+      currentPage: page,
+      totalPages
+    });
   } catch (error) {
     console.log(error);
   }
+};
 
-}
 //return the order------------------------------------------------------------>
 const return_request = async (req, res) => {
 
@@ -964,6 +1138,7 @@ doc.moveDown(-7.3);
 module.exports = {
   load_checkout,
   place_order,
+  walletplace_order,
   retry_payment,
   update_orderstatus,
   order_success,

@@ -65,6 +65,7 @@ user_route.post('/wishlist/addtocart/:productId',islogin.verifyLogin,userControl
 //route for order-------------------------------------------------------------------------------------------------------
 user_route.get('/checkout',islogin.verifyLogin,orderController.load_checkout)
 user_route.post('/place-order',islogin.verifyLogin,orderController.place_order)
+user_route.post('/walletplace-order',islogin.verifyLogin,orderController.walletplace_order)
 user_route.post('/retry-payment',islogin.verifyLogin,orderController.retry_payment)
 user_route.post('/update-payment-status',islogin.verifyLogin,orderController.update_orderstatus)
 user_route.get('/placeorder',islogin.verifyLogin,orderController.order_success)
