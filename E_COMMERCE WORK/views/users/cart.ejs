@@ -15,12 +15,11 @@
                 <div class="row">
                     <div class="col-sm-12 text-left menu-1">
                         <ul>
-                            <li class="active"><a href="index.html">Home</a></li>
+                            <li class="active"><a href="/">Home</a></li>
                             <li><a href="/product">shop</a></li>
-                            <li><a href="about.html">About</a></li>
-                            <li><a href="contact.html">Contact</a></li>
-                        
-                                <li class="cart"><a href="/myaccount">my account</a></li>
+                            <li><a href="/abouts">About</a></li>
+                            <li><a href="/contacts">Contact</a></li>
+                           <li class="cart"><a href="/myaccount">my account</a></li>
                         
                                 
                         
@@ -69,20 +68,6 @@
         <div class="container">
             <div class="row row-pb-lg">
                 <div class="col-md-10 offset-md-1">
-                    <!-- <div class="process-wrap">
-                        <div class="process text-center active">
-                            <p><span>01</span></p>
-                            <h3>Shopping Cart</h3>
-                        </div>
-                        <div class="process text-center">
-                            <p><span>02</span></p>
-                            <h3>Checkout</h3>
-                        </div>
-                        <div class="process text-center">
-                            <p><span>03</span></p>
-                            <h3>Order Complete</h3>
-                        </div>
-                    </div> -->
                 </div>
             </div>
             <!-- here -->
@@ -448,14 +433,12 @@ function updateSubtotal() {
     const decrementBtns = document.querySelectorAll('.decrementBtn');
     const quantityInputs = document.querySelectorAll('.quantity');
 
-    function updateQuantityInBackend(productId, newQuantity){
- 
+    function updateQuantityInBackend(productId, newQuantity) {
         fetch(`/cart/update/${newQuantity}/${productId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             }
-          
         })
         .then(response => response.json())
         .then(data => {
@@ -472,10 +455,10 @@ function updateSubtotal() {
 
     function handleQuantityChange(index, change) {
         let currentValue = parseInt(quantityInputs[index].value);
-        let stocksLeft = quantityInputs[index].getAttribute('data-product-qty');
+        let stocksLeft = parseInt(quantityInputs[index].getAttribute('data-product-qty')); // Convert to integer
         let newValue = currentValue + change;
-        let max = stocksLeft < 5 ? stocksLeft : 5;
-        
+        let max = Math.min(5, stocksLeft); // The maximum quantity is the smaller of 5 or the stock available
+
         if (newValue >= 1 && newValue <= max) {
             quantityInputs[index].value = newValue;
             const productId = quantityInputs[index].dataset.productId;
@@ -483,9 +466,24 @@ function updateSubtotal() {
             updateTotalPrice(index, newValue);
             updateSubtotal();
             updateQuantityInBackend(productId, newValue);
+
+            // Toggle the visibility of the decrement button
+            if (newValue === 1) {
+                decrementBtns[index].style.display = 'none';
+            } else {
+                decrementBtns[index].style.display = 'inline-block';
+            }
+
+            // Toggle the visibility of the increment button
+            if (newValue === max) {
+                incrementBtns[index].style.display = 'none';
+            } else {
+                incrementBtns[index].style.display = 'inline-block';
+            }
         }
     }
 
+    // Attach event listeners to increment and decrement buttons
     incrementBtns.forEach((btn, index) => {
         btn.addEventListener('click', () => handleQuantityChange(index, 1));
     });
@@ -494,29 +492,42 @@ function updateSubtotal() {
         btn.addEventListener('click', () => handleQuantityChange(index, -1));
     });
 
+    // Initial visibility check for buttons based on the initial quantity value
+    quantityInputs.forEach((input, index) => {
+        let currentValue = parseInt(input.value);
+        let stocksLeft = parseInt(input.getAttribute('data-product-qty'));
+        let max = Math.min(5, stocksLeft);
 
-    function updateTotalPrice(index, quantity) {
-    const priceElement = document.querySelector(`#total-price-${index}`);
-    const pricePerItem = parseFloat(priceElement.closest('.product-cart').querySelector('.price').textContent.replace('₹', ''));
-    const newTotalPrice = pricePerItem * quantity;
-    priceElement.textContent = `₹${newTotalPrice.toFixed(2)}`;
-}
+        // Initially hide the decrement button if quantity is 1
+        if (currentValue === 1) {
+            decrementBtns[index].style.display = 'none';
+        }
 
-
-function updateSubtotal() {
-    const totalPrices = document.querySelectorAll('.total-price');
-    let subtotal = 0;
-
-    totalPrices.forEach(priceElement => {
-        subtotal += parseFloat(priceElement.textContent.replace('₹', ''));
+        // Initially hide the increment button if quantity is at the max limit
+        if (currentValue === max) {
+            incrementBtns[index].style.display = 'none';
+        }
     });
 
-    document.getElementById('cart-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-}
-  
+    function updateTotalPrice(index, quantity) {
+        const priceElement = document.querySelector(`#total-price-${index}`);
+        const pricePerItem = parseFloat(priceElement.closest('.product-cart').querySelector('.price').textContent.replace('₹', ''));
+        const newTotalPrice = pricePerItem * quantity;
+        priceElement.textContent = `₹${newTotalPrice.toFixed(2)}`;
+    }
 
-updateSubtotal()
+    function updateSubtotal() {
+        const totalPrices = document.querySelectorAll('.total-price');
+        let subtotal = 0;
 
+        totalPrices.forEach(priceElement => {
+            subtotal += parseFloat(priceElement.textContent.replace('₹', ''));
+        });
+
+        document.getElementById('cart-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+    }
+
+    updateSubtotal();
 });
 
 
@@ -576,6 +587,11 @@ Swal.fire({
 }
 
 </script>
+
+
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="/js/jquery.min.js"></script>

@@ -28,7 +28,7 @@ const verify_admin = async (req, res) => {
                 const isMatch = await bcrypt.compare(password, admin.password);
                 if (isMatch) {
                     req.session.admin = admin._id
-                    res.render('admin/dashboard');
+                    res.redirect('admin/dashboard');
                 } else {
                     res.render('admin/login', { data: "Incorrect password" });
                 }
@@ -468,6 +468,21 @@ const edit_category = async (req, res) => {
     }
 }
 
+
+const logout = async (req, res) => {
+
+    try {
+
+        delete req.session.admin
+        res.redirect('/admin')
+    } catch (error) {
+        console.log(error);
+
+    }
+
+}
+
+
 module.exports = {
     sign,
     verify_admin,
@@ -480,7 +495,8 @@ module.exports = {
     addcategory,
     edit_category,
     category_listed,
-    category_Unlisted
+    category_Unlisted,
+    logout
 }
 
 

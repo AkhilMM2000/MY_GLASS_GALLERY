@@ -17,6 +17,8 @@ async function verifyLogin(req, res, next) {
 
 }
 
+
+
 async function verifyLogout(req, res, next) {
 
   try {
@@ -34,7 +36,6 @@ async function verifyLogout(req, res, next) {
     console.log(error);
 
   }
-
 
 }
 

@@ -495,7 +495,7 @@ font-weight: bold;
                                                     <% cart.products.forEach(item => { %>
                                                         <li>
                                                             <span><%= item.quantity %> x <%= item.product.productName %></span>
-                                                            <span>&#8377;<%= item.discountPrice ? item.discountPrice.toFixed(2) : item.product.price.toFixed(2) %></span>
+                                                            <span>&#8377;<%= item.discountPrice ? item.discountPrice.toFixed(2)*item.quantity : item.product.price.toFixed(2)*item.quantity %></span>
                                                         </li>
                                                     <% }) %>
                                                

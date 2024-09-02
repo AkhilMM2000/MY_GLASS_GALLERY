@@ -1,6 +1,145 @@
 <%- include('../partials/header') %>
     <!-- css style -->
     <style>
+        /* Modal Styling */
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    background-color: #f8f9fa;
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    background-color: #f1f1f1;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 15px 20px;
+}
+
+.modal-footer .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.modal-footer .btn-default {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.modal-footer .btn-default:hover {
+    background-color: #5a6268;
+    border-color: #4e555b;
+}
+
+/* Input Field Styling */
+.form-control {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    background-color: #ffffff;
+    color: #495057;
+    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+label {
+    font-weight: 600;
+    color: #495057;
+}
+
+#editAddressForm .form-group {
+    margin-bottom: 15px;
+}
+/* Error Message Styling */
+[id^="edit-error"] {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Modal Background */
+.modal.fade .modal-dialog {
+    transform: translate(0, -50%);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.fade.show .modal-dialog {
+    transform: translate(0, 0);
+}
+
+        .address-box {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  margin-bottom: 20px;
+}
+
+.address-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.address-box p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.address-box p span {
+  font-weight: bold;
+  color: #333;
+}
+
+.address-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.address-actions a {
+  font-size: 14px;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+.address-actions a.text-primary:hover {
+  color: #007bff !important;
+}
+
+.address-actions a.text-danger:hover {
+  color: #dc3545 !important;
+}
         .address-box {
             border: 1px solid #e0e0e0;
             border-radius: 8px;
@@ -169,17 +308,17 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-7 col-md-9">
-                            <div id="colorlib-logo"><a href="index.html">EYEGAZE</a></div>
+                            <div id="colorlib-logo"><a href="/home">EYEGAZE</a></div>
                         </div>
                        
                     </div>
                     <div class="row">
                         <div class="col-sm-12 text-left menu-1">
                             <ul>
-                                <li class="active"><a href="index.html">Home</a></li>
-                                <li><a href="/product">Shop</a></li>
-                                <li><a href="about.html">About</a></li>
-                                <li><a href="contact.html">Contact</a></li>
+                                <li class="active"><a href="/home">Home</a></li>
+                                <li><a href="/product">shop</a></li>
+                                <li><a href="/abouts">About</a></li>
+                                <li><a href="/contacts">Contact</a></li>
                                 
                                 <li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
                             </ul>
@@ -217,7 +356,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <p class="bread"><span><a href="/home">Home</a></span> / <span>Contact</span></p>
+                        <p class="bread"><span><a href="/product">products</a></span> / <span>Address</span></p>
                     </div>
                 </div>
                 <div class="row">
@@ -235,9 +374,8 @@
                         <li><a href="/myaccount">Account Details</a></li>
                         <li><a href="/orders">Orders</a></li>
                         <li><a href="/wallet">wallet</a></li>
-                        <li><a href="#">Downloads</a></li>
                         <li><a href="/address">Addresses</a></li>
-                        <li><a href="#">Sign Out</a></li>
+                        <li><a href="/logout">Sign Out</a></li>
                     </ul>
                 </div>
                 <div class="col-md-9">
@@ -440,7 +578,8 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="addressPin" class="form-label">Pin Code </label>
-                                <input type="number" class="form-control" id="addressPin" name="addressPin"  required>
+                                <input type="number" class="form-control" id="addressPin" name="addressPin" onkeyup="validatepin()"  required>
+                                <div id="pin-error"></div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Save Address</button>
@@ -537,7 +676,7 @@
         document.getElementById('addressForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent default form submission
 
-            if (!validateName() || !validateMobile() || !validateEmail()|| !validatePost()||!validatecity()||!validatedistrict()|!validatestate()||!validatestreet()) {
+            if (!validateName() || !validateMobile() || !validateEmail()|| !validatePost()||!validatecity()||!validatedistrict()|!validatestate()||!validatestreet()||!validatepin()) {
                 return; // Stop the function execution if validation fails
             }
             
@@ -778,6 +917,32 @@ function validatePost() {
     message.style.color = 'green';
     return true;
 }
+function  validatepin(){
+    let mobile = document.getElementById('addressPin').value;
+            let mobileError = document.getElementById('pin-error');
+
+            if (mobile.trim().length === 0) {
+                mobileError.innerHTML = 'pin is required';
+                mobileError.style.color = 'red';
+                return false;
+            }
+
+
+            else if (!mobile.match(/^[1-9][0-9]{5}$/)) {
+                mobileError.innerHTML = 'its not valid'
+                mobileError.style.color = 'red';
+
+                return false;
+            }
+
+
+            mobileError.innerHTML = 'Valid';
+            mobileError.style.color = 'green';
+            return true;
+}
+
+
+
 
     </script>
 

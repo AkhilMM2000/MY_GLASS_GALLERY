@@ -303,6 +303,9 @@ const update_product = async (req, res) => {
     // if (!files || files.length === 0) {
     //   return res.status(400).json({ message: 'No files were uploaded.' });
     // }
+
+    console.log(req.files,'this is the images for edit u got');
+    
     const product_id = req.query.id
     const product_current=await product.findById(product_id)
  const current_imagearray=product_current.productimages

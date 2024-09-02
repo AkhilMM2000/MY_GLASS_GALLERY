@@ -212,19 +212,14 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/admin/coupons">
+            <a class="nav-link" href="/admin/coupon">
               <span class="menu-title">Coupons</span>
               <i class="mdi mdi-ticket-percent menu-icon"></i>
             </a>
           </li>
+        
           <li class="nav-item">
-            <a class="nav-link" href="/admin/banners">
-              <span class="menu-title">Banners</span>
-              <i class="mdi mdi-image menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/banners">
+            <a class="nav-link" href="/admin/logout">
               <span class="menu-title">logout</span>
               <i class="mdi mdi-image menu-icon"></i>
             </a>
@@ -235,140 +230,137 @@
   </div>
 </div>
         <!-- partial -->
-        
-<div class="container mt-4">
+        <div class="container mt-4">
 
-  <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6 offset-md-3 text-end">
-            <label for="timeFrame" class="me-2">Time Frame:</label>
-            <select id="timeFrame" class="form-select-sm">
-                <option value="Yearly">Yearly</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Weekly">Weekly</option>
-            </select>
-        </div>
-    </div>
-</div>
-
-  
-  <div class="row">
-    <!-- donut chart start here -------------------------------------------------------------------------------------------------------------->
-      
-    <div class="col-md-6 mb-4">
-      <div class="card">
-          <div class="card-body">
-              <h5 class="card-title">Order Status Overview</h5>
-              <div class="chart-container">
-                  <div class="chart-placeholder">
-                      <canvas id="orderStatusChart"></canvas>
-                  </div>
-              </div>
-              <div class="order-status-legend">
-                  <div class="legend-item">
-                      <div class="legend-color" style="background-color: #4bc0c0;"></div>
-                      <span>Delivered</span>
-                  </div>
-                  <div class="legend-item">
-                      <div class="legend-color" style="background-color: #ff6384;"></div>
-                      <span>Cancelled</span>
-                  </div>
-                  <div class="legend-item">
-                      <div class="legend-color" style="background-color: #ffce56;"></div>
-                      <span>Returned</span>
-                  </div>
-              </div>
-              <div class="text-center mt-3">
-                  <strong>Total Orders: </strong><span>7</span>
-              </div>
-              <div class="text-center mt-3">
-                <strong>Total numberoforder:<%=count %></strong><span></span>
-            </div>
-          </div>
-      </div>
-  </div>
-
-   <!-- donut chart end here --------------------------------------------------------------------------------------------------->
-    
-   <div class="col-md-6 mb-4">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Sales Over Time</h5>
-            <div class="chart-container">
-                <div class="chart-placeholder">
-                    <canvas id="salesOverTimeChart"></canvas>
+          <!-- Adjust the offset to push the content to the right -->
+          <div class="row">
+            <div class="col-md-10 offset-md-2">
+              
+              <!-- Time Frame Selection -->
+              <div class="row mb-3">
+                <div class="col-md-6 offset-md-6 text-end">
+                  <label for="timeFrame" class="me-2">Time Frame:</label>
+                  <select id="timeFrame" class="form-select-sm">
+                    <option value="Yearly">Yearly</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Weekly">Weekly</option>
+                  </select>
                 </div>
-            </div>
-            <div class="sales-legend">
-              <div class="legend-item">
-                <div class="legend-color" style="background-color: rgba(75, 192, 192, 0.8);"></div>
-                <span id="timeframsales"></span>
-            </div>
-            </div>
-            <div class="text-center mt-3">
-                <strong>Total Sales: </strong><span id="totalSales">rs0</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-      
-  </div>
-
-  <!-- New Section for Top Selling Categories, Brands, and Products -->
-  <div class="row">
-      <div class="col-md-4 mb-4">
-          <div class="card">
-              <div class="card-body">
-                <h5>Best-Selling Categories</h5>
-                <ul class="list-group">
-                  <% bestCategories.forEach(category => { %>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <%= category.categoryName %>
-                      <span class="badge badge-primary"><%= category.totalSold %></span>
-                  </li>
-                  <% }); %>
-              </ul>
               </div>
-          </div>
-      </div>
-
-      <div class="col-md-4 mb-4">
-          <div class="card">
-              <div class="card-body">
-                <h5>Best-Selling Brands</h5>
-                <ul class="list-group">
-                    <% bestBrands.forEach(brand => { %>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <%= brand.brandName%>
-                        <span class="badge badge-primary"><%= brand.totalSold %></span>
-                    </li>
-                    <% }); %>
-                </ul>
+        
+              <!-- Donut Chart for Order Status -->
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Order Status Overview</h5>
+                      <div class="chart-container">
+                        <div class="chart-placeholder">
+                          <canvas id="orderStatusChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="order-status-legend">
+                        <div class="legend-item">
+                          <div class="legend-color" style="background-color: #4bc0c0;"></div>
+                          <span>Delivered</span>
+                        </div>
+                        <div class="legend-item">
+                          <div class="legend-color" style="background-color: #ff6384;"></div>
+                          <span>Cancelled</span>
+                        </div>
+                        <div class="legend-item">
+                          <div class="legend-color" style="background-color: #ffce56;"></div>
+                          <span>Returned</span>
+                        </div>
+                      </div>
+                      <div class="text-center mt-3">
+                        <strong>Total Orders: </strong><span>7</span>
+                      </div>
+                      <div class="text-center mt-3">
+                        <strong>Total number of orders: <%= count %></strong><span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+        
+                <!-- Line Chart for Sales Over Time -->
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Sales Over Time</h5>
+                      <div class="chart-container">
+                        <div class="chart-placeholder">
+                          <canvas id="salesOverTimeChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="sales-legend">
+                        <div class="legend-item">
+                          <div class="legend-color" style="background-color: rgba(75, 192, 192, 0.8);"></div>
+                          <span id="timeframsales"></span>
+                        </div>
+                      </div>
+                      <div class="text-center mt-3">
+                        <strong>Total Sales: </strong><span id="totalSales">rs0</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-          </div>
-      </div>
-
-      <div class="col-md-4 mb-4">
-          <div class="card">
-              <div class="card-body">
-                  <h5 class="section-title">Top Selling Products</h5>
-                  <ul class="list-group">
-                    <% topProducts.forEach(product => { %>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+        
+              <!-- New Section for Top Selling Categories, Brands, and Products -->
+              <div class="row">
+                <div class="col-md-4 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5>Best-Selling Categories</h5>
+                      <ul class="list-group">
+                        <% bestCategories.forEach(category => { %>
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <%= category.categoryName %>
+                            <span class="badge badge-primary"><%= category.totalSold %></span>
+                          </li>
+                        <% }); %>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="col-md-4 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5>Best-Selling Brands</h5>
+                      <ul class="list-group">
+                        <% bestBrands.forEach(brand => { %>
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <%= brand.brandName %>
+                            <span class="badge badge-primary"><%= brand.totalSold %></span>
+                          </li>
+                        <% }); %>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="col-md-4 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="section-title">Top Selling Products</h5>
+                      <ul class="list-group">
+                        <% topProducts.forEach(product => { %>
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
                             <%= product.productName %>
                             <span class="badge badge-primary"><%= product.price %></span>
-                        </li>
-                    <% }) %>
-                </ul>
-                
+                          </li>
+                        <% }) %>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
           </div>
-      </div>
-  </div>
-
-</div>
-
+        </div>
+        
 
 
 <script>
@@ -376,6 +368,8 @@
     const ctx = document.getElementById('salesOverTimeChart').getContext('2d');
     const salesData = JSON.parse('<%- salesData %>');
     const timeframe = '<%- timeframe %>';
+
+
 
     const labels = salesData.map(item => item._id);
     const data = salesData.map(item => item.totalSales);

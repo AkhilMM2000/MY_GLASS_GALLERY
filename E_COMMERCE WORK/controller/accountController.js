@@ -96,7 +96,7 @@ const load_orders = async (req, res) => {
         const limit = 5; // Number of orders per page
         const skip = (page - 1) * limit;
 
-        const totalOrders = await Orders.countDocuments();
+        const totalOrders = await Orders.countDocuments({userId:user});
         const totalPages = Math.ceil(totalOrders / limit);
 
         const order = await Orders.find({ userId: user }).populate('products.productId').skip(skip)

@@ -414,6 +414,7 @@ const load_product = async (req, res) => {
       .populate('category')
       .populate('productBrand')
       .populate('offers')
+      .sort({ Date: -1 })
       .skip(skip)
       .limit(limit);
 

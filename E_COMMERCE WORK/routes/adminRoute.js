@@ -81,6 +81,8 @@ admin_route.get('/sales',islogin.verifyLogin,orderController.load_sales)
 admin_route.post('/sales', islogin.verifyLogin, orderController.pdf_download);
 admin_route.post('/sales/excel',islogin.verifyLogin,orderController.excel_download)
 
+admin_route.get('/logout',adminController.logout)
+
 admin_route.get('*',function(req,res){
     res.redirect('/admin')
   })

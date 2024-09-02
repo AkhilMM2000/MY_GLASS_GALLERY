@@ -204,7 +204,7 @@ const place_order = async (req, res) => {
       paymentMethod: paymentMethod,
       address: address,
       products: productsWithDiscounts,
-      totalAmount: totalAmount+discountAmount,
+      totalAmount: totalAmount,
       discountAmount: discountAmount,
       discountPercentage: discountPercentage,
       razorpay_id: razorpay_payment_id,
@@ -571,6 +571,7 @@ const update_order = async (req, res) => {
   }
 
 }
+
 ///for get wallet----------------------------
 const load_wallet = async (req, res) => {
   try {
@@ -580,6 +581,8 @@ const load_wallet = async (req, res) => {
 
     // Fetch the user's wallet
     const wallet = await userwallet.findOne({ user_id: userId });
+
+    wallet.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (!wallet) {
       return res.render('users/wallet', { wallet: null, transactions: [], currentPage: page, totalPages: 0 });
@@ -605,6 +608,7 @@ const load_wallet = async (req, res) => {
     console.log(error);
   }
 };
+
 
 //return the order------------------------------------------------------------>
 const return_request = async (req, res) => {
@@ -650,6 +654,9 @@ const return_accept = async (req, res) => {
       orderId: order
     });
 
+   
+    
+    
     if (!orderdata) {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }
@@ -670,6 +677,7 @@ const return_accept = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found in order' });
     }
 
+
     // Update the product status and return request status
     orderdata.products[productIndex].return_request = false;
     orderdata.products[productIndex].status = 'Returned';
@@ -687,12 +695,13 @@ const return_accept = async (req, res) => {
     let refundAmount = totalAmount;
 
     if (orderdata.discountAmount && orderdata.discountAmount !== 0) {
-      const discountPercentage = Math.ceil((orderdata.discountAmount * 100) / orderdata.totalAmount);
-      refundAmount = totalAmount - Math.ceil(totalAmount * (discountPercentage / 100));
+      const discountPercentage = (orderdata.discountAmount * 100) / orderdata.totalAmount;
+      refundAmount = totalAmount - Math.round(totalAmount * (discountPercentage / 100));
     }
 
     // Check if the user already has a wallet
     let wallet = await userwallet.findOne({ user_id: user_id });
+
 
     if (!wallet) {
       wallet = new userwallet({
@@ -700,21 +709,20 @@ const return_accept = async (req, res) => {
         balance: refundAmount,
         transactions: [{
           amount: refundAmount,
-          description: 'product: ' + productdata.productName
+          description:'Order returned',
+          type:'credit'
         }]
       });
     } else {
       wallet.balance += refundAmount;
       wallet.transactions.push({
         amount: refundAmount,
-        description: 'product: ' + productdata.productName
+       description:'Order returned',
+          type:'credit'
       });
     }
-
     // Save the wallet and order data
     await wallet.save();
-
-
 
     await orderdata.save();
 
@@ -724,6 +732,7 @@ const return_accept = async (req, res) => {
     res.json({ success: false, error: error.message });
   }
 }
+
 
 //get the sales report page here----------------------------------------------------------------
 const load_sales = async (req, res) => {
@@ -1028,7 +1037,7 @@ doc
 .fillColor('#7f8c8d')
 .text('Iron Street, Kochi, Kerala 679333', { align: 'center' })
 .moveDown(0.5)
-.text('Phone: 6282031090 | Email: eyegaze@example.com', { align: 'center' });
+.text('Phone:9001 9001 28 | Email: eyegaze@gmail.com', { align: 'center' });
 
 doc.moveDown(1.5);
 
@@ -1121,7 +1130,7 @@ doc.moveDown(-7.3);
   
     // Total
     doc.moveDown(4);
-    doc.fontSize(12).text(`Total: ${order.totalAmount.toFixed(2)}`, { align: 'right' });
+    doc.fontSize(12).text(`Total: ${  (product.quantity * product.price).toFixed(2)}`, { align: 'right' });
   
     // Footer
     doc.fontSize(10).text('Thank you for your business!', 50, 700, { align: 'center' });
