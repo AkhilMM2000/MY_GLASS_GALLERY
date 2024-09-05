@@ -8,6 +8,7 @@ const Cart = require('../model/cartModel')
 const category = require('../model/category')
 const brand = require('../model/brandModel')
 const Wishlist = require('../model/wishlistModel')
+const Wallet=require('../model/walletModal')
 
 // Function to render the registration page
 const get_register = async (req, res) => {
@@ -130,6 +131,12 @@ const verify_otp = async (req, res) => {
       const user = new User(userData);
       user.isOTPVerified = true;
       await user.save();
+      const userwallet = new Wallet({
+        user_id: user._id, 
+        balance: 0,
+        transactions: [] 
+      });
+      await userwallet.save();
       req.session.user = null;
 
       return res.status(200).json({ success: true });
@@ -140,6 +147,7 @@ const verify_otp = async (req, res) => {
     console.error('Error verifying OTP:', error);
     return res.status(500).json({ success: false, message: 'Server error. Please try again later.' });
   }
+
 };
 
 

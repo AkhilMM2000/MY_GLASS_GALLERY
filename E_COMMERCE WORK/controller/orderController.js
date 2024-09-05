@@ -838,66 +838,115 @@ const pdf_download = async (req, res) => {
     const orders = await Orders.find(dateFilter)
       .populate('products.productId')
       .lean();
-
-    const doc = new PDFDocument({ margin: 30 });
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=sales-report.pdf');
-    doc.pipe(res);
-
-    let totalOrders = orders.length;
-    let totalAmount = 0;
-    let totalDiscount = 0;
-
-    orders.forEach(order => {
-      totalAmount += order.totalAmount;
-      totalDiscount += order.discountAmount || 0;
-    });
-
-    // Add report title and summary
-    doc.fontSize(18).text('Sales Report', { align: 'center' });
-    doc.moveDown();
-    doc.fontSize(12).text(`Total Orders: ${totalOrders}`);
-    doc.text(`Total Amount: ${totalAmount.toFixed(2)}`);
-    doc.text(`Total Discount: ${totalDiscount.toFixed(2)}`);
-    doc.moveDown(2);
-    // Adjusted column positions for better visibility
-    const columnPositions = {
-      orderId: 50,
-      date: 200,
-      product: 300,
-      price: 450,
-      total: 520
-    };
-    // Add table headers
-    doc.fontSize(10)
-      .text('Order ID', columnPositions.orderId, doc.y, { continued: true, width: 140 })
-      .text('Date', columnPositions.date, doc.y, { continued: true, width: 90 })
-      .text('Product', columnPositions.product, doc.y, { continued: true, width: 140 })
-      .text('Price', columnPositions.price, doc.y, { continued: true, width: 60 })
-      .text('Total', columnPositions.total, doc.y);
-
-    // Draw a line below headers
-    doc.moveTo(50, doc.y + 10).lineTo(550, doc.y + 10).stroke();
-    doc.moveDown(1);
-
-    // Add table rows with consistent alignment and spacing
-    orders.forEach(order => {
-      order.products.forEach((product, index) => {
-        const productNameWithQuantity = `${product.productId.productName} (${product.quantity})`;
-
-        doc.fontSize(9)
-          .text(index === 0 ? order.
-            orderId : '', columnPositions.orderId, doc.y, { continued: true, width: 140 })
-          .text(index === 0 ? order.orderDate.toISOString().split('T')[0] : '', columnPositions.date, doc.y, { continued: true, width: 90 })
-          .text(productNameWithQuantity, columnPositions.product, doc.y, { continued: true, width: 140 })
-          .text(product.productId.price.toFixed(2), columnPositions.price, doc.y, { continued: true, align: 'right', width: 60 })
-          .text((product.quantity * product.productId.price).toFixed(2), columnPositions.total, doc.y, { align: 'right', width: 60 });
-        doc.moveDown(0.5);
+      const doc = new PDFDocument({ margin: 30, size: 'A4' });
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=sales-report.pdf');
+      doc.pipe(res);
+      
+      let totalOrders = orders.length;
+      let totalAmount = 0;
+      let totalDiscount = 0;
+      
+      orders.forEach(order => {
+        totalAmount += order.totalAmount;
+        totalDiscount += order.discountAmount || 0;
       });
-      doc.moveTo(50, doc.y + 5).lineTo(550, doc.y + 5).stroke();
-      doc.moveDown(0.5);
-    });
-    doc.end();
+      
+      // Add report title and summary
+      doc.fontSize(18).text('Sales Report', { align: 'center' });
+      doc.moveDown();
+      doc.fontSize(12).text(`Total Orders: ${totalOrders}`);
+      doc.text(`Total Amount: RS:${totalAmount.toFixed(2)}`);
+      doc.text(`Total Discount: RS:${totalDiscount.toFixed(2)}`);
+      doc.moveDown(2);
+      
+      // Define table layout
+      const table = {
+        x: 50,
+        y: doc.y,
+        width: 500,
+        rowHeight: 20,
+        columnWidths: [100, 73, 120, 70, 70, 70],
+        headers: ['Order ID', 'Date', 'Product', 'Quantity', 'Price', 'Total']
+      };
+      
+      // Function to draw table lines
+      function drawTableLines(startY, endY) {
+        doc.lineWidth(1);
+        // Vertical lines
+        table.columnWidths.reduce((x, width) => {
+          doc.moveTo(x, startY).lineTo(x, endY).stroke();
+          return x + width;
+        }, table.x);
+        doc.moveTo(table.x + table.width, startY).lineTo(table.x + table.width, endY).stroke();
+        // Horizontal line
+        doc.moveTo(table.x, endY).lineTo(table.x + table.width, endY).stroke();
+      }
+      
+      // Draw table headers
+      doc.font('Helvetica-Bold');
+      table.headers.forEach((header, i) => {
+        doc.text(header, 
+          table.x + table.columnWidths.slice(0, i).reduce((sum, w) => sum + w, 0) + 5,
+          table.y + 5,
+          { width: table.columnWidths[i] - 10, align: 'left' }
+        );
+      });
+      
+      // Draw header line
+      doc.y += table.rowHeight;
+      drawTableLines(table.y, doc.y);
+      
+      // Reset font
+      doc.font('Helvetica');
+      
+      // Function to add a row to the table
+      function addRow(cells) {
+        const startY = doc.y;
+        const maxLines = Math.max(...cells.map(cell => doc.heightOfString(cell, { width: table.columnWidths[2] - 10 }))) / table.rowHeight;
+        const rowHeight = Math.max(1, Math.ceil(maxLines)) * table.rowHeight;
+      
+        cells.forEach((cell, i) => {
+          doc.text(cell, 
+            table.x + table.columnWidths.slice(0, i).reduce((sum, w) => sum + w, 0) + 5,
+            startY + 5,
+            { 
+              width: table.columnWidths[i] - 10, 
+              align: i >= 3 ? 'right' : 'left',
+              height: rowHeight - 5
+            }
+          );
+        });
+      
+        doc.y = startY + rowHeight;
+        drawTableLines(startY, doc.y);
+      
+        if (doc.y > 700) { // Start a new page if near the bottom
+          doc.addPage();
+          doc.y = 50;
+          drawTableLines(doc.y - table.rowHeight, doc.y);
+        }
+      }
+      
+      // Add table rows with grouped products
+      orders.forEach(order => {
+        const productNames = order.products.map(product => product.productId.productName).join('\n');
+        const quantities = order.products.map(product => product.quantity).join('\n');
+        const prices = order.products.map(product => `RS:${product.productId.price.toFixed()}`).join('\n');
+        const productTotal = order.products.reduce((total, product) => total + (product.quantity * product.productId.price), 0);
+      
+        addRow([
+          order.orderId,
+          order.orderDate.toISOString().split('T')[0],
+          productNames,
+          quantities,
+          prices,
+          `RS:${productTotal.toFixed()}`
+        ]);
+      });
+      
+      doc.end();
+      
   } catch (error) {
     console.log(error);
     res.status(500).send("An error occurred while generating the PDF report.");

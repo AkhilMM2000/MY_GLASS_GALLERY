@@ -107,7 +107,7 @@ const admhome = async (req, res) => {
                 }
             },
             { $sort: { totalSold: -1 } }, // Sort by totalSold in descending order
-            { $limit: 5 } // Limit to top 5 products
+            { $limit: 10 } // Limit to top 5 products
         ]);
 
         // Manually query the Product model to get product details
@@ -161,7 +161,7 @@ const admhome = async (req, res) => {
                 }
             },
             { $sort: { totalSold: -1 } }, // Sort by totalSold in descending order
-            { $limit: 5 } // Limit to top 5 categories
+            { $limit: 10 } // Limit to top 5 categories
         ]);
 
         // Aggregate for best-selling brands
@@ -261,7 +261,7 @@ const admhome = async (req, res) => {
         const no_of_orders = await Order.countDocuments({
             orderDate: { $gte: startDate, $lt: endDate }
         });
-        console.log(no_of_orders, 'number ');
+      
 
         res.render('admin/dashboard', {
             salesData: JSON.stringify(salesData),
