@@ -59,6 +59,7 @@ const load_checkout = async (req, res) => {
         totalCartAmount += highestDiscountPrice * item.quantity;
       });
 
+      
       res.render('users/checkout', { address: addres_data, totalCartAmount, cart, coupon: coupon_data })
     }
   } catch (error) {

@@ -1,7 +1,15 @@
 const mongoose=require('mongoose');
 require('dotenv').config();
-mongoose.connect(process.env.DB);
+// mongoose.connect(process.env.DB,{    ssl: false});
+mongoose.connect(process.env.DB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch((err) => {
+    console.error('Error connecting to MongoDB:', err.message);
+});
 require('dotenv').config()
 
 //require express module
